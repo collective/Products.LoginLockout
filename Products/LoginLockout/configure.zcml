@@ -1,0 +1,10 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
+
+    <!-- generic setup installation disabled for lack of uninstall support -->
+    <!--include file="profiles.zcml" /-->
+
+</configure>
+

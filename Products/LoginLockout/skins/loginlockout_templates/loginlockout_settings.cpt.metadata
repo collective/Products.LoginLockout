@@ -1,0 +1,5 @@
+[default]
+title = LoginLockout settings form
+
+[actions]
+action.success = traverse_to:string:reset_accounts

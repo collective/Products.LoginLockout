@@ -1,0 +1,10 @@
+Things that could be done on the LoginLockout product:
+
+- Check security; can the tool or the script or the template be misused to gain
+  access to the plugin?
+
+- Allow setting the number of allowed attempts from the configlet.
+
+- Allow setting the timeout value on the configlet (is it implemented at all?)
+
+- Internationalization: translate all messages in script and template

@@ -1,0 +1,71 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/prefs_main_template/macros/master"
+      i18n:domain="loginlockout">
+  <body>
+    <span metal:fill-slot="prefs_configlet_main"
+        tal:define="tool context/loginlockout_tool" >
+
+      <div metal:use-macro="here/global_statusmessage/macros/portal_message">
+        Portal status message
+      </div>
+
+      <h2>Login Lockout configuration</h2>
+      <a href="/plone_control_panel" 
+          tal:attributes="href 
+              string:${context/portal_url}/plone_control_panel" 
+          class="link-parent"
+          i18n:domain="plone" i18n:translate="">
+        Up to site setup
+      </a>
+      <p i18n:translate="description_settings_form">
+        Configuration and logging for the LoginLockout plugin.
+      </p>
+
+      <form method="post">
+        <fieldset>
+          <legend>
+            View and reset unsuccesful attempts
+          </legend>
+          <table class="listing"
+              tal:define="attempt_properties 
+                  python: ['login','count','last','IP']">
+            <tr>
+              <th i18n:translate="label_reset">
+                Reset
+              </th>
+              <th i18n:translate="label_login">
+                Login name
+              </th>
+              <th i18n:translate="label_count">
+                Number of attempts
+              </th>
+              <th i18n:translate="label_last">
+                Last attempt
+              </th>
+              <th i18n:translate="label_IP">
+                IP address
+              </th>
+            </tr>
+            <tr tal:repeat="attempt tool/listAttempts"
+                tal:attributes="class python: repeat['attempt'].odd() and 
+                    'odd' or 'even'">
+              <td>
+                <input type="checkbox" name="reset_users"
+                    tal:attributes="value attempt/login" />
+              </td>
+              <td tal:repeat="property attempt_properties"
+                  tal:content="python: attempt.get(property, None)" />
+            </tr>
+          </table>
+          <div class="formControls">
+            <input type="hidden" name="form.submitted" value="1"/>
+            <input type="submit" value="Reset selected accounts"
+                name="form.button.submit"
+                i18n:attributes="value button_reset" />
+          </div>
+        </fieldset>
+      </form> 
+    </span>
+  </body>
+</html>
