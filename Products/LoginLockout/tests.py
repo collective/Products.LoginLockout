@@ -16,8 +16,10 @@ from Products.Five.testbrowser import Browser
 from zope.component import getUtility
 from Products.CMFCore.utils import getToolByName
 import DateTime
-import Products.LoginLockout
 
+print "Start installProduct"
+ztc.installProduct('LoginLockout')
+print "Finished installProduct setup (hopefully)"
 
 class TestCase(ptc.PloneTestCase):
     """ We use this base class for all the tests in this package. If necessary,
@@ -33,24 +35,27 @@ class TestCase(ptc.PloneTestCase):
         self.portal.acl_users.portal_role_manager.updateRolesList()
 
         self.portal.acl_users._doAddUser('admin', 'admin', ('Manager',), [])
-        self.portal.acl_users._doAddUser('user', 'user', ('Memeber',), [])
-
+        self.portal.acl_users._doAddUser('user', 'user', ('Member',), [])
 
         self.portal.error_log._ignored_exceptions = ()
-
 
 
 @onsetup
 def setup_product():
     """ """
     fiveconfigure.debug_mode = True
+    import Products.LoginLockout
     zcml.load_config('configure.zcml', Products.LoginLockout)
     fiveconfigure.debug_mode = False
-    ztc.installPackage('LoginLockout')
+
+    #print "Start setupProduct"
+    #ztc.installPackage('Products.LoginLockout')
+    #print "Finished setupProduct (hopefully)"
 
 
 setup_product()
-ptc.setupPloneSite(extension_profiles=(), with_default_memberarea=False)
+ptc.setupPloneSite(extension_profiles=(), with_default_memberarea=False,
+        products=['Products.LoginLockout'])
 
 
 def test_suite():

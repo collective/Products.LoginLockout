@@ -24,38 +24,6 @@ To Install
     First login as manager::
 
         >>> from Products.Five.testbrowser import Browser
-        >>> admin = Browser(self.portal.absolute_url()+'/login_form')
-        >>> admin.getControl('Login Name').value = 'admin'
-        >>> admin.getControl('Password').value = 'admin'
-        >>> admin.getControl('Log in').click()
-
-
-    go to Site Setup > Add-on Products and install LoginLockout::
-
-        >>> admin.getLink('Site Setup').click()
-        >>> admin.getLink('Add-on Products').click()
-        >>> admin.getControl("LoginLockout 0.1 svn/dev installer branch").click()
-        >>> admin.getControl('Install').click()
-
-        >>> admin.getLink(url="LoginLockout/prefs_installed_product_overview").click()
-        >>> print admin.contents
-        <BLANKLINK>
-        ...
-        Installing LoginLockout:
-        - Activating: authentication
-        - Activating: challenge
-        - Activating: update credentials
-        login_lockout_plugin activated.
-        - Activating: anonymoususerfactory
-        - Activating: challenge
-        login_lockout_plugin activated.
-        Moved login_lockout_plugin to top in IChallengePlugin.
-        Moved login_lockout_plugin to top in IAnonymousUserFactoryPlugin.
-        Successfully installed LoginLockout.
-        ...
-
-        >>> admin.goBack()
-
 
     Now we'll open up a new browser and attempt to login::
 
@@ -63,9 +31,8 @@ To Install
         >>> browser.open(self.portal.absolute_url()+'/login_form')
         >>> browser.getControl('Login Name').value = 'user'
         >>> browser.getControl('Password').value = 'user'
-        >>> browser.getControl('log in').click()
-        >>> print browser.contents
-        You have succesfully logged in
+        >>> browser.getControl('Log in').click()
+        >>> assert('You are now logged in' in browser.contents)
 
 
     Let's try again with another password::
@@ -74,9 +41,8 @@ To Install
         >>> browser.open(self.portal.absolute_url()+'/login_form')
         >>> browser.getControl('Login Name').value = 'user'
         >>> browser.getControl('Password').value = 'notpassword'
-        >>> browser.getControl('log in').click()
-        >>> print browser.contents
-        Password incorrect
+        >>> browser.getControl('Log in').click()
+        >>> assert('Login failed' in browser.contents)
 
 
     this incorrect attemp  will show up in the log::
@@ -117,7 +83,7 @@ To Install
         >>> admin.getControl('user').click()
         >>> admin.getControl('reset accounts').click()
         >>> print admin.contents
-
+        User accounts reset...
 
     and now they can log in again::
 
