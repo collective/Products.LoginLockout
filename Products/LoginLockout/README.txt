@@ -23,7 +23,7 @@ To Install
 
     First login as manager::
 
-        >>> from Products.Five.testbrowser import Browser
+        >>> from zc.testbrowser.browser import Browser
 
     Now we'll open up a new browser and attempt to login::
 
@@ -32,7 +32,9 @@ To Install
         >>> browser.getControl('Login Name').value = 'user'
         >>> browser.getControl('Password').value = 'user'
         >>> browser.getControl('Log in').click()
-        >>> assert('You are now logged in' in browser.contents)
+        >>> print browser.contents
+        <BLANKLINE>
+        ...You are now logged in...
 
 
     Let's try again with another password::
@@ -42,11 +44,15 @@ To Install
         >>> browser.getControl('Login Name').value = 'user'
         >>> browser.getControl('Password').value = 'notpassword'
         >>> browser.getControl('Log in').click()
-        >>> assert('Login failed' in browser.contents)
+        >>> print browser.contents
+        <BLANKLINE>
+        ...Login failed...
 
 
     this incorrect attemp  will show up in the log::
 
+        >>> admin = Browser()
+        >>> admin.login('admin','admin')
         >>> admin.getLink('Site Setup').click()
         >>> admin.getLink('LoginLockup').click()
         >>> print admin.contents
