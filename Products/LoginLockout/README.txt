@@ -9,9 +9,8 @@ LoginLockout
 Requires:
 
     - PluggableAuthService and its dependencies
-
+    
     - (optional) PlonePAS and its dependencies
-
 
 Details
 
@@ -20,6 +19,10 @@ Details
 
 
 To Install
+
+   Install into Plone via Add/Remove Products 
+
+To Use
 
     First login as manager::
 
@@ -106,25 +109,25 @@ Manual Installation
     This plugin needs to be installed in two places, the instance PAS where logins
     occur and the root acl_users.
 
-    1. Place the Product directory 'LoginLockout' in your 'Products/'
-    directory. Restart Zope.
+     1. Place the Product directory 'LoginLockout' in your 'Products/'
+     directory. Restart Zope.
 
-    2. In your instance PAS 'acl_users', select 'LoginLockout' from the add
-    list.  Give it an id and title, and push the add button.
+     2. In your instance PAS 'acl_users', select 'LoginLockout' from the add
+     list.  Give it an id and title, and push the add button.
 
-    3. Enable the 'Authentication', 'Challenge' and the 'Update Credentials'
-    plugin interfaces in the after-add screen.
+     3. Enable the 'Authentication', 'Challenge' and the 'Update Credentials'
+     plugin interfaces in the after-add screen.
 
-    4. Rearrange the order of your 'Challenge plugins' so that the
-    'LoginLockout' plugin is at the top.
+     4. Rearrange the order of your 'Challenge plugins' so that the
+     'LoginLockout' plugin is at the top.
 
-    5. Repeat the above for your root PAS but as a plugin to
+     5. Repeat the above for your root PAS but as a plugin to
 
         -  Anonymoususerfactory
 
         -  Update Credentials
 
-        and ensure LoginLockout is the first Anonymoususerfactory
+       and ensure LoginLockout is the first Anonymoususerfactory
 
     Steps 2 through 5 below will be done for you by the Plone installer.
 
@@ -153,12 +156,14 @@ Copyright, License, Author
     Copyright (c) 2007, PretaWeb, Australia,
      and the respective authors. All rights reserved.
 
-    Author: Dylan Jay <software@pretaweb.com>
+    Author: Dylan Jay <software pretaweb com>
 
     License BSD-ish, see LICENSE.txt
 
 
 Credits
+
+    Kees HinK for the Plone configlet and installer
 
     Thanks to Daniel Nouri and BlueDynamics for their
     NoDuplicateLogin which served as the base for this.
