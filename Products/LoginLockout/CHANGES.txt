@@ -1,7 +1,6 @@
-CHANGES
--------
+Changes
 
- 2009-04-20 (Dylan Jay)
+ 0.2 2009-04-20 (Dylan Jay)
 
   - Eggified merged configlet version
 
@@ -10,18 +9,18 @@ CHANGES
  2009-03-10 (Kees Hink):
 
   - Added configlet for viewing failed attempts and resetting accounts from the
-   plone control panel.
+    plone control panel.
 
   - Quite probably, dropped support for pure Zope usage.
 
  2008-12-18 (Kees HinK):
 
   - Added installer, using Extensions/Install.py.
-   (Unfortunately, Generic Setup does not yet seem to support uninstalling, but
-   the methods in setuphandlers.py and the import profile (profiles/default) are
-   there for when you want to use them. Just uncomment the relevant zcml
-   directives.)
+    (Unfortunately, Generic Setup does not yet seem to support uninstalling, but
+    the methods in setuphandlers.py and the import profile (profiles/default) are
+    there for when you want to use them. Just uncomment the relevant zcml
+    directives.)
 
- ??? (Dylan Jay):
--
-   Initial Version
+ 0.1 (Dylan Jay):
+
+  - Initial Version
