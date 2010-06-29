@@ -49,7 +49,7 @@ def setup_product():
     fiveconfigure.debug_mode = False
 
     #print "Start setupProduct"
-    #ztc.installPackage('Products.LoginLockout')
+    ztc.installPackage('Products.LoginLockout')
     #print "Finished setupProduct (hopefully)"
 
 
