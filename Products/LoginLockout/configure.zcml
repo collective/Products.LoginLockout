@@ -1,10 +1,11 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
-    xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
+    xmlns:cmf="http://namespaces.zope.org/cmf"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="zopyx.autosave">
 
-    <!-- generic setup installation disabled for lack of uninstall support -->
-    <!--include file="profiles.zcml" /-->
+  <include file="skins.zcml" />
+  <include file="profiles.zcml" />
 
 </configure>
-
