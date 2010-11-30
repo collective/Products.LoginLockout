@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/prefs_main_template/macros/master"
+      i18n:domain="loginlockout">
+  <body>
+    <span metal:fill-slot="prefs_configlet_main"
+        tal:define="tool context/loginlockout_tool" >
+
+      <div metal:use-macro="here/global_statusmessage/macros/portal_message">
+        Portal status message
+      </div>
+
+      <h2>Successful login attempts</h2>
+      <a href="/plone_control_panel" 
+          tal:attributes="href 
+              string:${context/portal_url}/plone_control_panel" 
+          class="link-parent"
+          i18n:domain="plone" i18n:translate="">
+        Up to site setup
+      </a>
+      <p i18n:translate="description_settings_form">
+        Login of all successful login attempts
+      </p>
+
+      <form method="post">
+        <fieldset>
+          <legend>
+            View successful attempts
+          </legend>
+          <table class="listing"
+              tal:define="attempt_properties 
+                  python: ['login','count','last','IP']">
+            <tr>
+              <th i18n:translate="label_login">
+                Login name
+              </th>
+              <th i18n:translate="label_last">
+                Last Login
+              </th>
+              <th i18n:translate="label_IP">
+                IP address
+              </th>
+            </tr>
+            <tr tal:repeat="attempt tool/listSuccessfulAttempts"
+                tal:attributes="class python: repeat['attempt'].odd() and 
+                'odd' or 'even'">
+                <td tal:content="attempt/login" />
+                <td tal:content="attempt/last" />
+                <td tal:content="attempt/IP" />
+            </tr>
+          </table>
+        </fieldset>
+      </form> 
+    </span>
+  </body>
+</html>
