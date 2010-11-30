@@ -22,8 +22,7 @@
         Login of all successful login attempts
       </p>
 
-      <form method="post">
-        <fieldset>
+      <fieldset tal:define="data tool/listSuccessfulAttempts">
           <legend>
             View successful attempts
           </legend>
@@ -35,22 +34,26 @@
                 Login name
               </th>
               <th i18n:translate="label_last">
-                Last Login
-              </th>
-              <th i18n:translate="label_IP">
-                IP address
+                Logins
               </th>
             </tr>
-            <tr tal:repeat="attempt tool/listSuccessfulAttempts"
-                tal:attributes="class python: repeat['attempt'].odd() and 
+
+            <tr tal:repeat="login data/keys"
+                tal:attributes="class python: repeat['login'].odd() and 
                 'odd' or 'even'">
-                <td tal:content="attempt/login" />
-                <td tal:content="attempt/last" />
-                <td tal:content="attempt/IP" />
+                <td tal:content="login"  valign="top"/>
+                <td valign="top">
+                    <ul>
+                        <li tal:repeat="row data/?login">
+                            <span tal:replace="row/last"/>
+                            (<span tal:replace="row/ip"/>)
+                        </li>
+                    </ul>
+                </td> 
             </tr>
           </table>
         </fieldset>
-      </form> 
+
     </span>
   </body>
 </html>
