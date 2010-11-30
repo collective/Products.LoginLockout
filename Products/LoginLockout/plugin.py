@@ -101,8 +101,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def __init__(self, id, title=None):
         self._id = self.id = id
         self.title = title
-        
-        self._login_attempts = OOBTree() # userid : (Count:int, DateTime, IP:string)
+        self._login_attempts = OOBTree()            # userid : (Count:int, DateTime, IP:string)
+        self._successful_login_attempts = OOBTree() # userid : (Count:int, DateTime, IP:string)
         self._reset_period = 24.0
         self._max_attempts = 3
 
@@ -229,6 +229,25 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         last = DateTime()
         reference = AuthEncoding.pw_encrypt( password )
         root._login_attempts[login] = (count,last,IP, reference)
+
+    security.declarePrivate('setSuccessfulAttempt')
+    def setSuccessfulAttempt(self, login, password):
+        "increment attempt count and record date stamp last attempt and IP"
+        root = self.getRootPlugin()
+        count,last,IP,reference = root._login_attempts.get(login, (0, None, '', None))
+        
+        if reference and AuthEncoding.pw_validate( reference, password ):
+            return # we don't count repeating same password in case its correct
+#        elif last and (DateTime() - last)/24.0 > self._reset_period:
+#            count = 1
+        else:
+            count += 1
+        IP = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
+        if not IP:
+            IP = self.REQUEST.get('REMOTE_ADDR','')
+        last = DateTime()
+        root._successful_login_attempts[login] = (last,IP)
+
         
     security.declarePrivate('getAttempts')
     def getAttempts(self, login):
@@ -336,6 +355,15 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         root = self.getRootPlugin()
         return [ self.getAttemptInfo( x ) for x in root._login_attempts.keys() ]
 
+    security.declareProtected( ManageUsers, 'listSuccessfulAttempts' )
+    def listSuccessfulAttempts( self ):
+
+        """ -> ( {}, ...{} )
+
+        o Return one mapping per user, with the following keys
+        """
+        root = self.getRootPlugin()
+        return [ self.getAttemptInfo( x ) for x in root._successful_login_attempts.keys() ]
 
 
 classImplements(LoginLockout,
