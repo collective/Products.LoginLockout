@@ -1,5 +1,13 @@
 Changes
 
+ 0.2 unreleased (Andreas Jung)
+
+  - internal cleanup
+
+  - using GenericSetup where possible
+
+  - added support for logging successful login attempts
+
  0.2 2009-04-20 (Dylan Jay)
 
   - Eggified merged configlet version
