@@ -133,7 +133,7 @@ def setupVarious(context):
     """Import step for configuration that is not handled in xml files.
     """
     # Only run step if a flag file is present
-    if context.readDataFile('Products.LoginLockout-default.txt') is None:
+    if context.readDataFile('loginlockout.txt') is None:
         return
 
     logger = context.getLogger('Products.LoginLockout')
