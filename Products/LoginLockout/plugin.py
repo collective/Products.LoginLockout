@@ -231,24 +231,20 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         root._login_attempts[login] = (count,last,IP, reference)
 
     security.declarePrivate('setSuccessfulAttempt')
-    def setSuccessfulAttempt(self, login, password):
+    def setSuccessfulAttempt(self, login):
         "increment attempt count and record date stamp last attempt and IP"
         root = self.getRootPlugin()
         count,last,IP,reference = root._login_attempts.get(login, (0, None, '', None))
-        
-        if reference and AuthEncoding.pw_validate( reference, password ):
-            return # we don't count repeating same password in case its correct
-#        elif last and (DateTime() - last)/24.0 > self._reset_period:
-#            count = 1
-        else:
-            count += 1
         IP = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
         if not IP:
             IP = self.REQUEST.get('REMOTE_ADDR','')
         last = DateTime()
-        root._successful_login_attempts[login] = (last,IP)
 
-        
+        if not root._successful_login_attempts.has_key(login):
+            root._successful_login_attempts[login] = list()
+        root._successful_login_attempts[login].append(dict(last=last, ip=IP))
+        root._successful_login_attempts._p_changed = 1
+
     security.declarePrivate('getAttempts')
     def getAttempts(self, login):
         "return the count, last attempt datestamp and IP of last attempt"
@@ -363,7 +359,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         o Return one mapping per user, with the following keys
         """
         root = self.getRootPlugin()
-        return [ self.getAttemptInfo( x ) for x in root._successful_login_attempts.keys() ]
+        return root._successful_login_attempts
 
 
 classImplements(LoginLockout,

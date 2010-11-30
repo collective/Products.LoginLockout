@@ -33,4 +33,7 @@ class LoginLockoutTool(UniqueObject,  SimpleItem):
     def manage_resetUsers(self, logins, RESPONSE=None):
         return self._getPlugin().manage_resetUsers(logins, RESPONSE=None)
 
+    def manage_setSuccessfulLoginAttempt(self, login):
+        return self._getPlugin().setSuccessfulAttempt(login)
+
 InitializeClass(LoginLockoutTool)
