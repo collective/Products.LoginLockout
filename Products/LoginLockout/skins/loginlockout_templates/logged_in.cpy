@@ -33,5 +33,5 @@ elif must_change_password:
     state.set(status='change_password')
 
 membership_tool.loginUser(REQUEST)
-raise 'foo'
+context.setSuccessfulLoginAttempt(member.getUserName())
 return state
