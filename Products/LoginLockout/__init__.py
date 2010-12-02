@@ -37,5 +37,6 @@ def initialize(context):
     tools = ( LoginLockoutTool, )
     utils.ToolInit(
         PROJECTNAME,
+        icon='www/tool.gif',
         tools=tools).initialize(context)
 
