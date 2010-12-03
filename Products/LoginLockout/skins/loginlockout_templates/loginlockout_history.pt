@@ -29,7 +29,7 @@
 
           <form action="loginlockout_history" method="get">
               <label for="pattern">Username pattern</label>
-              <input type="pattern" type="text" value="" size="10" id="pattern" />
+              <input type="text" name="pattern" value="" size="10" id="pattern" />
               <input type="submit" value="Search records" class="context" />
           </form>
 
@@ -44,20 +44,20 @@
                 Logins
               </th>
             </tr>
-
-            <tr tal:repeat="data tool/listSuccessfulAttempts;
-                            login data/keys"
-                tal:attributes="class python: repeat['login'].odd() and 
-                'odd' or 'even'">
-                <td tal:content="login"  valign="top"/>
-                <td valign="top">
-                    <ul>
-                        <li tal:repeat="row data/?login">
-                            <span tal:replace="row/last"/>
-                            (<span tal:replace="row/ip"/>)
-                        </li>
-                    </ul>
-                </td> 
+            <tr tal:repeat="row tool/listSuccessfulAttempts"
+                tal:attributes="class python: repeat['row'].odd() and 'odd' or 'even'">
+                <tal:def define="username row/username;
+                                 attempts row/attempts" >
+                    <td tal:content="username"  valign="top"/>
+                    <td valign="top">
+                        <ul>
+                            <li tal:repeat="attempt attempts">
+                                <span tal:replace="attempt/last"/>
+                                (<span tal:replace="attempt/ip"/>)
+                            </li>
+                        </ul>
+                    </td> 
+                </tal:def>
             </tr>
           </table>
         </fieldset>
