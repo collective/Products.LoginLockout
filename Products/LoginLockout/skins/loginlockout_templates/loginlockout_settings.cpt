@@ -60,7 +60,7 @@
           </table>
           <div class="formControls">
             <input type="hidden" name="form.submitted" value="1"/>
-            <input type="submit" value="Reset selected accounts"
+            <input type="submit" value="Reset selected accounts" class="context"
                 name="form.button.submit"
                 i18n:attributes="value button_reset" />
           </div>
