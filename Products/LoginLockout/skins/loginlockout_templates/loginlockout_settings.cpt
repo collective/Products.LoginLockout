@@ -65,7 +65,7 @@
                 i18n:attributes="value button_reset" />
           </div>
         </fieldset>
-        <a href="loginlogout_history">Login history</a>
+        <a href="loginlockout_history">Login history</a>
       </form> 
     </span>
   </body>
