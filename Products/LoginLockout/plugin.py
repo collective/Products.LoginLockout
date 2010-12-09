@@ -367,7 +367,6 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         """ register timestamp of last password change """
         self._last_pw_change[username] = DateTime()
 
-
 classImplements(LoginLockout,
                 ICredentialsUpdatePlugin,
                 IAuthenticationPlugin,
