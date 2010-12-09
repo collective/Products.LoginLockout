@@ -103,6 +103,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self.title = title
         self._login_attempts = OOBTree()            # userid : (Count:int, DateTime, IP:string)
         self._successful_login_attempts = OOBTree() # userid : (Count:int, DateTime, IP:string)
+        self._last_pw_change = OOBTree()            # userid : DateTime
         self._reset_period = 24.0
         self._max_attempts = 3
 
@@ -360,6 +361,11 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         """
         root = self.getRootPlugin()
         return root._successful_login_attempts
+
+    security.declareProtected( ManageUsers, 'manage_credentialsUpdated' )
+    def manage_credentialsUpdated(self, username):
+        """ register timestamp of last password change """
+        self._last_pw_change[username] = DateTime()
 
 
 classImplements(LoginLockout,
