@@ -43,4 +43,8 @@ class LoginLockoutTool(UniqueObject,  SimpleItem):
     def manage_setSuccessfulLoginAttempt(self, login):
         return self._getPlugin().setSuccessfulAttempt(login)
 
+    def manage_credentialsUpdated(self, username):
+        """ register timestamp of last password change """
+        return self._getPlugin().manage_credentialsUpdated(username)
+
 InitializeClass(LoginLockoutTool)
