@@ -367,6 +367,16 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         """ register timestamp of last password change """
         self._last_pw_change[username] = DateTime()
 
+    def manage_getPasswordChanges(self):
+        """ Return history of password changes """
+
+        _ct = self.toLocalizedTime
+        data = self._last_pw_change
+        usernames = sorted(self._last_pw_change.keys())
+        return [dict(username=username, last_change=_ct(data[username])) 
+                for username in usernames]
+
+
 classImplements(LoginLockout,
                 ICredentialsUpdatePlugin,
                 IAuthenticationPlugin,
