@@ -66,6 +66,8 @@
           </div>
         </fieldset>
         <a href="loginlockout_history">Login history</a>
+        &nbsp;
+        <a href="loginlockout_last_password_changes">History password changes</a>
       </form> 
     </span>
   </body>
