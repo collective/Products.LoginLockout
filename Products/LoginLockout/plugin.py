@@ -367,14 +367,17 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         """ register timestamp of last password change """
         self._last_pw_change[username] = DateTime()
 
-    def manage_getPasswordChanges(self):
-        """ Return history of password changes """
+    def manage_getPasswordChanges(self, min_days=0):
+        """ Return history of password changes where the 
+            timestamp is older than ``min_days`` days.
+        """
 
         _ct = self.toLocalizedTime
         data = self._last_pw_change
+        now = DateTime()
         usernames = sorted(self._last_pw_change.keys())
         return [dict(username=username, last_change=_ct(data[username])) 
-                for username in usernames]
+                for username in usernames if now - data[username] >= min_days]
 
 
 classImplements(LoginLockout,

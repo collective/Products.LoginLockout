@@ -47,8 +47,8 @@ class LoginLockoutTool(UniqueObject,  SimpleItem):
         """ register timestamp of last password change """
         return self._getPlugin().manage_credentialsUpdated(username)
 
-    def manage_getPasswordChanges(self):
+    def manage_getPasswordChanges(self, min_days=0):
         """ Return history of password changes"""
-        return self._getPlugin().manage_getPasswordChanges()
+        return self._getPlugin().manage_getPasswordChanges(min_days)
 
 InitializeClass(LoginLockoutTool)
