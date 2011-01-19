@@ -8,6 +8,8 @@ Changes
 
   - added support for logging successful login attempts
 
+  - added support logging password changes
+
  0.2 2009-04-20 (Dylan Jay)
 
   - Eggified merged configlet version
