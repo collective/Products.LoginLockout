@@ -101,8 +101,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def __init__(self, id, title=None):
         self._id = self.id = id
         self.title = title
-        
-        self._login_attempts = OOBTree() # userid : (Count:int, DateTime, IP:string)
+        self._login_attempts = OOBTree()            # userid : (Count:int, DateTime, IP:string)
+        self._successful_login_attempts = OOBTree() # userid : (Count:int, DateTime, IP:string)
+        self._last_pw_change = OOBTree()            # userid : DateTime
         self._reset_period = 24.0
         self._max_attempts = 3
 
@@ -229,7 +230,22 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         last = DateTime()
         reference = AuthEncoding.pw_encrypt( password )
         root._login_attempts[login] = (count,last,IP, reference)
-        
+
+    security.declarePrivate('setSuccessfulAttempt')
+    def setSuccessfulAttempt(self, login):
+        "increment attempt count and record date stamp last attempt and IP"
+        root = self.getRootPlugin()
+        count,last,IP,reference = root._login_attempts.get(login, (0, None, '', None))
+        IP = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
+        if not IP:
+            IP = self.REQUEST.get('REMOTE_ADDR','')
+        last = DateTime()
+
+        if not root._successful_login_attempts.has_key(login):
+            root._successful_login_attempts[login] = list()
+        root._successful_login_attempts[login].append(dict(last=last, ip=IP))
+        root._successful_login_attempts._p_changed = 1
+
     security.declarePrivate('getAttempts')
     def getAttempts(self, login):
         "return the count, last attempt datestamp and IP of last attempt"
@@ -336,6 +352,32 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         root = self.getRootPlugin()
         return [ self.getAttemptInfo( x ) for x in root._login_attempts.keys() ]
 
+    security.declareProtected( ManageUsers, 'listSuccessfulAttempts' )
+    def listSuccessfulAttempts( self ):
+
+        """ -> ( {}, ...{} )
+
+        o Return one mapping per user, with the following keys
+        """
+        root = self.getRootPlugin()
+        return root._successful_login_attempts
+
+    security.declareProtected( ManageUsers, 'manage_credentialsUpdated' )
+    def manage_credentialsUpdated(self, username):
+        """ register timestamp of last password change """
+        self._last_pw_change[username] = DateTime()
+
+    def manage_getPasswordChanges(self, min_days=0):
+        """ Return history of password changes where the 
+            timestamp is older than ``min_days`` days.
+        """
+
+        _ct = self.toLocalizedTime
+        data = self._last_pw_change
+        now = DateTime()
+        usernames = sorted(self._last_pw_change.keys())
+        return [dict(username=username, last_change=_ct(data[username])) 
+                for username in usernames if now - data[username] >= min_days]
 
 
 classImplements(LoginLockout,

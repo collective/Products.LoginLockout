@@ -25,7 +25,7 @@ def initialize(context):
                           permission=add_user_folders,
                           constructors=(manage_addLoginLockoutForm,
                                         manage_addLoginLockout),
-                          #icon='www/noduplicatelogin.png',
+                          icon='www/tool.gif',
                           visibility=None,
                           )
 
@@ -37,5 +37,6 @@ def initialize(context):
     tools = ( LoginLockoutTool, )
     utils.ToolInit(
         PROJECTNAME,
+        icon='www/tool.gif',
         tools=tools).initialize(context)
 

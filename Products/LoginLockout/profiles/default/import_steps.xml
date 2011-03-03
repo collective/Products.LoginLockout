@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <import-steps>
   <import-step id="loginlockout" version="20090310-01"
-              handler="Products.LoginLockout.setuphandlers.setupLoginLockout"
+              handler="Products.LoginLockout.setuphandlers.setupVarious"
               title="LoginLockout setup">
     LoginLockout installation step.
   </import-step>

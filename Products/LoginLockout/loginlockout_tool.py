@@ -1,3 +1,4 @@
+import re
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
@@ -27,7 +28,27 @@ class LoginLockoutTool(UniqueObject,  SimpleItem):
     def listAttempts(self):
         return self._getPlugin().listAttempts()
 
+    def listSuccessfulAttempts(self):
+        pattern = self.REQUEST.get('pattern', '')
+        pattern_regex = re.compile(pattern, re.I)
+        result = list()
+        for username, attempts in self._getPlugin().listSuccessfulAttempts().items():
+            if pattern_regex.search(username):
+                result.append(dict(username=username, attempts=attempts))
+        return result
+
     def manage_resetUsers(self, logins, RESPONSE=None):
         return self._getPlugin().manage_resetUsers(logins, RESPONSE=None)
+
+    def manage_setSuccessfulLoginAttempt(self, login):
+        return self._getPlugin().setSuccessfulAttempt(login)
+
+    def manage_credentialsUpdated(self, username):
+        """ register timestamp of last password change """
+        return self._getPlugin().manage_credentialsUpdated(username)
+
+    def manage_getPasswordChanges(self, min_days=0):
+        """ Return history of password changes"""
+        return self._getPlugin().manage_getPasswordChanges(min_days)
 
 InitializeClass(LoginLockoutTool)

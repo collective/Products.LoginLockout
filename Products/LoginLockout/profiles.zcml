@@ -1,15 +1,22 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="zopyx.autosave">
 
   <genericsetup:registerProfile
       name="default"
       title="LoginLockout"
       directory="profiles/default"
-      description="Disables users after a number of failed login attempts."
+      description='LoginLockout'
       provides="Products.GenericSetup.interfaces.EXTENSION"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       />
 
-</configure>
+  <genericsetup:importStep
+      name="Products.LoginLockout.various"
+      title="Products.LoginLockout miscellaneous import steps"
+      description="Various import steps for Products.LoginLockout"
+      handler="Products.LoginLockout.setuphandlers.setupVarious">
+    <depends name="skins"/>
+  </genericsetup:importStep>
 
+</configure>

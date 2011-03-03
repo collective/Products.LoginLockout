@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/prefs_main_template/macros/master"
+      i18n:domain="loginlockout">
+  <body>
+    <span metal:fill-slot="prefs_configlet_main"
+        tal:define="tool context/loginlockout_tool" >
+
+      <div metal:use-macro="here/global_statusmessage/macros/portal_message">
+        Portal status message
+      </div>
+
+      <h2>Successful login attempts</h2>
+      <a href="/plone_control_panel" 
+          tal:attributes="href 
+              string:${context/portal_url}/plone_control_panel" 
+          class="link-parent"
+          i18n:domain="plone" i18n:translate="">
+        Up to site setup
+      </a>
+      <p i18n:translate="description_settings_form">
+        Login of all successful login attempts
+      </p>
+
+      <fieldset>
+          <legend>
+            View successful attempts
+          </legend>
+
+          <form action="loginlockout_history" method="get">
+              <label for="pattern">Username pattern</label>
+              <input type="text" name="pattern" value="" size="10" id="pattern" />
+              <input type="submit" value="Search records" class="context" />
+          </form>
+
+          <table class="listing"
+                 tal:condition="request/pattern|nothing"
+                 tal:define="attempt_properties python: ['login','count','last','IP']">
+            <tr>
+              <th i18n:translate="label_login">
+                Login name
+              </th>
+              <th i18n:translate="label_last">
+                Logins
+              </th>
+            </tr>
+            <tr tal:repeat="row tool/listSuccessfulAttempts"
+                tal:attributes="class python: repeat['row'].odd() and 'odd' or 'even'">
+                <tal:def define="username row/username;
+                                 attempts row/attempts" >
+                    <td tal:content="username"  valign="top"/>
+                    <td valign="top">
+                        <ul>
+                            <li tal:repeat="attempt attempts">
+                                <span tal:replace="attempt/last"/>
+                                (<span tal:replace="attempt/ip"/>)
+                            </li>
+                        </ul>
+                    </td> 
+                </tal:def>
+            </tr>
+          </table>
+        </fieldset>
+        <a href="loginlockout_settings">Login Lockout configuration</a>
+        &nbsp;
+        <a href="loginlockout_last_password_changes">History password changes</a>
+    </span>
+  </body>
+</html>

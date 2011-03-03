@@ -4,25 +4,10 @@ from Products.PlonePAS.Extensions.Install import activatePluginInterfaces
 from Products.LoginLockout.plugin import PROJECTNAME, PLUGIN_ID, PLUGIN_TITLE
 from Products.CMFCore.permissions import ManagePortal
 
-# for installing skin
-from Products.CMFCore.DirectoryView import addDirectoryViews
-
 # for adding tool
 from Products.LoginLockout.config import TOOL_ID, CONFIGLETS
 
-def setupLoginLockout(context):
-    if context.readDataFile('loginlockout.txt') is None:
-        return
-    site = context.getSite()
-    install(site)
-
-def removeLoginLockout(context):
-    if context.readDataFile('loginlockout.txt') is None:
-        return
-    site = context.getSite()
-    uninstall(site)
-
-def install( portal ):
+def install(portal):
 
     """ This plugin needs to be installed in two places, the instance PAS where
     logins occur and the root acl_users.
@@ -57,8 +42,6 @@ def install( portal ):
     for (pas, interface) in move_to_top_for.iteritems():
         movePluginToTop(pas, PLUGIN_ID, interface, out)
     
-    # install skins layer
-    installSkin(portal, out, globals(), 'loginlockout_templates')
 
     # add tool
     addTool(portal, PROJECTNAME, TOOL_ID)
@@ -119,34 +102,6 @@ def movePluginToTop(pas, plugin_id, interface_name, out):
         registry.movePluginsUp(interface,[plugin_id,])
     print >> out, "Moved " + plugin_id + " to top in " + interface_name + "."
 
-def installSkin(portal, out, globals, skin_id, pos=-1):
-
-    """
-    Install a skin, and make sure it ends at the specified position in
-    the portal_skins properties, so that it's easy to override
-    existing skin elements with your product.
-    """
-    
-    skins_tool = getToolByName(portal, 'portal_skins')
-
-    if skin_id not in skins_tool.objectIds():
-        addDirectoryViews(skins_tool, 'skins', globals)
-        out.write("Added %s directory view to portal_skins\n" % skin_id)
-
-    skins = skins_tool.getSkinSelections()
-    for skin in skins:
-        path = skins_tool.getSkinPath(skin)
-        path = [p.strip() for p in path.split(',') if p]
-        if skin_id in path:
-            path.remove(skin_id)
-        if path:
-            path.insert(min(pos, len(path)), skin_id)
-        else:
-            path.insert(0, skin_id)
-        skins_tool.addSkinSelection(skin, ','.join(path))
-        
-    print >> out, 'Installed skin'
-
 def addTool(portal, product_name, tool_id):
     try:
         ctool = getToolByName(portal, tool_id)
@@ -172,3 +127,15 @@ def installConfiglets(portal, out, configlets, uninstall=False):
             ctool.registerConfiglet(**c)
 
     print >> out, "done."
+
+
+def setupVarious(context):
+    """Import step for configuration that is not handled in xml files.
+    """
+    # Only run step if a flag file is present
+    if context.readDataFile('loginlockout.txt') is None:
+        return
+
+    logger = context.getLogger('Products.LoginLockout')
+    site = context.getSite()
+    install(site)

@@ -60,11 +60,14 @@
           </table>
           <div class="formControls">
             <input type="hidden" name="form.submitted" value="1"/>
-            <input type="submit" value="Reset selected accounts"
+            <input type="submit" value="Reset selected accounts" class="context"
                 name="form.button.submit"
                 i18n:attributes="value button_reset" />
           </div>
         </fieldset>
+        <a href="loginlockout_history">Login history</a>
+        &nbsp;
+        <a href="loginlockout_last_password_changes">History password changes</a>
       </form> 
     </span>
   </body>

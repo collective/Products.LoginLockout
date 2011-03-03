@@ -48,11 +48,8 @@ def setup_product():
     zcml.load_config('configure.zcml', Products.LoginLockout)
     fiveconfigure.debug_mode = False
 
-    #print "Start setupProduct"
-    ztc.installPackage('Products.LoginLockout')
-    #print "Finished setupProduct (hopefully)"
 
-
+ztc.installProduct('Products.LoginLockout')
 setup_product()
 ptc.setupPloneSite(extension_profiles=(), with_default_memberarea=False,
         products=['Products.LoginLockout'])
