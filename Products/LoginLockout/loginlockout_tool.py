@@ -51,4 +51,13 @@ class LoginLockoutTool(UniqueObject,  SimpleItem):
         """ Return history of password changes"""
         return self._getPlugin().manage_getPasswordChanges(min_days)
 
+    security.declarePublic('get_own_password_change' )
+    def get_must_change_password(self):
+        """ Return True if currently logged in user must change own password """
+        acl_users = getToolByName(self, 'acl_users')
+        user = getSecurityManager().getUser()
+        if user is not None:
+            username = user.getUserName()
+            return self._getPlugin().passwordExpired(username)
+
 InitializeClass(LoginLockoutTool)

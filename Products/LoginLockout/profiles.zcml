@@ -19,4 +19,14 @@
     <depends name="skins"/>
   </genericsetup:importStep>
 
+  <genericsetup:upgradeStep
+        title="Upgrade LoginLockout"
+        description="Add password_expiration settings"
+        source="0.3"
+        destination="0.4"
+        handler=".migration.migrateTo04"
+        sortkey="1"
+        profile="Products.LoginLockout:default"
+        />
+
 </configure>

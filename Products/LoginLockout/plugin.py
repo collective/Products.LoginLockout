@@ -96,6 +96,11 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
                     , 'type'  : 'float'
                     , 'mode'  : 'w'
                     }
+                  , { 'id'    : '_password_expire_period'
+                    , 'label' : 'Password expire period (days or 0)'
+                    , 'type'  : 'int'
+                    , 'mode'  : 'w'
+                    }
                   )
 
     def __init__(self, id, title=None):
@@ -106,6 +111,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._last_pw_change = OOBTree()            # userid : DateTime
         self._reset_period = 24.0
         self._max_attempts = 3
+        self._password_expire_period = 0  # passwords never expire (in days)
 
     security.declarePrivate('authenticateCredentials')
     def authenticateCredentials(self, credentials):
@@ -366,6 +372,12 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def manage_credentialsUpdated(self, username):
         """ register timestamp of last password change """
         self._last_pw_change[username] = DateTime()
+
+    security.declarePrivate( 'passwordExpired' )
+    def passwordExpired(self, username):
+        value = self._last_pw_change.get(username, None)
+        if value is not None and self._password_expire_period > 0:
+            return (DateTime() - value) > self._password_expire_period
 
     def manage_getPasswordChanges(self, min_days=0):
         """ Return history of password changes where the 
