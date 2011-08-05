@@ -3,6 +3,9 @@ Changes
  0.3-2.5 (Johannes Raggam)
 
   - Branch from 0.3/trunk to support Plone2.5
+  
+  - Add options to send a mail to an address defined in plugin setting when
+    user is locked out.
  
  0.3 2011-03-04 (Andreas Jung)
 

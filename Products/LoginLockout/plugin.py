@@ -1,19 +1,19 @@
 
 """LoginLockout.
    Locks out the user when they make too many different unsuccessful login attempts.
-   
+
    An AuthenticateUser plugin increments a count for each login with a different
    password.
-   
+
    A UpdateCredentials plugin resets that count as this indicates a successful login.
-   
-   If the count reaches the max then AuthenticateUser Plugin throws a Unauthorised 
+
+   If the count reaches the max then AuthenticateUser Plugin throws a Unauthorised
    exception.
-   
+
    The challenge machinery is inacted and a Challenge plugin recognises the user is locked
-   out and redirects them to a page informing them they are locked out and to contact the 
+   out and redirects them to a page informing them they are locked out and to contact the
    admin
-   
+
    The admin can view and reset attempts via the ZMI at any time
 """
 
@@ -96,7 +96,16 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
                     , 'type'  : 'float'
                     , 'mode'  : 'w'
                     }
-                  )
+                  , { 'id'    : '_admin_mailfrom'
+                    , 'label' : 'Admin mail from address'
+                    , 'type'  : 'string'
+                    , 'mode'  : 'w'
+                    }
+                  , { 'id'    : '_admin_mailto'
+                    , 'label' : 'Admin mail address'
+                    , 'type'  : 'string'
+                    , 'mode'  : 'w'
+                    })
 
     def __init__(self, id, title=None):
         self._id = self.id = id
@@ -106,6 +115,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._last_pw_change = OOBTree()            # userid : DateTime
         self._reset_period = 24.0
         self._max_attempts = 3
+        self._admin_mailfrom = ""
+        self._admin_mailto = ""
 
     security.declarePrivate('authenticateCredentials')
     def authenticateCredentials(self, credentials):
@@ -123,6 +134,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         login = credentials.get('login')
         password = credentials.get('password')
 
+        root = self.getRootPlugin()
+
         if None in (login, password, pas_instance):
             return None
 
@@ -137,11 +150,32 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             self.resetAllCredentials(request, response) # must reset so we don't lockout of the login page
             count,last,IP = self.getAttempts(login)
             log.info("Attempt denied due to lockout: %s, %s ",login, IP)
+
+            mailto = root._admin_mailto
+            mailhost = self.MailHost
+            if mailto and mailhost:
+
+                subject = u"Loginattempt: User Locked Out"
+
+                message = u"""
+User Locked Out!
+Username: %s
+Login Attempts: %s
+IP Address: %s
+                """ % (login, root._max_attempts, IP)
+
+                encoding = 'utf-8'
+                mailfrom = root._admin_mailfrom or u'lockout@localhost'
+                mailhost.send(message.encode(encoding),
+                    subject=subject.encode(encoding),
+                    mto=mailto.encode(encoding),
+                    mfrom=mailfrom.encode(encoding))
+
             raise Unauthorized
 
         #record login so challange plugin can use it
         #self._t_attempted_logins = getattr(self,'_t_attempted_logins',[]) + [login]
-        
+
 #        self.setAttempt(login, password) # set as failed attempt and reset if we get updateCredentuals
         request.set('attempted_logins',(login,password))
 
@@ -155,7 +189,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         if login:
             self.setAttempt(login, password)
             log.info("Failed login attempt: %s ",login)
-        
+
 
 
     security.declarePrivate('updateCredentials')
@@ -202,13 +236,13 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def getRootPlugin(self):
         #pas = self.superValues('PluggableAuthService')
         #if pas:
-            
+
             #pas = pas[-1]
             pas = self.getPhysicalRoot().acl_users
             plugins = pas.objectValues([self.meta_type])
             if plugins:
                 return plugins[0]
-            
+
 
 
     security.declarePrivate('setAttempt')
@@ -216,7 +250,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         "increment attempt count and record date stamp last attempt and IP"
         root = self.getRootPlugin()
         count,last,IP,reference = root._login_attempts.get(login, (0, None, '', None))
-        
+
         if reference and AuthEncoding.pw_validate( reference, password ):
             return # we don't count repeating same password in case its correct
 #        elif last and (DateTime() - last)/24.0 > self._reset_period:
@@ -257,7 +291,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def isLockedout(self, login):
         root = self.getRootPlugin()
         count,last,IP = root.getAttempts(login)
-        return count >= root._max_attempts        
+        return count >= root._max_attempts
 
 
     security.declarePrivate('resetAttempts')
@@ -287,7 +321,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     #
     #   ZMI
     #
-    manage_options = ( ( { 'label': 'Users', 
+    manage_options = ( ( { 'label': 'Users',
                            'action': 'manage_users', }
                          ,
                        )
@@ -368,7 +402,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._last_pw_change[username] = DateTime()
 
     def manage_getPasswordChanges(self, min_days=0):
-        """ Return history of password changes where the 
+        """ Return history of password changes where the
             timestamp is older than ``min_days`` days.
         """
 
@@ -376,7 +410,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         data = self._last_pw_change
         now = DateTime()
         usernames = sorted(self._last_pw_change.keys())
-        return [dict(username=username, last_change=_ct(data[username])) 
+        return [dict(username=username, last_change=_ct(data[username]))
                 for username in usernames if now - data[username] >= min_days]
 
 
