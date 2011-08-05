@@ -1,5 +1,9 @@
 Changes
 
+ 0.3-2.5 (Johannes Raggam)
+
+  - Branch from 0.3/trunk to support Plone2.5
+ 
  0.3 2011-03-04 (Andreas Jung)
 
   - internal cleanup

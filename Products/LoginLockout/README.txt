@@ -24,7 +24,8 @@ First we'll show you how it works with Plone.
 To Install
 ----------
 
-Install into Plone via Add/Remove Products 
+Install into Plone via Add/Remove Products.
+
 
 To Use
 ------

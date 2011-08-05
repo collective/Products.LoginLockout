@@ -11,12 +11,12 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
-  <genericsetup:importStep
+  <!--genericsetup:importStep
       name="Products.LoginLockout.various"
       title="Products.LoginLockout miscellaneous import steps"
       description="Various import steps for Products.LoginLockout"
       handler="Products.LoginLockout.setuphandlers.setupVarious">
     <depends name="skins"/>
-  </genericsetup:importStep>
+  </genericsetup:importStep-->
 
 </configure>

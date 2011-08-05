@@ -4,6 +4,9 @@ from Products.PlonePAS.Extensions.Install import activatePluginInterfaces
 from Products.LoginLockout.plugin import PROJECTNAME, PLUGIN_ID, PLUGIN_TITLE
 from Products.CMFCore.permissions import ManagePortal
 
+# for installing skin
+from Products.CMFCore.DirectoryView import addDirectoryViews
+
 # for adding tool
 from Products.LoginLockout.config import TOOL_ID, CONFIGLETS
 
@@ -42,6 +45,8 @@ def install(portal):
     for (pas, interface) in move_to_top_for.iteritems():
         movePluginToTop(pas, PLUGIN_ID, interface, out)
     
+    # install skins layer
+    installSkin(portal, out, globals(), 'loginlockout_templates')
 
     # add tool
     addTool(portal, PROJECTNAME, TOOL_ID)
@@ -101,6 +106,34 @@ def movePluginToTop(pas, plugin_id, interface_name, out):
     while registry.listPlugins(interface)[0][0] != plugin_id:
         registry.movePluginsUp(interface,[plugin_id,])
     print >> out, "Moved " + plugin_id + " to top in " + interface_name + "."
+
+def installSkin(portal, out, globals, skin_id, pos=-1):
+
+    """
+    Install a skin, and make sure it ends at the specified position in
+    the portal_skins properties, so that it's easy to override
+    existing skin elements with your product.
+    """
+    
+    skins_tool = getToolByName(portal, 'portal_skins')
+
+    if skin_id not in skins_tool.objectIds():
+        addDirectoryViews(skins_tool, 'skins', globals)
+        out.write("Added %s directory view to portal_skins\n" % skin_id)
+
+    skins = skins_tool.getSkinSelections()
+    for skin in skins:
+        path = skins_tool.getSkinPath(skin)
+        path = [p.strip() for p in path.split(',') if p]
+        if skin_id in path:
+            path.remove(skin_id)
+        if path:
+            path.insert(min(pos, len(path)), skin_id)
+        else:
+            path.insert(0, skin_id)
+        skins_tool.addSkinSelection(skin, ','.join(path))
+        
+    print >> out, 'Installed skin'
 
 def addTool(portal, product_name, tool_id):
     try:
