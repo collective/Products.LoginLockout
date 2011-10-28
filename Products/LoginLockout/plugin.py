@@ -107,6 +107,14 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._reset_period = 24.0
         self._max_attempts = 3
 
+    def remote_ip(self):
+        if self.REQUEST.PUBLISHED.portal_properties.loginlockout_properties.fake_client_ip:
+            return '127.0.0.1-faked'
+        ip = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
+        if not ip :
+            ip = self.REQUEST.get('REMOTE_ADDR','')
+        return ip
+
     security.declarePrivate('authenticateCredentials')
     def authenticateCredentials(self, credentials):
         """See IAuthenticationPlugin.
@@ -224,9 +232,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 #            count = 1
         else:
             count += 1
-        IP = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
-        if not IP:
-            IP = self.REQUEST.get('REMOTE_ADDR','')
+        IP = self.remote_ip()
         log.info("user '%s' attempt #%i %s last: %s", login, count, IP, last)
         last = DateTime()
         reference = AuthEncoding.pw_encrypt( password )
@@ -236,15 +242,10 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def setSuccessfulAttempt(self, login):
         "increment attempt count and record date stamp last attempt and IP"
         root = self.getRootPlugin()
-        count,last,IP,reference = root._login_attempts.get(login, (0, None, '', None))
-        IP = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
-        if not IP:
-            IP = self.REQUEST.get('REMOTE_ADDR','')
         last = DateTime()
-
         if not root._successful_login_attempts.has_key(login):
             root._successful_login_attempts[login] = list()
-        root._successful_login_attempts[login].append(dict(last=last, ip=IP))
+        root._successful_login_attempts[login].append(dict(last=last, ip=self.remote_ip()))
         root._successful_login_attempts._p_changed = 1
 
     security.declarePrivate('getAttempts')
