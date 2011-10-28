@@ -214,6 +214,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     security.declarePrivate('setAttempt')
     def setAttempt(self, login, password):
         "increment attempt count and record date stamp last attempt and IP"
+
         root = self.getRootPlugin()
         count,last,IP,reference = root._login_attempts.get(login, (0, None, '', None))
         
@@ -226,7 +227,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         IP = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
         if not IP:
             IP = self.REQUEST.get('REMOTE_ADDR','')
-        log.info("user '%s' attempt# %i %s last: %s", login, count, IP, last)
+        log.info("user '%s' attempt #%i %s last: %s", login, count, IP, last)
         last = DateTime()
         reference = AuthEncoding.pw_encrypt( password )
         root._login_attempts[login] = (count,last,IP, reference)
