@@ -62,7 +62,7 @@
           </table>
         </fieldset>
         <a href="loginlockout_settings">Login Lockout configuration</a>
-        &nbsp;
+        &bull;
         <a href="loginlockout_last_password_changes">History password changes</a>
     </span>
   </body>
