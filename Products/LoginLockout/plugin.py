@@ -245,8 +245,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         last = DateTime()
         if not root._successful_login_attempts.has_key(login):
             root._successful_login_attempts[login] = list()
-        root._successful_login_attempts[login].append(dict(last=last, ip=self.remote_ip()))
-        root._successful_login_attempts[login]._p_changed = 1
+        old = root._successful_login_attempts[login]
+        old.append(dict(last=last, ip=self.remote_ip()))
+        root._successful_login_attempts[login] = old
 
     security.declarePrivate('getAttempts')
     def getAttempts(self, login):
