@@ -23,6 +23,8 @@ import logging
 
 from urllib import quote, unquote
 
+from zope.event import notify
+
 from BTrees.OOBTree import OOBTree
 from DateTime import DateTime
 from AccessControl import ClassSecurityInfo, Permissions
@@ -45,9 +47,11 @@ from Products.PluggableAuthService.interfaces.plugins import \
     IChallengePlugin, \
     IAnonymousUserFactoryPlugin
 
-
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+
+from Products.LoginLockout.event import UserAccountLockedEvent
+from Products.LoginLockout.event import UserAccountUnlockedEvent
 
 log = logging.getLogger('LoginLockout')
 
@@ -229,6 +233,10 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 #            count = 1
         else:
             count += 1
+            if count == root._max_attempts:
+                # fire event when user account is locked
+                notify(UserAccountLockedEvent(root, login))
+
         IP = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
         if not IP:
             IP = self.REQUEST.get('REMOTE_ADDR','')
@@ -271,7 +279,10 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         "reset to zero and update pw referece so same attempts pass"
         root = self.getRootPlugin()
         if root._login_attempts.get(login, None):
+            locked = self.isLockedout(login)
             del root._login_attempts[login]
+            if locked:
+                notify(UserAccountUnlockedEvent(root, login))
 
     security.declarePrivate('resetAllCredentials')
     def resetAllCredentials(self, request, response):
