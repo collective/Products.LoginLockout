@@ -24,6 +24,7 @@ import logging
 from urllib import quote, unquote
 
 from zope.event import notify
+from zope.app.component.hooks import getSite
 
 from BTrees.OOBTree import OOBTree
 from DateTime import DateTime
@@ -226,7 +227,6 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         "increment attempt count and record date stamp last attempt and IP"
         root = self.getRootPlugin()
         count,last,IP,reference = root._login_attempts.get(login, (0, None, '', None))
-        
         if reference and AuthEncoding.pw_validate( reference, password ):
             return # we don't count repeating same password in case its correct
 #        elif last and (DateTime() - last)/24.0 > self._reset_period:
@@ -235,7 +235,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             count += 1
             if count == root._max_attempts:
                 # fire event when user account is locked
-                notify(UserAccountLockedEvent(root, login))
+                notify(UserAccountLockedEvent(getSite(), login))
 
         IP = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
         if not IP:
@@ -282,7 +282,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             locked = self.isLockedout(login)
             del root._login_attempts[login]
             if locked:
-                notify(UserAccountUnlockedEvent(root, login))
+                notify(UserAccountUnlockedEvent(getSite(), login))
 
     security.declarePrivate('resetAllCredentials')
     def resetAllCredentials(self, request, response):
