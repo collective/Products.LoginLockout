@@ -37,6 +37,7 @@ from OFS.Folder import Folder
 
 from zExceptions import Unauthorized
 
+from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService import PluggableAuthService
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.permissions import ManageUsers
@@ -225,6 +226,13 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     security.declarePrivate('setAttempt')
     def setAttempt(self, login, password):
         "increment attempt count and record date stamp last attempt and IP"
+
+        site = getSite()
+        # at first check if an user account exists for login otherwise ignore it
+        acl = getToolByName(site, 'acl_users')
+        if acl.getUserById(login) is None:
+            return
+
         root = self.getRootPlugin()
         count,last,IP,reference = root._login_attempts.get(login, (0, None, '', None))
         if reference and AuthEncoding.pw_validate( reference, password ):
@@ -235,7 +243,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             count += 1
             if count == root._max_attempts:
                 # fire event when user account is locked
-                notify(UserAccountLockedEvent(getSite(), login))
+                notify(UserAccountLockedEvent(site, login))
 
         IP = self.REQUEST.get('HTTP_X_FORWARDED_FOR','')
         if not IP:
