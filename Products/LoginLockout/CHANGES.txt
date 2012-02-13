@@ -1,6 +1,6 @@
 Changes
 
- 0.3 unreleased (Andreas Jung)
+ 0.3 2011-03-04 (Andreas Jung)
 
   - internal cleanup
 
