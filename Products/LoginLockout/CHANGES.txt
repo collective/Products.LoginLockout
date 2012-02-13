@@ -1,5 +1,9 @@
 Changes
 
+ 0.3.1 2012-02-13 (Andreas Jung)
+
+  - fixed some restructured text bugs in documentation
+
  0.3 2011-03-04 (Andreas Jung)
 
   - internal cleanup
