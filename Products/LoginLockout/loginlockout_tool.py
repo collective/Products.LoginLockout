@@ -1,5 +1,5 @@
 import re
-from Globals import InitializeClass
+from AccessControl.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager

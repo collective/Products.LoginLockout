@@ -28,7 +28,7 @@ from DateTime import DateTime
 from AccessControl import ClassSecurityInfo, Permissions
 from AccessControl.Permissions import view
 from AccessControl import AuthEncoding
-from Globals import InitializeClass
+from AccessControl.class_init import InitializeClass
 from OFS.Cache import Cacheable
 from OFS.Folder import Folder
 
