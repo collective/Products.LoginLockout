@@ -32,6 +32,7 @@ from OFS.Folder import Folder
 
 from zExceptions import Unauthorized
 
+from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.permissions import ManageUsers
 from Products.PluggableAuthService.utils import classImplements
@@ -106,7 +107,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._max_attempts = 3
 
     def remote_ip(self):
-        if self.REQUEST.PUBLISHED.portal_properties.loginlockout_properties.fake_client_ip:
+        p_tool = getToolByName(self, 'portal_properties')
+        if p_tool.loginlockout_properties.getProperty('fake_client_ip', False):
             return '127.0.0.1-faked'
         ip = self.REQUEST.get('HTTP_X_FORWARDED_FOR', '')
         if not ip:
