@@ -1,0 +1,11 @@
+include *.txt
+recursive-include Products *.cpt
+recursive-include Products *.cpy
+recursive-include Products *.gif
+recursive-include Products *.metadata
+recursive-include Products *.pt
+recursive-include Products *.py
+recursive-include Products *.txt
+recursive-include Products *.xml
+recursive-include Products *.zcml
+recursive-include Products *.zpt
