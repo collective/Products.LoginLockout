@@ -1,6 +1,10 @@
 Changes
 -------
 
+0.3.4 (unreleased)
+
+- Nothing changed yet.
+
 0.3.3 (2013-11-20)
 
 - check for fake_client_ip in a more defensive way (pysailor)
