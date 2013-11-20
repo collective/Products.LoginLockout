@@ -1,49 +1,50 @@
 Changes
+-------
 
- 0.3.3 2013-11-20
+0.3.3 (2013-11-20)
 
-  - check for fake_client_ip in a more defensive way (pysailor)
+- check for fake_client_ip in a more defensive way (pysailor)
  
- 0.3.2 2012-03-12 (Andreas Jung)
+0.3.2 2012-03-12 (Andreas Jung)
 
-  - fixed deprecation warnings
+- fixed deprecation warnings
 
 
- 0.3.1 2012-02-13 (Andreas Jung)
+0.3.1 2012-02-13 (Andreas Jung)
 
-  - fixed some restructured text bugs in documentation
+- fixed some restructured text bugs in documentation
 
- 0.3 2011-03-04 (Andreas Jung)
+0.3 2011-03-04 (Andreas Jung)
 
-  - internal cleanup
+- internal cleanup
 
-  - using GenericSetup where possible
+- using GenericSetup where possible
 
-  - added support for logging successful login attempts
+- added support for logging successful login attempts
 
-  - added support logging password changes
+- added support logging password changes
 
- 0.2 2009-04-20 (Dylan Jay)
+0.2 2009-04-20 (Dylan Jay)
 
-  - Eggified merged configlet version
+- Eggified merged configlet version
 
-  - Started doctest
+- Started doctest
 
- 2009-03-10 (Kees Hink):
+2009-03-10 (Kees Hink):
 
-  - Added configlet for viewing failed attempts and resetting accounts from the
-    plone control panel.
+- Added configlet for viewing failed attempts and resetting accounts from the
+  plone control panel.
 
-  - Quite probably, dropped support for pure Zope usage.
+- Quite probably, dropped support for pure Zope usage.
 
- 2008-12-18 (Kees HinK):
+2008-12-18 (Kees HinK):
 
-  - Added installer, using Extensions/Install.py.
-    (Unfortunately, Generic Setup does not yet seem to support uninstalling, but
-    the methods in setuphandlers.py and the import profile (profiles/default) are
-    there for when you want to use them. Just uncomment the relevant zcml
-    directives.)
+- Added installer, using Extensions/Install.py.
+  (Unfortunately, Generic Setup does not yet seem to support uninstalling, but
+  the methods in setuphandlers.py and the import profile (profiles/default) are
+  there for when you want to use them. Just uncomment the relevant zcml
+  directives.)
 
- 0.1 (Dylan Jay):
+0.1 (Dylan Jay):
 
-  - Initial Version
+- Initial Version
