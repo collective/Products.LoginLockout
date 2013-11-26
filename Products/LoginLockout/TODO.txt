@@ -6,5 +6,6 @@ Things that could be done on the LoginLockout product:
 - Allow setting the number of allowed attempts from the configlet.
 
 - Allow setting the timeout value on the configlet (is it implemented at all?)
+Note: It's implemented again, but you change value in ZMI.
 
 - Internationalization: translate all messages in script and template

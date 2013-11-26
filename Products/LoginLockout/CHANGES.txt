@@ -3,7 +3,8 @@ Changes
 
 0.3.4 (unreleased)
 
-- Nothing changed yet.
+- Introduct 'select all' option in configlet (thepjot)
+- Re-enable 'reset_period', after reset_period has expired, user gets another chance (thepjot)
 
 0.3.3 (2013-11-20)
 
