@@ -223,8 +223,6 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         if reference and AuthEncoding.pw_validate(reference, password):
             return  # we don't count repeating same password in case its correct
-#        elif last and (DateTime() - last)/24.0 > self._reset_period:
-#            count = 1
         else:
             count += 1
         IP = self.remote_ip()
@@ -249,6 +247,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         "return the count, last attempt datestamp and IP of last attempt"
         root = self.getRootPlugin()
         count, last, IP, pw_hash = root._login_attempts.get(login, (0, None, '', ''))
+        if last and ((DateTime() - last) * 24) > self._reset_period:
+            count = 1
         return count, last, IP
 
     security.declarePrivate('isLockedout')

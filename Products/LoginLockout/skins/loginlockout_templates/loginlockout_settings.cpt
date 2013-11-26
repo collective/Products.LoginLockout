@@ -21,15 +21,15 @@
       <p i18n:translate="description_settings_form">
         Configuration and logging for the LoginLockout plugin.
       </p>
-
-      <form method="post">
+      <form method="post" 
+            tal:define="attempt_properties python: ['login','count','last','IP'];
+                        attempts tool/listAttempts">
         <fieldset>
-          <legend>
+          <legend i18n:translate="">
             View and reset unsuccesful attempts
           </legend>
           <table class="listing"
-              tal:define="attempt_properties 
-                  python: ['login','count','last','IP']">
+              tal:condition='attempts'>
             <tr>
               <th i18n:translate="label_reset">
                 Reset
@@ -47,7 +47,7 @@
                 IP address
               </th>
             </tr>
-            <tr tal:repeat="attempt tool/listAttempts"
+            <tr tal:repeat="attempt attempts"
                 tal:attributes="class python: repeat['attempt'].odd() and 
                     'odd' or 'even'">
               <td>
@@ -57,13 +57,31 @@
               <td tal:repeat="property attempt_properties"
                   tal:content="python: attempt.get(property, None)" />
             </tr>
+            <tr>
+              <td>
+                <input class="noborder"                                            
+                   type="checkbox"                                             
+                   src="select_all_icon.png"                                   
+                   name="selectButton"                                         
+                   title="Select all items"                                    
+                   onClick="toggleSelect(this, 'reset_users');"                                                                                                                                                                                 
+                   tal:attributes="src string:${context/portal_url}/select_all_icon.png"
+                   alt="Select all items"                                      
+                   i18n:attributes="title label_select_all_items; alt label_select_all_items;"/>
+                 </td>
+                 <td colspan='4'>
+                  Select all
+                 </td>
+            </tr>
           </table>
-          <div class="formControls">
+          <div class="formControls" tal:condition='attempts'>
             <input type="hidden" name="form.submitted" value="1"/>
             <input type="submit" value="Reset selected accounts" class="context"
                 name="form.button.submit"
                 i18n:attributes="value button_reset" />
           </div>
+          <p tal:condition='not: attempts'>No accounts to reset</p>
+          
         </fieldset>
         <a href="loginlockout_history">Login history</a>
         &bull;
