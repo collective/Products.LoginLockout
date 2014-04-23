@@ -2,6 +2,11 @@
       lang="en"
       metal:use-macro="here/prefs_main_template/macros/master"
       i18n:domain="loginlockout">
+    <metal:block fill-slot="top_slot">
+      <tal:defines tal:define="
+           disable_column_one python:request.set('disable_plone.leftcolumn', 1);
+           disable_column_two python:request.set('disable_plone.rightcolumn',1);"/>
+    </metal:block>
   <body>
     <span metal:fill-slot="prefs_configlet_main"
         tal:define="tool context/loginlockout_tool" >
@@ -22,17 +27,91 @@
         Configuration and logging for the LoginLockout plugin.
       </p>
       <form method="post" 
-            tal:define="attempt_properties python: ['login','count','last','IP'];
-                        attempts tool/listAttempts">
+            tal:define="attempts tool/listGroupedAttempts">
         <fieldset>
           <legend i18n:translate="">
             View and reset unsuccesful attempts
           </legend>
           <table class="listing"
-              tal:condition='attempts'>
+              tal:condition='python: attempts[0]'
+              tal:define="attempt_properties python: ['login','fullname',
+                                'email', 'count', 'last', 'IP']">
+           <thead>
             <tr>
-              <th i18n:translate="label_reset">
-                Reset
+              <th colspan="7" class="nosort">
+                Plone members: 
+               </th>
+            </tr>
+            <tr>
+              <th i18n:translate="label_reset" class="nosort">
+                  <input class="noborder" 
+                    title="Select/deselect all items" 
+                    type="checkbox" 
+                    onClick="toggleSelect(this, 'reset_ploneusers:list');"
+                    name="selectButton"
+                    src="select_all_icon.png"
+                    tal:attributes="src string:${context/portal_url}/select_all_icon.png"
+                  />
+                  Select all
+              </th>
+              <th i18n:translate="label_login">
+                Login name
+              </th>
+              <th i18n:translate="label_fullname">
+                Full name 
+              </th>
+              <th i18n:translate="label_email">
+               Email  
+              </th>
+              <th i18n:translate="label_count">
+                Number of attempts
+              </th>
+              <th i18n:translate="label_last">
+                Last attempt
+              </th>
+              <th i18n:translate="label_IP">
+                IP address
+              </th>
+            </tr>
+           </thead> 
+            <tr tal:repeat="attempt python: attempts[0]"
+                tal:attributes="class python: repeat['attempt'].odd() and 
+                    'odd' or 'even'">
+              <td>
+                <input type="checkbox" name="reset_ploneusers:list"
+                    tal:attributes="value attempt/login" />
+              </td>
+              <td tal:repeat="property attempt_properties">
+                  <span tal:condition="python: property == 'fullname'">
+                    <a href="" 
+                        title="user profile" 
+                        tal:attributes="href python: attempt.get('link_profile')" 
+                        tal:content="python: attempt.get('fullname', None)" />
+                  </span>
+                  <span tal:condition="python: property != 'fullname'"
+                        tal:content="python: attempt.get(property, None)"/>
+              </td>
+            </tr>
+          </table>
+          <table class="listing"
+              tal:condition='python: attempts[1]'
+              tal:define="attempt_properties python: ['login','count','last','IP']">
+           <thead>
+            <tr>
+              <th colspan="6" class="nosort">
+                  Non plone members: 
+               </th>
+            </tr>
+            <tr>
+              <th i18n:translate="label_reset" class="nosort">
+                  <input class="noborder" title="Select/deselect all items" 
+                    type="checkbox" 
+                    onClick="toggleSelect(this, 'reset_nonploneusers:list');"
+                    name="selectButton"
+                    src="select_all_icon.png"
+                    tal:attributes="src string:${context/portal_url}/select_all_icon.png"
+                  />
+                  Select all
               </th>
               <th i18n:translate="label_login">
                 Login name
@@ -47,31 +126,16 @@
                 IP address
               </th>
             </tr>
-            <tr tal:repeat="attempt attempts"
+           </thead> 
+            <tr tal:repeat="attempt python: attempts[1]"
                 tal:attributes="class python: repeat['attempt'].odd() and 
                     'odd' or 'even'">
               <td>
-                <input type="checkbox" name="reset_users"
+                <input type="checkbox" name="reset_nonploneusers:list"
                     tal:attributes="value attempt/login" />
               </td>
               <td tal:repeat="property attempt_properties"
                   tal:content="python: attempt.get(property, None)" />
-            </tr>
-            <tr>
-              <td>
-                <input class="noborder"                                            
-                   type="checkbox"                                             
-                   src="select_all_icon.png"                                   
-                   name="selectButton"                                         
-                   title="Select all items"                                    
-                   onClick="toggleSelect(this, 'reset_users');"                                                                                                                                                                                 
-                   tal:attributes="src string:${context/portal_url}/select_all_icon.png"
-                   alt="Select all items"                                      
-                   i18n:attributes="title label_select_all_items; alt label_select_all_items;"/>
-                 </td>
-                 <td colspan='4'>
-                  Select all
-                 </td>
             </tr>
           </table>
           <div class="formControls" tal:condition='attempts'>

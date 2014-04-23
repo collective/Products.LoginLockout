@@ -15,7 +15,8 @@ from Products.CMFCore.utils import getToolByName
 lltool = getToolByName(context, 'loginlockout_tool')
 
 # Get a values from the form, convert to list if it's just one
-user_ids = context.REQUEST.form.get('reset_users',[])
+user_ids = context.REQUEST.form.get('reset_ploneusers',[])
+user_ids += context.REQUEST.form.get('reset_nonploneusers',[])
 if not same_type(user_ids, []):
     user_ids = [user_ids,]
 lltool.manage_resetUsers(user_ids)

@@ -2,7 +2,6 @@ import re
 from AccessControl.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
-from AccessControl.SecurityManagement import getSecurityManager
 #from permissions import ManagePortal
 
 from Products.CMFCore.utils import UniqueObject, getToolByName
@@ -23,6 +22,34 @@ class LoginLockoutTool(UniqueObject,  SimpleItem):
     def _getPlugin(self):
         acl_users = getToolByName(self, 'acl_users')
         return acl_users.login_lockout_plugin
+
+    def listGroupedAttempts(self):
+        """Return attempts but grouped
+            (plone_members, non_plone_members)
+        """
+        mt = getToolByName(self, 'portal_membership')
+        memberIds = mt.listMemberIds()
+
+        all_loggin_tries = self._getPlugin().listAttempts()
+
+        plone_members = []
+        non_plone_members = []
+        for login_try in all_loggin_tries:
+            if login_try['login'] in memberIds:
+                plone_members.append(login_try)
+            else:
+                non_plone_members.append(login_try)
+
+        purl = getToolByName(self, 'portal_url')
+        for user in plone_members:
+            member = mt.getMemberById(user['login'])
+            user['email'] = member.getProperty('email')
+            user['fullname'] = member.getProperty('fullname')
+            user['link_profile'] = \
+                "{0}/@@user-information?userid={1}".format(
+                    purl(), user['login'])
+        return (plone_members, non_plone_members)
+
 
     #security.declareProtected(ManagePortal, 'listAttempts')
     def listAttempts(self):

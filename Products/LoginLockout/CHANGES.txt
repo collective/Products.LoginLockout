@@ -3,6 +3,10 @@ Changes
 
 0.3.4 (unreleased)
 
+- LoginLockout interface updated as follows (omiron):
+    - group user lockouts separate from bogus info
+    - links to users profile page
+    - provide full user name and email to ease "find in page"
 - Introduct 'select all' option in configlet (thepjot)
 - Re-enable 'reset_period', after reset_period has expired, user gets another chance (thepjot)
 
@@ -53,3 +57,4 @@ Changes
 0.1 (Dylan Jay):
 
 - Initial Version
+
