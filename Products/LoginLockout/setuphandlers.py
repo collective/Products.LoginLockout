@@ -47,7 +47,7 @@ def install(portal):
     addTool(portal, PROJECTNAME, TOOL_ID)
 
     # install configlet
-    installConfiglets(portal, out, CONFIGLETS)
+    #installConfiglets(portal, out, CONFIGLETS)
 
     print >> out, "Successfully installed %s." % PROJECTNAME
     return out.getvalue()
@@ -63,7 +63,7 @@ def uninstall( portal ):
             pas.manage_delObjects(PLUGIN_ID)
 
     # uninstall configlets
-    installConfiglets(portal, out, CONFIGLETS, uninstall=True)
+    #installConfiglets(portal, out, CONFIGLETS, uninstall=True)
 
 def activatePluginSelectedInterfaces(pas, plugin, out, selected_interfaces, 
         disable=[]):
