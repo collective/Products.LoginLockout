@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       lang="en"
       metal:use-macro="here/prefs_main_template/macros/master"
-      i18n:domain="loginlockout">
+      i18n:domain="LoginLockout">
     <metal:block fill-slot="top_slot">
       <tal:defines tal:define="
            disable_column_one python:request.set('disable_plone.leftcolumn', 1);
@@ -15,15 +15,15 @@
         Portal status message
       </div>
 
-      <h2>Login Lockout configuration</h2>
+      <h2 i18n:translate="">Login Lockout configuration</h2>
       <a href="/plone_control_panel" 
           tal:attributes="href 
               string:${context/portal_url}/plone_control_panel" 
           class="link-parent"
           i18n:domain="plone" i18n:translate="">
-        Up to site setup
+        Site Setup
       </a>
-      <p i18n:translate="description_settings_form">
+      <p i18n:translate="">
         Configuration and logging for the LoginLockout plugin.
       </p>
       <form method="post" 
@@ -38,21 +38,21 @@
                                 'email', 'count', 'last', 'IP']">
            <thead>
             <tr>
-              <th colspan="7" class="nosort">
+              <th colspan="7" class="nosort" i18n:translate="">
                 Plone members: 
                </th>
             </tr>
             <tr>
-              <th i18n:translate="label_reset" class="nosort">
+              <th class="nosort">
                   <input class="noborder" 
-                    title="Select/deselect all items" 
+                    title="Select/deselect all items" i18n:attributes="title"
                     type="checkbox" 
                     onClick="toggleSelect(this, 'reset_ploneusers:list');"
                     name="selectButton"
                     src="select_all_icon.png"
                     tal:attributes="src string:${context/portal_url}/select_all_icon.png"
                   />
-                  Select all
+                  <span i18n:translate="label_reset">Select all</span>
               </th>
               <th i18n:translate="label_login">
                 Login name
@@ -66,7 +66,7 @@
               <th i18n:translate="label_count">
                 Number of attempts
               </th>
-              <th i18n:translate="label_last">
+              <th i18n:translate="label_last_attempt">
                 Last attempt
               </th>
               <th i18n:translate="label_IP">
@@ -84,7 +84,7 @@
               <td tal:repeat="property attempt_properties">
                   <span tal:condition="python: property == 'fullname'">
                     <a href="" 
-                        title="user profile" 
+                        title="user profile" i18n:attributes="title"
                         tal:attributes="href python: attempt.get('link_profile')" 
                         tal:content="python: attempt.get('fullname', None)" />
                   </span>
@@ -98,20 +98,20 @@
               tal:define="attempt_properties python: ['login','count','last','IP']">
            <thead>
             <tr>
-              <th colspan="6" class="nosort">
+              <th colspan="6" class="nosort" i18n:translate="">
                   Non plone members: 
                </th>
             </tr>
             <tr>
-              <th i18n:translate="label_reset" class="nosort">
+              <th class="nosort">
                   <input class="noborder" title="Select/deselect all items" 
-                    type="checkbox" 
+                    type="checkbox" i18n:attributes="title"
                     onClick="toggleSelect(this, 'reset_nonploneusers:list');"
                     name="selectButton"
                     src="select_all_icon.png"
                     tal:attributes="src string:${context/portal_url}/select_all_icon.png"
                   />
-                  Select all
+                  <span i18n:translate="label_reset">Select all</span>
               </th>
               <th i18n:translate="label_login">
                 Login name
@@ -144,12 +144,12 @@
                 name="form.button.submit"
                 i18n:attributes="value button_reset" />
           </div>
-          <p tal:condition='not: attempts'>No accounts to reset</p>
+          <p tal:condition='not: attempts' i18n:translate="">No accounts to reset</p>
           
         </fieldset>
-        <a href="loginlockout_history">Login history</a>
+        <a href="loginlockout_history" i18n:translate="">Login history</a>
         &bull;
-        <a href="loginlockout_last_password_changes">History password changes</a>
+        <a href="loginlockout_last_password_changes" i18n:translate="">History password changes</a>
       </form> 
     </span>
   </body>

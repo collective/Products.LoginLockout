@@ -1,4 +1,7 @@
 from plugin import PROJECTNAME
+from zope.i18nmessageid import MessageFactory
+
+_ = MessageFactory('PasswordStrength')
 
 TOOL_ID = "loginlockout_tool"
 

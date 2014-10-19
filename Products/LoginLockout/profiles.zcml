@@ -1,13 +1,13 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-    i18n_domain="zopyx.autosave">
+    i18n_domain="LoginLockout">
 
   <genericsetup:registerProfile
       name="default"
-      title="LoginLockout"
+      title="Login Lockout Plugin"
       directory="profiles/default"
-      description='LoginLockout'
+      description="PAS plugin that can lock/unlock a user login after a predetermined number of incorrect attempts."
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
