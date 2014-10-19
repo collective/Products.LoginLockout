@@ -3,6 +3,12 @@ Changes
 
 0.3.4 (unreleased)
 
+- Added more strings classifiers items for this packages. (macagua)
+- Added plone_deprecated skins for gif icon. (macagua)
+- Added support for Configlet with GenericSetup profile. (macagua)
+- Added Spanish translation. (macagua)
+- Added i18n support. (macagua)
+
 - LoginLockout interface updated as follows (omiron):
     - group user lockouts separate from bogus info
     - links to users profile page
