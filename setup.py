@@ -19,11 +19,25 @@ setup(name='Products.LoginLockout',
         ),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
+        "Development Status :: 4 - Beta",
+        "Environment :: Plugins",
+        "Environment :: Web Environment",
+        "Framework :: Plone :: 4.1",
+        "Framework :: Plone :: 4.2",
+        "Framework :: Plone :: 4.3",
         "Framework :: Zope2",
+        "Intended Audience :: System Administrators",
+        "License :: OSI Approved :: BSD License",
+        "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Zope",
         "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: System :: Systems Administration",
+        "Topic :: System :: Systems Administration :: Authentication/Directory",
         ],
-      keywords='zope PAS',
+      keywords='PAS Plugins Zope Login Lockout',
       author='Dylan Jay',
       author_email='software@pretaweb.com',
       url='http://plone.org/products/loginlockout',
@@ -45,5 +59,7 @@ setup(name='Products.LoginLockout',
       },
       entry_points="""
       # -*- Entry points: -*-
+      [z3c.autoinclude.plugin]
+      target = plone
       """,
       )
