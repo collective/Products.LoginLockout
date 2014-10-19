@@ -13,9 +13,9 @@ setup(name='Products.LoginLockout',
                    locked, the user will be shown a page that tells them to contact \
                    their administrator to unlock.",
       long_description=(
-        read('Products/LoginLockout/README.txt')
+        read('README.rst')
         + '\n\n' +
-        read('Products/LoginLockout/CHANGES.txt')
+        read('docs/CHANGES.txt')
         ),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
