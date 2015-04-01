@@ -252,9 +252,14 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         root = self.getRootPlugin()
         count, last, IP, pw_hash = root._login_attempts.get(
             login, (0, None, '', ''))
-        if last and ((DateTime() - last) * 24) > self._reset_period:
+        if last and ((DateTime() - last) * 24) > self.getResetPeriod():
             count = 1
         return count, last, IP
+
+    def getResetPeriod(self):
+        p_tool = getToolByName(self, 'portal_properties')
+        return p_tool.loginlockout_properties.getProperty('reset_period',
+                                                          self._reset_period)
 
     security.declarePrivate('isLockedout')
 

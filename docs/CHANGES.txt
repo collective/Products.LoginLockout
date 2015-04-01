@@ -3,6 +3,7 @@ Changes
 
 0.3.4 (unreleased)
 
+- Make reset_period configurable through the ZMI (khink)
 - Added more strings classifiers items for this packages. (macagua)
 - Added plone_deprecated skins for gif icon. (macagua)
 - Added support for Configlet with GenericSetup profile. (macagua)
@@ -19,7 +20,7 @@ Changes
 0.3.3 (2013-11-20)
 
 - check for fake_client_ip in a more defensive way (pysailor)
- 
+
 0.3.2 2012-03-12 (Andreas Jung)
 
 - fixed deprecation warnings
