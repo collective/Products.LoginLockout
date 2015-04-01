@@ -1,25 +1,15 @@
-
-import unittest
-import os, sys, tempfile, shutil, StringIO
-
-from zope.testing import doctest
-from zope.testing import doctestunit
-from zope.component import testing
-#import DateTime
-#from DateTime.interfaces import DateTimeError, SyntaxError, DateError, TimeError
-from Testing import ZopeTestCase as ztc
-from Products.Five import zcml
 from Products.Five import fiveconfigure
+from Products.Five import zcml
 from Products.PloneTestCase import PloneTestCase as ptc
 from Products.PloneTestCase.layer import onsetup
-from Products.Five.testbrowser import Browser
-from zope.component import getUtility
-from Products.CMFCore.utils import getToolByName
-import DateTime
+from Testing import ZopeTestCase as ztc
+from zope.testing import doctest
+import unittest
 
 print "Start installProduct"
 ztc.installProduct('LoginLockout')
 print "Finished installProduct setup (hopefully)"
+
 
 class TestCase(ptc.PloneTestCase):
     """ We use this base class for all the tests in this package. If necessary,
@@ -51,21 +41,27 @@ def setup_product():
 
 ztc.installProduct('Products.LoginLockout')
 setup_product()
-ptc.setupPloneSite(extension_profiles=(), with_default_memberarea=False,
-        products=['Products.LoginLockout'])
+ptc.setupPloneSite(
+    extension_profiles=(),
+    with_default_memberarea=False,
+    products=['Products.LoginLockout'])
 
 
 def test_suite():
     return unittest.TestSuite([
         # USE CASES
         ztc.FunctionalDocFileSuite(
-            usecase , package='Products.LoginLockout', test_class=TestCase,
+            usecase,
+            package='Products.LoginLockout',
+            test_class=TestCase,
             optionflags=doctest.REPORT_ONLY_FIRST_FAILURE |
-                        doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
-            for usecase in ['README.txt',
-                           ]
+            doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS,
+        )
+        for usecase in [
+            'README.txt',
+        ]
 
-        ])
+    ])
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
