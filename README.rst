@@ -24,7 +24,7 @@ First we'll show you how it works with Plone.
 To Install
 ----------
 
-Install into Plone via Add/Remove Products 
+Install into Plone via Add/Remove Products
 
 To Use
 ------
@@ -182,9 +182,10 @@ License BSD-ish, see LICENSE.txt
 
 Credits
 -------
+
 Dylan Jay, original code.
 
-Kees HinK for the Plone configlet and installer
+See changelog for other contributors.
 
 Thanks to Daniel Nouri and BlueDynamics for their
 NoDuplicateLogin which served as the base for this.
