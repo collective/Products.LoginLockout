@@ -1,7 +1,8 @@
 Changes
--------
+=======
 
 0.3.4 (unreleased)
+------------------
 
 - Make reset_period configurable through the ZMI (khink)
 - Added more strings classifiers items for this packages. (macagua)
@@ -17,20 +18,27 @@ Changes
 - Introduct 'select all' option in configlet (thepjot)
 - Re-enable 'reset_period', after reset_period has expired, user gets another chance (thepjot)
 
+
 0.3.3 (2013-11-20)
+------------------
 
 - check for fake_client_ip in a more defensive way (pysailor)
 
-0.3.2 2012-03-12 (Andreas Jung)
 
-- fixed deprecation warnings
+0.3.2 (2012-03-12)
+------------------
+
+- fixed deprecation warnings (Andreas Jung)
 
 
-0.3.1 2012-02-13 (Andreas Jung)
+0.3.1 (2012-02-13)
+------------------
 
-- fixed some restructured text bugs in documentation
+- fixed some restructured text bugs in documentation  (Andreas Jung)
 
-0.3 2011-03-04 (Andreas Jung)
+
+0.3 (2011-03-04)
+----------------
 
 - internal cleanup
 
@@ -40,20 +48,32 @@ Changes
 
 - added support logging password changes
 
-0.2 2009-04-20 (Dylan Jay)
+(Andreas Jung)
+
+
+0.2 (2009-04-20)
+----------------
 
 - Eggified merged configlet version
 
 - Started doctest
 
-2009-03-10 (Kees Hink):
+(Dylan Jay)
+
+
+(2009-03-10)
+------------
 
 - Added configlet for viewing failed attempts and resetting accounts from the
   plone control panel.
 
 - Quite probably, dropped support for pure Zope usage.
 
-2008-12-18 (Kees HinK):
+(Kees Hink)
+
+
+(2008-12-18)
+------------
 
 - Added installer, using Extensions/Install.py.
   (Unfortunately, Generic Setup does not yet seem to support uninstalling, but
@@ -61,7 +81,11 @@ Changes
   there for when you want to use them. Just uncomment the relevant zcml
   directives.)
 
-0.1 (Dylan Jay):
+(Kees Hink)
 
-- Initial Version
+
+0.1 (unknown)
+-------------
+
+- Initial Version (Dylan Jay)
 
