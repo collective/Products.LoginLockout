@@ -4,7 +4,8 @@ Changes
 0.3.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Make number of allowed attempts configurable through the ZMI
+  (khink)
 
 
 0.3.4 (2015-04-01)

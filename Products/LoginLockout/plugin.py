@@ -261,12 +261,17 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         return p_tool.loginlockout_properties.getProperty('reset_period',
                                                           self._reset_period)
 
+    def getMaxAttempts(self):
+        p_tool = getToolByName(self, 'portal_properties')
+        return p_tool.loginlockout_properties.getProperty('max_attempts',
+                                                          self._max_attempts)
+
     security.declarePrivate('isLockedout')
 
     def isLockedout(self, login):
         root = self.getRootPlugin()
         count, last, IP = root.getAttempts(login)
-        return count >= root._max_attempts
+        return count >= root.getMaxAttempts()
 
     security.declarePrivate('resetAttempts')
 
