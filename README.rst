@@ -169,6 +169,21 @@ updateCredentials is called when the login was successful and in this
 case we reset the unsuccessful login count.
 
 
+Troubleshooting
+---------------
+
+AttributeError: manage_addLoginLockout
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If, while running test, you get ``AttributeError: manage_addLoginLockout``,
+this is likely due to the fact that the ``initialize()`` method from ``__init__.py``
+isn't run during test setup.
+
+To resolve, explicitly call::
+
+    z2.installProduct(portal, 'Products.LoginLockout')
+
+
 Copyright, License, Author
 --------------------------
 
