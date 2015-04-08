@@ -17,7 +17,7 @@ Requires:
 Details
 -------
 
-vLoginLockout can be used as a Plone plugin or with zope and PAS alone.
+LoginLockout can be used as a Plone plugin or with zope and PAS alone.
 First we'll show you how it works with Plone.
 
 
