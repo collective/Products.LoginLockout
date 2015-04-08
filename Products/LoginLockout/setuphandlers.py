@@ -1,11 +1,7 @@
 from StringIO import StringIO
 from Products.CMFCore.utils import getToolByName
-from Products.PlonePAS.Extensions.Install import activatePluginInterfaces
 from Products.LoginLockout.plugin import PROJECTNAME, PLUGIN_ID, PLUGIN_TITLE
-from Products.CMFCore.permissions import ManagePortal
 
-# for adding tool
-from Products.LoginLockout.config import TOOL_ID, CONFIGLETS
 
 def install(portal):
 
@@ -136,6 +132,5 @@ def setupVarious(context):
     if context.readDataFile('loginlockout.txt') is None:
         return
 
-    logger = context.getLogger('Products.LoginLockout')
     site = context.getSite()
     install(site)
