@@ -4,7 +4,8 @@ Changes
 0.3.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Render the lockout message in the site layout.
+  (khink)
 
 
 0.3.5 (2015-04-02)

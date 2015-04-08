@@ -23,7 +23,6 @@ __author__ = "Dylan Jay <software@pretaweb.com>"
 
 from AccessControl import AuthEncoding
 from AccessControl import ClassSecurityInfo
-from AccessControl.Permissions import view
 from AccessControl.class_init import InitializeClass
 from BTrees.OOBTree import OOBTree
 from DateTime import DateTime
@@ -31,7 +30,6 @@ from OFS.Cache import Cacheable
 from OFS.Folder import Folder
 from Products.CMFCore.utils import getToolByName
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PluggableAuthService.interfaces.plugins import IAnonymousUserFactoryPlugin  # NOQA
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # NOQA
 from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
@@ -93,6 +91,11 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
          'mode': 'w',
          }
     )
+
+    lockout = PageTemplateFile(
+        'www/lockout.pt',
+        globals(),
+        __name__='lockout')
 
     def __init__(self, id, title=None):
         self._id = self.id = id
@@ -317,13 +320,11 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
     security.declarePrivate('manage_afterAdd')
 
-    def manage_afterAdd(self, item, container):
-        """ Setup tasks upon instantiation """
-        if 'lockout' not in self.objectIds():
-            lockout = ZopePageTemplate(id='lockout', text=BASIC_LOCKOUT)
-            lockout.title = 'User Lockout'
-            lockout.manage_permission(view, roles=['Anonymous'], acquire=1)
-            self._setObject('lockout', lockout, set_owner=0)
+    lockout = PageTemplateFile(
+        'www/lockout.pt',
+        globals(),
+        __name__='lockout',
+    )
 
     security.declareProtected(ManageUsers, 'manage_resetUsers')
 
@@ -403,22 +404,3 @@ InitializeClass(LoginLockout)
 PROJECTNAME = 'LoginLockout'
 PLUGIN_ID = 'login_lockout_plugin'
 PLUGIN_TITLE = 'Disable account after failed login attempts.'
-BASIC_LOCKOUT = """<html>
-  <head>
-    <title> User Lockedout </title>
-  </head>
-
-  <body>
-
-    <h3> Account has been locked </h3>
-
-<p>
-  This account has now been locked for security purposes. Please
-  contact your administrator to unlock this account
-</p>
-
-
-  </body>
-
-</html>
-"""
