@@ -1,6 +1,8 @@
-from StringIO import StringIO
 from Products.CMFCore.utils import getToolByName
-from Products.LoginLockout.plugin import PROJECTNAME, PLUGIN_ID, PLUGIN_TITLE
+from Products.LoginLockout.plugin import PLUGIN_ID
+from Products.LoginLockout.plugin import PLUGIN_TITLE
+from Products.LoginLockout.plugin import PROJECTNAME
+from StringIO import StringIO
 
 
 def install(portal):
