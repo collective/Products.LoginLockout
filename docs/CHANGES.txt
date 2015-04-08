@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.6 (unreleased)
+0.3.6 (2015-04-08)
 ------------------
 
 - Render the lockout message in the site layout.
