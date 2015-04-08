@@ -27,7 +27,7 @@ fake-eggs/
 parts/
 dist/
 var/
-
+Products/LoginLockout/i18n/rebuild_i18n.log
 
 
 # OSX
