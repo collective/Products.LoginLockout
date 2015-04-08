@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.3.6\n"
-"POT-Creation-Date: 2015-04-08 10:55+0000\n"
+"POT-Creation-Date: 2015-04-08 11:27+0000\n"
 "PO-Revision-Date: 2015-04-08 10:55+0000\n"
 "Last-Translator: Kees Hink <keeshink@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -187,7 +187,7 @@ msgid "button_reset"
 msgstr "Herstel geselecteerde accounts"
 
 #. Default: "This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours."
-#: ./www/lockout.pt:24
+#: ./www/lockout.pt:27
 msgid "description_login_locked"
 msgstr "Herhaaldelijk inloggen is helaas mislukt. Om veiligheidsredenen kunt u de komende ${reset_period} uur niet meer inloggen."
 

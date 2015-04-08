@@ -23,7 +23,8 @@
 
 <p i18n:translate="description_login_locked">
   This account has now been locked for security purposes.
-  You will not be able to log in for ${reset_period} hours.
+  You will not be able to log in for
+  <span tal:replace="reset_period" i18n:name="reset_period">12.0</span> hours.
 </p>
 
 </div>

@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2015-04-08 10:55+0000\n"
+"POT-Creation-Date: 2015-04-08 11:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -188,7 +188,7 @@ msgid "button_reset"
 msgstr ""
 
 #. Default: "This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours."
-#: ./www/lockout.pt:24
+#: ./www/lockout.pt:27
 msgid "description_login_locked"
 msgstr ""
 

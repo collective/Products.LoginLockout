@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2015-04-08 10:55+0000\n"
+"POT-Creation-Date: 2015-04-08 11:27+0000\n"
 "PO-Revision-Date: 2014-10-19 01:51-0430\n"
 "Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
 "Language-Team: ES <LL@li.org>\n"
@@ -191,7 +191,7 @@ msgid "button_reset"
 msgstr "Reiniciar cuentas de usuario seleccionadas"
 
 #. Default: "This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours."
-#: ./www/lockout.pt:24
+#: ./www/lockout.pt:27
 msgid "description_login_locked"
 msgstr "Esta cuenta ha sido bloqueada por razones de seguridad. You will not be able to log in for ${reset_period} hours."
 
