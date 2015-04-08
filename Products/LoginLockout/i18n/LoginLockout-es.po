@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-10-19 06:36+0000\n"
+"POT-Creation-Date: 2015-04-08 10:55+0000\n"
 "PO-Revision-Date: 2014-10-19 01:51-0430\n"
 "Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
 "Language-Team: ES <LL@li.org>\n"
@@ -190,10 +190,10 @@ msgstr "Al cambiar su contraseña se ha producido un AttributeError. Esto suele 
 msgid "button_reset"
 msgstr "Reiniciar cuentas de usuario seleccionadas"
 
-#. Default: "This account has now been locked for security purposes. Please contact your administrator to unlock this account"
-#: ./www/lockout.pt:21
+#. Default: "This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours."
+#: ./www/lockout.pt:24
 msgid "description_login_locked"
-msgstr "Esta cuenta ha sido bloqueada por razones de seguridad. Por favor, póngase en contacto con el administrador para desbloquear esta cuenta"
+msgstr "Esta cuenta ha sido bloqueada por razones de seguridad. You will not be able to log in for ${reset_period} hours."
 
 #. Default: "History of password changes per user"
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:21
@@ -201,7 +201,7 @@ msgid "description_settings_form"
 msgstr "Historial del cambio de contraseña por usuario"
 
 #. Default: "Account has been locked"
-#: ./www/lockout.pt:19
+#: ./www/lockout.pt:22
 msgid "heading_login_locked"
 msgstr "Cuanta ha sido bloqueada"
 
