@@ -14,6 +14,28 @@ Requires:
 
 - (optional) PlonePAS and its dependencies
 
+
+Features
+--------
+
+- Configurable number of allowed incorrect attempts before lockout
+- Account will be usable again after a configurable amount of time
+  (the "reset period")
+- The user is presented with a message saying that the account was locked,
+  and for how long.
+  (It doesn't show remaining time, just the total lockout time.)
+
+
+Configuration
+-------------
+
+Go to the ZMI -> portal_properties -> loginlockout_properties,
+there you can changes these defaults:
+
+- allowed incorrect attempts: 3
+- reset period: 24 hours
+
+
 Details
 -------
 
