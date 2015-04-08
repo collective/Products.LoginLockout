@@ -5,6 +5,8 @@ Changes
 ------------------
 
 - Render the lockout message in the site layout.
+  Show the reset period in the lockout message,
+  so people don't have to contact the site administrator again.
   (khink)
 
 
