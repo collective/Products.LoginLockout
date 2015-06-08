@@ -21,6 +21,8 @@ Features
 - Configurable number of allowed incorrect attempts before lockout
 - Account will be usable again after a configurable amount of time
   (the "reset period")
+  If the first login attempt after the reset period is invalid, the
+  invalid login counter is set to 1.
 - The user is presented with a message saying that the account was locked,
   and for how long.
   (It doesn't show remaining time, just the total lockout time.)
