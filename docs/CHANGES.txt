@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.7 (unreleased)
+0.3.7 (2015-06-08)
 ------------------
 
 - Reset counter after reset period.
