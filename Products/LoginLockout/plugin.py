@@ -228,6 +228,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         if reference and AuthEncoding.pw_validate(reference, password):
             # we don't count repeating same password in case its correct
             return
+        if last and ((DateTime() - last) * 24) > self.getResetPeriod():
+            # set count to 1 following login attempt after reset period
+            count = 1
         else:
             count += 1
         IP = self.remote_ip()
