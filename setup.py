@@ -53,8 +53,8 @@ setup(name='Products.LoginLockout',
       ],
       extras_require={
           'test': [
-              'plone.app.testing',
-              'plone.app.robotframework'
+              'Products.PloneTestCase',
+              'zope.testing'
           ],
       },
       entry_points="""
