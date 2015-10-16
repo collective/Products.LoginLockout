@@ -58,7 +58,7 @@ def test_suite():
             doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS,
         )
         for usecase in [
-            'README.txt',
+            '../../README.rst',
         ]
 
     ])
