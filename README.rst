@@ -223,6 +223,38 @@ To resolve, explicitly call::
     z2.installProduct(portal, 'Products.LoginLockout')
 
 
+Developing
+----------
+
+It's great that you want to help advance this add-on!
+
+To start development:
+
+::
+
+    git clone git@github.com:collective/Products.LoginLockout.git
+    cd Products.LoginLockout
+    virtualenv .
+    ./bin/python bootstrap.py
+    ./bin/buildout
+    ./bin/test
+
+
+Please observe the following:
+
+* Only start work when tests are currently passing.
+  If not, fix them, or ask someone (*) for help.
+
+* Make your work in a branch and create a pull request for it on github.
+  Ask for someone (*) to merge it.
+
+* Please adhere to guidelines: pep8.
+  We use plone.recipe.codeanalysis to enforce some of these.
+
+(*) People that might be able to help you out:
+    khink, djay, ajung, macagua
+
+
 Copyright, License, Author
 --------------------------
 
