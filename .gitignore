@@ -28,7 +28,8 @@ parts/
 dist/
 var/
 Products/LoginLockout/i18n/rebuild_i18n.log
-
+.coverage
+htmlcov/
 
 # OSX
 .DS_Store
