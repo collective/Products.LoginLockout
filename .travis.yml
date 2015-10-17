@@ -25,4 +25,4 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 script: bin/test
 after_success:
-  - test -v QA && bin/coverage.sh && pip install -q coveralls && coveralls || true
+  - bin/test -v QA && bin/coverage.sh && pip install -q coveralls && coveralls || true
