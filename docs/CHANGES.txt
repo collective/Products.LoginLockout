@@ -4,7 +4,8 @@ Changes
 0.3.8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed test setup.
+  (khink)
 
 
 0.3.7 (2015-06-08)
