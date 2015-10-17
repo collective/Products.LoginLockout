@@ -239,7 +239,15 @@ Credits
 
 Dylan Jay, original code.
 
-See changelog for other contributors.
+Contributors:
+
+* Kees Hink
+* Andreas Jung
+* Leonardo J. Caballero G.
+* Wolfgang Thomas
+* Peter Uittenbroek
+* Ovidiu Miron
+* Ludolf Takens
 
 Thanks to Daniel Nouri and BlueDynamics for their
 NoDuplicateLogin which served as the base for this.
