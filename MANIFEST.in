@@ -3,6 +3,7 @@ include buildout.cfg
 include checkouts.cfg
 include travis.cfg
 include versions.cfg
+include code-analysis.cfg
 recursive-include Products *.po
 recursive-include Products *.pot
 recursive-include Products *.sh
