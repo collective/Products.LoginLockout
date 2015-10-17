@@ -11,9 +11,9 @@
       </div>
 
       <h2 i18n:translate="">Successful login attempts</h2>
-      <a href="/plone_control_panel" 
-          tal:attributes="href 
-              string:${context/portal_url}/plone_control_panel" 
+      <a href="/plone_control_panel"
+          tal:attributes="href
+              string:${context/portal_url}/plone_control_panel"
           class="link-parent"
           i18n:domain="plone" i18n:translate="">
         Site Setup
@@ -56,7 +56,7 @@
                                 (<span tal:replace="attempt/ip"/>)
                             </li>
                         </ul>
-                    </td> 
+                    </td>
                 </tal:def>
             </tr>
           </table>
