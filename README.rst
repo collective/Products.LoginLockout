@@ -1,6 +1,11 @@
 LoginLockout
 ============
 
+.. image:: https://api.travis-ci.org/collective/Products.LoginLockout.svg
+
+.. image:: https://coveralls.io/repos/collective/Products.LoginLockout/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/collective/Products.LoginLockout?branch=master
+
 This Pluggable Authentication Service (PAS) plugin will lock a
 login after a predetermined number of incorrect attempts. Once
 locked, the user will be shown a page that tells them to contact
@@ -74,7 +79,7 @@ Let's try again with another password::
     >>> browser = Browser()
     >>> browser.open(self.portal.absolute_url()+'/login_form')
     >>> browser.getControl('Login Name').value = 'user'
-    >>> browser.getControl('Password').value = 'notpassword'
+    >>> browser.getControl('Password').value = 'notpassword1'
     >>> browser.getControl('Log in').click()
     >>> print browser.contents
     <BLANKLINE>
@@ -94,23 +99,28 @@ We've installed a Control panel to monitor the login attempts
 
     >>> admin.getLink('LoginLockout').click()
     >>> print admin.contents
-    <html>
-    ...
-    ...<td>user</td><td>2</td>...
+    <BLANKLINE>
+    ...<span>user</span>...
+    ...<span>1</span>...
 
 
 
 If we try twice more we will be locked out::
 
+    >>> browser.open(self.portal.absolute_url()+'/login_form')
     >>> browser.getControl('Login Name').value = 'user'
     >>> browser.getControl('Password').value = 'notpassword2'
-    >>> browser.getControl('log in').click()
+    >>> browser.getControl('Login Name').value = 'user'
+    >>> browser.getControl('Log in').click()
+    >>> browser.getControl('Login Name').value = 'user'
     >>> browser.getControl('Password').value = 'notpassword3'
-    >>> browser.getControl('log in').click()
+    >>> browser.getControl('Log in').click()
+    >>> browser.getControl('Login Name').value = 'user'
+    >>> browser.getControl('Password').value = 'notpassword4'
+    >>> browser.getControl('Log in').click()
     >>> print browser.contents
-    <html>
-    ...
-    You have been locked out. Please contact the system administrator
+    <BLANKLINE>
+    ...This account has now been locked for security purposes...
 
 
 Now even the correct password won't work::
@@ -118,30 +128,35 @@ Now even the correct password won't work::
     >>> browser.open(self.portal.absolute_url()+'/login_form')
     >>> browser.getControl('Login Name').value = 'user'
     >>> browser.getControl('Password').value = 'user'
-    >>> browser.getControl('log in').click()
+    >>> browser.getControl('Log in').click()
     >>> print browser.contents
-    You have been locked out. Please contact the system administrator
+    <BLANKLINE>
+    ...This account has now been locked for security purposes...
 
 
 The administrator can reset this persons account::
 
     >>> admin.getLink('Site Setup').click()
-    >>> admin.getLink('LoginLockup').click()
+    >>> admin.getLink('LoginLockout Configuration Panel').click()
     >>> print admin.contents
-    user attemps 4
-    >>> admin.getControl('user').click()
-    >>> admin.getControl('reset accounts').click()
+    <BLANKLINE>
+    ...<span>user</span>...
+    ...<span>3</span>...
+    >>> admin.getControl(name='reset_ploneusers:list').value = ['user']
+    >>> admin.getControl('Reset selected accounts').click()
     >>> print admin.contents
-    User accounts reset...
+    <BLANKLINE>
+    ...Accounts were reset for these login names: user...
 
 and now they can log in again::
 
     >>> browser.open(self.portal.absolute_url()+'/login_form')
     >>> browser.getControl('Login Name').value = 'user'
     >>> browser.getControl('Password').value = 'user'
-    >>> browser.getControl('log in').click()
+    >>> browser.getControl('Log in').click()
     >>> print browser.contents
-    You have logged in
+    <BLANKLINE>
+    ...You are now logged in...
 
 
 Manual Installation
