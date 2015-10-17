@@ -16,9 +16,9 @@
       </div>
 
       <h2 i18n:translate="">Login Lockout configuration</h2>
-      <a href="/plone_control_panel" 
-          tal:attributes="href 
-              string:${context/portal_url}/plone_control_panel" 
+      <a href="/plone_control_panel"
+          tal:attributes="href
+              string:${context/portal_url}/plone_control_panel"
           class="link-parent"
           i18n:domain="plone" i18n:translate="">
         Site Setup
@@ -26,8 +26,9 @@
       <p i18n:translate="">
         Configuration and logging for the LoginLockout plugin.
       </p>
-      <form method="post" 
-            tal:define="attempts tool/listGroupedAttempts">
+      <form method="post"
+            tal:define="attempts tool/listGroupedAttempts"
+            tal:attributes="action request/URL">
         <fieldset>
           <legend i18n:translate="">
             View and reset unsuccesful attempts
@@ -39,14 +40,14 @@
            <thead>
             <tr>
               <th colspan="7" class="nosort" i18n:translate="">
-                Plone members: 
+                Plone members:
                </th>
             </tr>
             <tr>
               <th class="nosort">
-                  <input class="noborder" 
+                  <input class="noborder"
                     title="Select/deselect all items" i18n:attributes="title"
-                    type="checkbox" 
+                    type="checkbox"
                     onClick="toggleSelect(this, 'reset_ploneusers:list');"
                     name="selectButton"
                     src="select_all_icon.png"
@@ -58,10 +59,10 @@
                 Login name
               </th>
               <th i18n:translate="label_fullname">
-                Full name 
+                Full name
               </th>
               <th i18n:translate="label_email">
-               Email  
+               Email
               </th>
               <th i18n:translate="label_count">
                 Number of attempts
@@ -73,9 +74,9 @@
                 IP address
               </th>
             </tr>
-           </thead> 
+           </thead>
             <tr tal:repeat="attempt python: attempts[0]"
-                tal:attributes="class python: repeat['attempt'].odd() and 
+                tal:attributes="class python: repeat['attempt'].odd() and
                     'odd' or 'even'">
               <td>
                 <input type="checkbox" name="reset_ploneusers:list"
@@ -83,9 +84,9 @@
               </td>
               <td tal:repeat="property attempt_properties">
                   <span tal:condition="python: property == 'fullname'">
-                    <a href="" 
+                    <a href=""
                         title="user profile" i18n:attributes="title"
-                        tal:attributes="href python: attempt.get('link_profile')" 
+                        tal:attributes="href python: attempt.get('link_profile')"
                         tal:content="python: attempt.get('fullname', None)" />
                   </span>
                   <span tal:condition="python: property != 'fullname'"
@@ -99,12 +100,12 @@
            <thead>
             <tr>
               <th colspan="6" class="nosort" i18n:translate="">
-                  Non plone members: 
+                  Non plone members:
                </th>
             </tr>
             <tr>
               <th class="nosort">
-                  <input class="noborder" title="Select/deselect all items" 
+                  <input class="noborder" title="Select/deselect all items"
                     type="checkbox" i18n:attributes="title"
                     onClick="toggleSelect(this, 'reset_nonploneusers:list');"
                     name="selectButton"
@@ -126,9 +127,9 @@
                 IP address
               </th>
             </tr>
-           </thead> 
+           </thead>
             <tr tal:repeat="attempt python: attempts[1]"
-                tal:attributes="class python: repeat['attempt'].odd() and 
+                tal:attributes="class python: repeat['attempt'].odd() and
                     'odd' or 'even'">
               <td>
                 <input type="checkbox" name="reset_nonploneusers:list"
@@ -145,12 +146,12 @@
                 i18n:attributes="value button_reset" />
           </div>
           <p tal:condition='not: attempts' i18n:translate="">No accounts to reset</p>
-          
+
         </fieldset>
         <a href="loginlockout_history" i18n:translate="">Login history</a>
         &bull;
         <a href="loginlockout_last_password_changes" i18n:translate="">History password changes</a>
-      </form> 
+      </form>
     </span>
   </body>
 </html>
