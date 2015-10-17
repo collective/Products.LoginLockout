@@ -4,7 +4,8 @@ Changes
 0.3.8 (unreleased)
 ------------------
 
-- Fixed test setup, make code-analysis work, update README with development info.
+- Include Travis build badge.
+  Fixed test setup, make code-analysis work, update README with development info.
   (khink)
 
 
