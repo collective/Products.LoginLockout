@@ -2,6 +2,7 @@ LoginLockout
 ============
 
 .. image:: https://api.travis-ci.org/collective/Products.LoginLockout.svg
+  :target: https://travis-ci.org/collective/Products.LoginLockout
 
 .. image:: https://coveralls.io/repos/collective/Products.LoginLockout/badge.svg?branch=master&service=github
   :target: https://coveralls.io/github/collective/Products.LoginLockout?branch=master
