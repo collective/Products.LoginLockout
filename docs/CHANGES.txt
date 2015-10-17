@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.8 (unreleased)
+0.3.8 (2015-10-17)
 ------------------
 
 - Include Travis build badge.
