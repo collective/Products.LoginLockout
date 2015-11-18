@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.9 (unreleased)
+0.3.9 (2015-11-18)
 ------------------
 
 - Don't unicode error in portal message when resetting
