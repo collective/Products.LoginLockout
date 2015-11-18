@@ -4,7 +4,8 @@ Changes
 0.3.9 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Don't unicode error in portal message when resetting
+  [maartenkling]
 
 
 0.3.8 (2015-10-17)

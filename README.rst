@@ -281,6 +281,7 @@ Contributors:
 * Peter Uittenbroek
 * Ovidiu Miron
 * Ludolf Takens
+* Maarten Kling
 
 Thanks to Daniel Nouri and BlueDynamics for their
 NoDuplicateLogin which served as the base for this.

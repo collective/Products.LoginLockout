@@ -282,7 +282,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     security.declarePrivate('resetAttempts')
 
     def resetAttempts(self, login, password=None):
-        "reset to zero and update pw referece so same attempts pass"
+        """ reset to zero and update pw referece so same attempts pass """
         root = self.getRootPlugin()
         if root._login_attempts.get(login, None):
             del root._login_attempts[login]
