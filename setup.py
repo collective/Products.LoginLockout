@@ -1,24 +1,22 @@
 from setuptools import setup, find_packages
-import sys, os
+import os
 
 version = '0.4.0.dev0'
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='Products.LoginLockout',
-      version=version,
-      description="This Pluggable Authentication Service (PAS) plugin will lock a \
-                   login after a predetermined number of incorrect attempts. Once \
-                   locked, the user will be shown a page that tells them to contact \
-                   their administrator to unlock.",
-      long_description=(
-        read('README.rst')
-        + '\n\n' +
-        read('docs/CHANGES.txt')
-        ),
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
-      classifiers=[
+setup(
+    name='Products.LoginLockout',
+    version=version,
+    description="This Pluggable Authentication Service (PAS) plugin will lock a \
+                 login after a predetermined number of incorrect attempts. Once \
+                 locked, the user will be shown a page that tells them to contact \
+                 their administrator to unlock.",
+    long_description=(read('README.rst') + '\n\n' + read('docs/CHANGES.txt')),
+    # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+    classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Plugins",
         "Environment :: Web Environment",
@@ -36,30 +34,30 @@ setup(name='Products.LoginLockout',
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: System :: Systems Administration",
         "Topic :: System :: Systems Administration :: Authentication/Directory",
+    ],
+    keywords='PAS Plugins Zope Login Lockout',
+    author='Dylan Jay',
+    author_email='software@pretaweb.com',
+    url='http://plone.org/products/loginlockout',
+    license='GPL',
+    packages=find_packages(),
+    namespace_packages=['Products'],
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=[
+        'setuptools',
+        # -*- Extra requirements: -*-
+        # Products.PluggableAuthService is a dep, but can't be explicit in Plone 3.
+    ],
+    extras_require={
+        'test': [
+            'Products.PloneTestCase',
+            'zope.testing'
         ],
-      keywords='PAS Plugins Zope Login Lockout',
-      author='Dylan Jay',
-      author_email='software@pretaweb.com',
-      url='http://plone.org/products/loginlockout',
-      license='GPL',
-      packages=find_packages(),
-      namespace_packages=['Products'],
-      include_package_data=True,
-      zip_safe=False,
-      install_requires=[
-          'setuptools',
-          # -*- Extra requirements: -*-
-          # Products.PluggableAuthService is a dep, but can't be explicit in Plone 3.
-      ],
-      extras_require={
-          'test': [
-              'Products.PloneTestCase',
-              'zope.testing'
-          ],
-      },
-      entry_points="""
-      # -*- Entry points: -*-
-      [z3c.autoinclude.plugin]
-      target = plone
-      """,
-      )
+    },
+    entry_points="""
+    # -*- Entry points: -*-
+    [z3c.autoinclude.plugin]
+    target = plone
+    """,
+)
