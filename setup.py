@@ -35,7 +35,7 @@ setup(
         "Topic :: System :: Systems Administration",
         "Topic :: System :: Systems Administration :: Authentication/Directory",
     ],
-    keywords='PAS Plugins Zope Login Lockout',
+    keywords='PAS Plugins Zope Login Lockout Plone security',
     author='Dylan Jay',
     author_email='software@pretaweb.com',
     url='https://github.com/collective/Products.LoginLockout',
