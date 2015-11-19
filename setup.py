@@ -38,7 +38,7 @@ setup(
     keywords='PAS Plugins Zope Login Lockout',
     author='Dylan Jay',
     author_email='software@pretaweb.com',
-    url='http://plone.org/products/loginlockout',
+    url='https://github.com/collective/Products.LoginLockout',
     license='GPL',
     packages=find_packages(),
     namespace_packages=['Products'],
