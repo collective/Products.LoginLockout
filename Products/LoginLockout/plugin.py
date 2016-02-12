@@ -89,7 +89,12 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
          'label': 'Attempt Reset Period (hours)',
          'type': 'float',
          'mode': 'w',
-         }
+         },
+        {'id': '_custom_message',
+         'label': 'Custom Message',
+         'type': 'string',
+         'mode': 'w',
+         },
     )
 
     lockout = PageTemplateFile(
@@ -107,6 +112,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._last_pw_change = OOBTree()  # userid : DateTime
         self._reset_period = 24.0
         self._max_attempts = 3
+        self._custom_message = ''
 
     def remote_ip(self):
         p_tool = getToolByName(self, 'portal_properties')
@@ -266,6 +272,11 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         p_tool = getToolByName(self, 'portal_properties')
         return p_tool.loginlockout_properties.getProperty('reset_period',
                                                           self._reset_period)
+
+    def getCustomMessage(self):
+        p_tool = getToolByName(self, 'portal_properties')
+        return p_tool.loginlockout_properties.getProperty('custom_message',
+                                                          self._custom_message)
 
     def getMaxAttempts(self):
         p_tool = getToolByName(self, 'portal_properties')

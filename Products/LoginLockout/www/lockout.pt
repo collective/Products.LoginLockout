@@ -17,6 +17,7 @@
      tal:define="
       login request/locked_login|nothing;
       reset_period context/getResetPeriod;
+      custom_message context/getCustomMessage;
       ">
 
 <h1 i18n:translate="heading_login_locked">Account has been locked</h1>
@@ -26,6 +27,7 @@
   You will not be able to log in for
   <span tal:replace="reset_period" i18n:name="reset_period">12.0</span> hours.
 </p>
+<p tal:condition="custom_message" tal:content="custom_message" />
 
 </div>
 
