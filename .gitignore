@@ -33,3 +33,5 @@ htmlcov/
 
 # OSX
 .DS_Store
+include/
+lib/
