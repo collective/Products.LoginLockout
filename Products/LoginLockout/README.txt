@@ -31,45 +31,41 @@ To Use
 
 First login as manager::
 
-    >>> from Products.Five.testbrowser import Browser
-
 Now we'll open up a new browser and attempt to login::
 
-    >>> browser = Browser()
-    >>> browser.open(self.portal.absolute_url()+'/login_form')
-    >>> browser.getControl('Login Name').value = 'user'
-    >>> browser.getControl('Password').value = 'user'
-    >>> browser.getControl('Log in').click()
-    >>> print browser.contents
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = user_password
+    >>> anon_browser.getControl('Log in').click()
+    >>> 'Login failed' in anon_browser.contents
+    False
+    >>> print anon_browser.contents
     <BLANKLINE>
     ...You are now logged in...
 
 
 Let's try again with another password::
 
-    >>> browser = Browser()
-    >>> browser.open(self.portal.absolute_url()+'/login_form')
-    >>> browser.getControl('Login Name').value = 'user'
-    >>> browser.getControl('Password').value = 'notpassword'
-    >>> browser.getControl('Log in').click()
-    >>> print browser.contents
+    >>> anon_browser.open(portal.absolute_url()+'/logout')
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = 'notpassword'
+    >>> anon_browser.getControl('Log in').click()
+    >>> print anon_browser.contents
     <BLANKLINE>
     ...Login failed...
 
 
-this incorrect attemp  will show up in the log::
+this incorrect attempt  will show up in the log::
 
-    >>> admin = Browser()
-    >>> admin.open(self.portal.absolute_url()+'/login_form')
-    >>> admin.getControl('Login Name').value = 'admin'
-    >>> admin.getControl('Password').value = 'admin'
-    >>> admin.getControl('Log in').click()
-    >>> admin.getLink('Site Setup').click()
 
 We've installed a Control panel to monitor the login attempts
 
-    >>> admin.getLink('LoginLockout').click()
-    >>> print admin.contents
+    >>> admin_browser.open(portal.absolute_url())
+    >>> admin_browser.getLink('Site Setup').click()
+
+    >>> admin_browser.getLink('LoginLockout').click()
+    >>> print admin_browser.contents
     <html>
     ...
     ...<td>user</td><td>2</td>...
@@ -78,45 +74,53 @@ We've installed a Control panel to monitor the login attempts
 
 If we try twice more we will be locked out::
 
-    >>> browser.getControl('Login Name').value = 'user'
-    >>> browser.getControl('Password').value = 'notpassword2'
-    >>> browser.getControl('log in').click()
-    >>> browser.getControl('Password').value = 'notpassword3'
-    >>> browser.getControl('log in').click()
-    >>> print browser.contents
-    <html>
-    ...
-    You have been locked out. Please contact the system administrator
+    >>> anon_browser.open(portal.absolute_url()+'/logout')
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = 'notpassword2'
+    >>> anon_browser.getControl('Log in').click()
+    >>> 'Login failed' in  anon_browser.contents
+    True
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = 'notpassword3'
+    >>> anon_browser.getControl('Log in').click()
+    >>> 'Login failed' in  anon_browser.contents
+    True
+
+#   >>> print anon_browser.contents
+#   <html>
+#   ...
+#   You have been locked out. Please contact the system administrator
 
 
 Now even the correct password won't work::
 
-    >>> browser.open(self.portal.absolute_url()+'/login_form')
-    >>> browser.getControl('Login Name').value = 'user'
-    >>> browser.getControl('Password').value = 'user'
-    >>> browser.getControl('log in').click()
-    >>> print browser.contents
-    You have been locked out. Please contact the system administrator
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = user_password
+    >>> anon_browser.getControl('Log in').click()
+    >>> 'This account has now been locked for security purposes.' in  anon_browser.contents
+    True
 
 
 The administrator can reset this persons account::
 
-    >>> admin.getLink('Site Setup').click()
-    >>> admin.getLink('LoginLockup').click()
-    >>> print admin.contents
-    user attemps 4
-    >>> admin.getControl('user').click()
-    >>> admin.getControl('reset accounts').click()
-    >>> print admin.contents
+    >>> admin_browser.getLink('Site Setup').click()
+    >>> admin_browser.getLink('LoginLockout').click()
+    >>> print admin_browser.contents
+    user attempts 4
+    >>> admin_browser.getControl('user').click()
+    >>> admin_browser.getControl('reset accounts').click()
+    >>> print admin_browser.contents
     User accounts reset...
 
 and now they can log in again::
 
-    >>> browser.open(self.portal.absolute_url()+'/login_form')
-    >>> browser.getControl('Login Name').value = 'user'
-    >>> browser.getControl('Password').value = 'user'
-    >>> browser.getControl('log in').click()
-    >>> print browser.contents
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = user_password
+    >>> anon_browser.getControl('Log in').click()
+    >>> print anon_browser.contents
     You have logged in
 
 

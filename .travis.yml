@@ -7,6 +7,7 @@ env:
   - PLONE=4.1
   - PLONE=4.2
   - PLONE=4.3
+  - PLONE=5.0
 matrix:
   exclude:
     - python: 2.7
@@ -15,6 +16,8 @@ matrix:
       env: PLONE=4.2
     - python: 2.6
       env: PLONE=4.3
+    - python: 2.6
+      env: PLONE=5.0
 install:
   - sed -ie "s#travis-4.x.cfg#travis-$PLONE.x.cfg#" travis.cfg
   - mkdir -p buildout-cache/downloads

@@ -8,4 +8,9 @@
   <include file="skins.zcml" />
   <include file="profiles.zcml" />
 
+<subscriber
+        for="Products.PluggableAuthService.interfaces.events.IUserLoggedInEvent"
+        handler=".plugin.logged_in_handler"
+        />
+
 </configure>

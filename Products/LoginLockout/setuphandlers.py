@@ -1,8 +1,10 @@
 from StringIO import StringIO
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import getToolByName, manage_addTool
 from Products.PlonePAS.Extensions.Install import activatePluginInterfaces
 from Products.LoginLockout.plugin import PROJECTNAME, PLUGIN_ID, PLUGIN_TITLE
 from Products.CMFCore.permissions import ManagePortal
+
+from plugin import manage_addLoginLockout
 
 # for adding tool
 from Products.LoginLockout.config import TOOL_ID, CONFIGLETS
@@ -31,7 +33,7 @@ def install(portal):
         existing = pas.objectIds()
         if PLUGIN_ID not in existing:
             loginlockout = pas.manage_addProduct[PROJECTNAME]
-            loginlockout.manage_addLoginLockout(PLUGIN_ID, PLUGIN_TITLE)
+            manage_addLoginLockout(loginlockout, PLUGIN_ID, PLUGIN_TITLE)
             activatePluginSelectedInterfaces(pas, PLUGIN_ID, out, interfaces)
 
     # define which interfaces need to be moved to top of plugin list
@@ -44,10 +46,10 @@ def install(portal):
     
 
     # add tool
-    addTool(portal, PROJECTNAME, TOOL_ID)
+    #addTool(portal, PROJECTNAME, TOOL_ID)
 
     # install configlet
-    installConfiglets(portal, out, CONFIGLETS)
+    #installConfiglets(portal, out, CONFIGLETS)
 
     print >> out, "Successfully installed %s." % PROJECTNAME
     return out.getvalue()
@@ -106,7 +108,8 @@ def addTool(portal, product_name, tool_id):
     try:
         ctool = getToolByName(portal, tool_id)
     except AttributeError:
-        portal.manage_addProduct[product_name].manage_addTool(product_name, 
+        import pdb; pdb.set_trace()
+        manage_addTool(portal.manage_addProduct[product_name], product_name,
                 None)
 
 def installConfiglets(portal, out, configlets, uninstall=False):

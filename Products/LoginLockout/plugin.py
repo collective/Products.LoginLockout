@@ -16,6 +16,8 @@
 
    The admin can view and reset attempts via the ZMI at any time
 """
+import sys
+from zope.component.hooks import getSite
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
 
@@ -95,6 +97,16 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
                     , 'type'  : 'float'
                     , 'mode'  : 'w'
                     }
+                  , { 'id'    : '_whitelist_ips'
+                    , 'label' : 'IP ranges to allow in. 127.0.0.1 is always allowed'
+                    , 'type'  : 'textarea'
+                    , 'mode'  : 'w'
+                    }
+                  , { 'id'    : '_fake_client_ip'
+                    , 'label' : 'Ignore HTTP_X_FORWARDED_FOR'
+                    , 'type'  : 'boolean'
+                    , 'mode'  : 'w'
+                    }
                   )
 
     def __init__(self, id, title=None):
@@ -105,10 +117,10 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._last_pw_change = OOBTree()             # userid : DateTime
         self._reset_period = 24.0
         self._max_attempts = 3
+        self._fake_client_ip = False
 
     def remote_ip(self):
-        p_tool = getToolByName(self, 'portal_properties')
-        if p_tool.loginlockout_properties.getProperty('fake_client_ip', False):
+        if getattr(self,'_fake_client_ip', False):
             return '127.0.0.1-faked'
         ip = self.REQUEST.get('HTTP_X_FORWARDED_FOR', '')
         if not ip:
@@ -135,6 +147,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             return None
 
         if self.isLockedout(login):
+            sys.stderr.write(login+'\n')
             #self.resetAllCredentials(request, response)
 #            credentials['login'] = '' # pretty dodgy but not sure how else to do it
             request['portal_status_message'] = (
@@ -227,6 +240,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             count += 1
         IP = self.remote_ip()
         log.info("user '%s' attempt #%i %s last: %s", login, count, IP, last)
+        sys.stderr.write(login+' '+str(count)+'\n')
         last = DateTime()
         reference = AuthEncoding.pw_encrypt(password)
         root._login_attempts[login] = (count, last, IP, reference)
@@ -398,3 +412,14 @@ BASIC_LOCKOUT = """<html>
 
 </html>
 """
+
+def logged_in_handler(event):
+    """
+    Listen to loggedin event so we can reset counter
+    """
+
+
+    user = event.object
+    portal = getSite()
+    portal.acl_users.login_lockout_plugin.setSuccessfulAttempt(user.getUserId())
+
