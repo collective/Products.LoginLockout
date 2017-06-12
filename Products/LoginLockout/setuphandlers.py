@@ -1,13 +1,10 @@
+from Products.CMFCore.utils import getToolByName
+from Products.LoginLockout.config import TOOL_ID
+from Products.LoginLockout.plugin import PLUGIN_ID, manage_addLoginLockout
+from Products.LoginLockout.plugin import PLUGIN_TITLE
+from Products.LoginLockout.plugin import PROJECTNAME
 from StringIO import StringIO
-from Products.CMFCore.utils import getToolByName, manage_addTool
-from Products.PlonePAS.Extensions.Install import activatePluginInterfaces
-from Products.LoginLockout.plugin import PROJECTNAME, PLUGIN_ID, PLUGIN_TITLE
-from Products.CMFCore.permissions import ManagePortal
 
-from plugin import manage_addLoginLockout
-
-# for adding tool
-from Products.LoginLockout.config import TOOL_ID, CONFIGLETS
 
 def install(portal):
 
@@ -24,12 +21,11 @@ def install(portal):
 
     # define the interfaces which need to be activated for either PAS
     interfaces_for_paservices = {
-        plone_pas: ['IAuthenticationPlugin','IChallengePlugin',
-                'ICredentialsUpdatePlugin'],
-        zope_pas: ['IChallengePlugin','IAnonymousUserFactoryPlugin'],
-        }
+        plone_pas: ['IAuthenticationPlugin', 'IChallengePlugin',
+                    'ICredentialsUpdatePlugin'],
+        zope_pas: ['IChallengePlugin', 'IAnonymousUserFactoryPlugin'],
+    }
     for (pas, interfaces) in interfaces_for_paservices.iteritems():
-        registry = pas.plugins
         existing = pas.objectIds()
         if PLUGIN_ID not in existing:
             loginlockout = pas.manage_addProduct[PROJECTNAME]
@@ -40,21 +36,20 @@ def install(portal):
     move_to_top_for = {
         plone_pas: 'IChallengePlugin',
         zope_pas: 'IAnonymousUserFactoryPlugin',
-        }
+    }
     for (pas, interface) in move_to_top_for.iteritems():
         movePluginToTop(pas, PLUGIN_ID, interface, out)
-    
 
     # add tool
     #addTool(portal, PROJECTNAME, TOOL_ID)
 
     # install configlet
-    #installConfiglets(portal, out, CONFIGLETS)
 
     print >> out, "Successfully installed %s." % PROJECTNAME
     return out.getvalue()
 
-def uninstall( portal ):
+
+def uninstall(portal):
     out = StringIO()
     print >> out, "Uninstalling %s:" % PROJECTNAME
     plone_pas = getToolByName(portal, 'acl_users')
@@ -65,17 +60,18 @@ def uninstall( portal ):
             pas.manage_delObjects(PLUGIN_ID)
 
     # uninstall configlets
-    installConfiglets(portal, out, CONFIGLETS, uninstall=True)
+    # installConfiglets(portal, out, CONFIGLETS, uninstall=True)
 
-def activatePluginSelectedInterfaces(pas, plugin, out, selected_interfaces, 
-        disable=[]):
-    """This is derived from PlonePAS's activatePluginInterfaces, but 
-    will only activate the plugin for selected interfaces. 
-    
-    For LoginLockout, you'll want to activate different interfaces for 
+
+def activatePluginSelectedInterfaces(
+        pas, plugin, out, selected_interfaces, disable=[]):
+    """This is derived from PlonePAS's activatePluginInterfaces, but
+    will only activate the plugin for selected interfaces.
+
+    For LoginLockout, you'll want to activate different interfaces for
     different PAS instances.
 
-    The PAS instance (either Plone's or Zope's) in which to activate the 
+    The PAS instance (either Plone's or Zope's) in which to activate the
     interfaces is passed as an argument, so portal is not needed.
     """
     plugin_obj = pas[plugin]
@@ -94,6 +90,7 @@ def activatePluginSelectedInterfaces(pas, plugin, out, selected_interfaces,
     plugin_obj.manage_activateInterfaces(activatable)
     print >> out, plugin + " activated."
 
+
 def movePluginToTop(pas, plugin_id, interface_name, out):
     """This moves a plugin to the top of the plugins list
     for a given interface.
@@ -101,21 +98,22 @@ def movePluginToTop(pas, plugin_id, interface_name, out):
     registry = pas.plugins
     interface = registry._getInterfaceFromName(interface_name)
     while registry.listPlugins(interface)[0][0] != plugin_id:
-        registry.movePluginsUp(interface,[plugin_id,])
+        registry.movePluginsUp(interface, [plugin_id])
     print >> out, "Moved " + plugin_id + " to top in " + interface_name + "."
+
 
 def addTool(portal, product_name, tool_id):
     try:
-        ctool = getToolByName(portal, tool_id)
+        ctool = getToolByName(portal, tool_id)  # NOQA
     except AttributeError:
-        import pdb; pdb.set_trace()
-        manage_addTool(portal.manage_addProduct[product_name], product_name,
-                None)
+        portal.manage_addProduct[product_name].manage_addTool(
+            product_name, None)
+
 
 def installConfiglets(portal, out, configlets, uninstall=False):
 
     """
-    Install a configlet for the plone site. configlets parameter should be a 
+    Install a configlet for the plone site. configlets parameter should be a
     list of hashes.
     """
 
@@ -139,6 +137,5 @@ def setupVarious(context):
     if context.readDataFile('loginlockout.txt') is None:
         return
 
-    logger = context.getLogger('Products.LoginLockout')
     site = context.getSite()
     install(site)

@@ -2,5 +2,7 @@
 <object name="portal_properties" meta_type="Plone Properties Tool">
  <object name="loginlockout_properties" meta_type="Plone Property Sheet">
   <property name="fake_client_ip" type="boolean">False</property>
+  <property name="reset_period" type="float">24.0</property>
+  <property name="max_attempts" type="int">3</property>
  </object>
 </object>

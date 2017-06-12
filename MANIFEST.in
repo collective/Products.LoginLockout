@@ -1,4 +1,15 @@
-include *.txt
+include *.py
+include buildout.cfg
+include checkouts.cfg
+include travis.cfg
+include versions.cfg
+include code-analysis.cfg
+include .coveragerc
+recursive-include Products *.po
+recursive-include Products *.pot
+recursive-include Products *.sh
+recursive-include docs *.GPL
+recursive-include docs *.txt
 recursive-include Products *.cpt
 recursive-include Products *.cpy
 recursive-include Products *.gif
@@ -9,3 +20,4 @@ recursive-include Products *.txt
 recursive-include Products *.xml
 recursive-include Products *.zcml
 recursive-include Products *.zpt
+prune .idea

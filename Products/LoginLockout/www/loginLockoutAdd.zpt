@@ -3,16 +3,16 @@
 <h2 tal:define="form_title string:Add Login Lockout Plugin"
     tal:replace="structure here/manage_form_title">Form Title</h2>
 
-<p class="form-help">
-A plugin that rejects multiple logins attepts and locks out the user
-until the administraor unlocks them
+<p class="form-help" i18n:domain="LoginLockout" i18n:translate="">
+A plugin that rejects multiple logins attempts and locks out the user
+until the administrator unlocks them
 </p>
 
 <form action="manage_addLoginLockout" method="post">
 <table cellspacing="0" cellpadding="2" border="0">
   <tr>
     <td align="left" valign="top">
-    <div class="form-label">
+    <div class="form-label" i18n:domain="LoginLockout" i18n:translate="">
     Id
     </div>
     </td>
@@ -22,7 +22,7 @@ until the administraor unlocks them
   </tr>
   <tr>
     <td align="left" valign="top">
-    <div class="form-optional">
+    <div class="form-optional" i18n:domain="LoginLockout" i18n:translate="">
     Title
     </div>
     </td>
@@ -36,7 +36,7 @@ until the administraor unlocks them
     <td align="left" valign="top">
     <div class="form-element">
     <input class="form-element" type="submit" name="submit" 
-     value=" Add " /> 
+     value=" Add " i18n:domain="LoginLockout" i18n:attributes="value" />
     </div>
     </td>
   </tr>

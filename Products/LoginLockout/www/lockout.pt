@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
       metal:use-macro="here/main_template/macros/master"
-      i18n:domain="plone">
+      i18n:domain="LoginLockout">
 
 <head>
     <script type="text/javascript" metal:fill-slot="javascript_head_slot">
@@ -14,13 +14,17 @@
 <body>
 
 <div metal:fill-slot="main"
-     tal:define="login request/locked_login|nothing;">
+     tal:define="
+      login request/locked_login|nothing;
+      reset_period context/getResetPeriod;
+      ">
 
 <h1 i18n:translate="heading_login_locked">Account has been locked</h1>
 
 <p i18n:translate="description_login_locked">
-  This account has now been locked for security purposes. Please
-  contact your administrator to unlock this account
+  This account has now been locked for security purposes.
+  You will not be able to log in for
+  <span tal:replace="reset_period" i18n:name="reset_period">12.0</span> hours.
 </p>
 
 </div>

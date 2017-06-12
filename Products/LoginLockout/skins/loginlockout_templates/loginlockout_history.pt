@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       lang="en"
       metal:use-macro="here/prefs_main_template/macros/master"
-      i18n:domain="loginlockout">
+      i18n:domain="LoginLockout">
   <body>
     <span metal:fill-slot="prefs_configlet_main"
         tal:define="tool context/loginlockout_tool" >
@@ -10,27 +10,27 @@
         Portal status message
       </div>
 
-      <h2>Successful login attempts</h2>
-      <a href="/plone_control_panel" 
-          tal:attributes="href 
-              string:${context/portal_url}/plone_control_panel" 
+      <h2 i18n:translate="">Successful login attempts</h2>
+      <a href="/plone_control_panel"
+          tal:attributes="href
+              string:${context/portal_url}/plone_control_panel"
           class="link-parent"
           i18n:domain="plone" i18n:translate="">
-        Up to site setup
+        Site Setup
       </a>
-      <p i18n:translate="description_settings_form">
+      <p i18n:translate="">
         Login of all successful login attempts
       </p>
 
       <fieldset>
-          <legend>
+          <legend i18n:translate="">
             View successful attempts
           </legend>
 
           <form action="loginlockout_history" method="get">
-              <label for="pattern">Username pattern</label>
+              <label for="pattern" i18n:translate="">Username pattern</label>
               <input type="text" name="pattern" value="" size="10" id="pattern" />
-              <input type="submit" value="Search records" class="context" />
+              <input type="submit" value="Search records" i18n:attributes="value" class="context" />
           </form>
 
           <table class="listing"
@@ -40,7 +40,7 @@
               <th i18n:translate="label_login">
                 Login name
               </th>
-              <th i18n:translate="label_last">
+              <th i18n:translate="label_last_logins">
                 Logins
               </th>
             </tr>
@@ -56,14 +56,14 @@
                                 (<span tal:replace="attempt/ip"/>)
                             </li>
                         </ul>
-                    </td> 
+                    </td>
                 </tal:def>
             </tr>
           </table>
         </fieldset>
-        <a href="loginlockout_settings">Login Lockout configuration</a>
+        <a href="loginlockout_settings" i18n:translate="">Login Lockout configuration</a>
         &bull;
-        <a href="loginlockout_last_password_changes">History password changes</a>
+        <a href="loginlockout_last_password_changes" i18n:translate="">History password changes</a>
     </span>
   </body>
 </html>

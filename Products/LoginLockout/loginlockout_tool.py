@@ -1,15 +1,13 @@
-import re
+from AccessControl import ClassSecurityInfo
 from AccessControl.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
-from AccessControl import ClassSecurityInfo
-#from permissions import ManagePortal
-
 from Products.CMFCore.utils import UniqueObject, getToolByName
-
 from Products.LoginLockout.config import TOOL_ID
 from Products.LoginLockout.plugin import PROJECTNAME
+import re
 
-class LoginLockoutTool(UniqueObject,  SimpleItem):
+
+class LoginLockoutTool(UniqueObject, SimpleItem):
     """ A tool to facilitate calling the plugin's methods for viewing login
     attempts, resetting attempts, etc. from a view template.
     """
@@ -19,6 +17,7 @@ class LoginLockoutTool(UniqueObject,  SimpleItem):
     security = ClassSecurityInfo()
 
     security.declarePrivate('_getPlugin')
+
     def _getPlugin(self):
         acl_users = getToolByName(self, 'acl_users')
         return acl_users.login_lockout_plugin
@@ -50,8 +49,6 @@ class LoginLockoutTool(UniqueObject,  SimpleItem):
                     purl(), user['login'])
         return (plone_members, non_plone_members)
 
-
-    #security.declareProtected(ManagePortal, 'listAttempts')
     def listAttempts(self):
         return self._getPlugin().listAttempts()
 
@@ -59,7 +56,8 @@ class LoginLockoutTool(UniqueObject,  SimpleItem):
         pattern = self.REQUEST.get('pattern', '')
         pattern_regex = re.compile(pattern, re.I)
         result = list()
-        for username, attempts in self._getPlugin().listSuccessfulAttempts().items():
+        for username, attempts in \
+                self._getPlugin().listSuccessfulAttempts().items():
             if pattern_regex.search(username):
                 result.append(dict(username=username, attempts=attempts))
         return result

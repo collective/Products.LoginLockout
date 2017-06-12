@@ -1,0 +1,271 @@
+# Leonardo J. Caballero G. <leonardocaballero@gmail.com>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2015-04-08 11:27+0000\n"
+"PO-Revision-Date: 2014-10-19 01:51-0430\n"
+"Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
+"Language-Team: ES <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: LoginLockout\n"
+"Language: es\n"
+"X-Generator: Virtaal 0.7.1\n"
+"Language-code: es\n"
+"Language-name: Spanish\n"
+"X-Is-Fallback-For: es-ar es-bo es-cl es-co es-cr es-do es-ec es-es es-sv es-gt es-hn es-mx es-ni es-pa es-py es-pe es-pr es-us es-uy es-ve\n"
+
+#. Default: "Add"
+#: ./www/loginLockoutAdd.zpt:38
+msgid " Add "
+msgstr " Agregar "
+
+#. Default: "Reset Users"
+#: ./www/llLockouts.zpt:43
+msgid " Reset Users "
+msgstr " Reiniciar Usuarios "
+
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:30
+msgid "1 month"
+msgstr "1 mes"
+
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:31
+msgid "2 months"
+msgstr "2 meses"
+
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:32
+msgid "3 months"
+msgstr "3 meses"
+
+#: ./www/loginLockoutAdd.zpt:6
+msgid "A plugin that rejects multiple logins attempts and locks out the user until the administrator unlocks them"
+msgstr "Un plugin que rechaza múltiples intentos de inicio de sesión y bloquea al usuario hasta que el administrador lo desbloquee"
+
+#: ./skins/loginlockout_templates/reset_accounts.cpy:29
+msgid "Accounts were reset for these login names: %s,"
+msgstr "Cuentas de usuario que se reiniciaron para estos nombres de usuario: %s,"
+
+#: ./www/llLockouts.zpt:18
+msgid "Attempts"
+msgstr "Intentos"
+
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:26
+msgid "Configuration and logging for the LoginLockout plugin."
+msgstr "Configuración y registro para el plugin de desbloqueo inicio de sesión."
+
+#: ./www/llLockouts.zpt:11
+msgid "Current Attempts"
+msgstr "Actuales intentos"
+
+#: ./skins/loginlockout_templates/plone_change_password.py:20
+msgid "Does not match current password."
+msgstr "No coincide con la contraseña actual."
+
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:36
+msgid "Filter"
+msgstr "Filtro"
+
+#: ./skins/loginlockout_templates/loginlockout_history.pt:66
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:13
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:152
+msgid "History password changes"
+msgstr "Histórico de cambios de contraseña"
+
+#: ./www/llLockouts.zpt:20
+msgid "IP"
+msgstr "Dirección IP"
+
+#: ./www/loginLockoutAdd.zpt:15
+msgid "Id"
+msgstr "Id"
+
+#: ./www/llLockouts.zpt:19
+msgid "Last"
+msgstr "Últimas"
+
+#. Default: "Login Lockout Plugin"
+#: ../profiles.zcml
+msgid "Login Lockout Plugin"
+msgstr "Plugin de desbloqueo inicio de sesión"
+
+#: ./skins/loginlockout_templates/loginlockout_history.pt:64
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:57
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:18
+msgid "Login Lockout configuration"
+msgstr "Configuración de desbloqueo de usuario"
+
+#: ./www/llLockouts.zpt:17
+msgid "Login Name"
+msgstr "Nombre de inicio de sesión"
+
+#: ./skins/loginlockout_templates/logged_in.cpy:19
+msgid "Login failed. Both login name and password are case sensitive, check that caps lock is not enabled."
+msgstr "Error en el inicio de sesión. Tanto el nombre de inicio de sesión como la contraseña son sensibles a la capitalización, comprueba que la tecla de bloqueo de mayúsculas no está habilitada."
+
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:59
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:150
+msgid "Login history"
+msgstr "Historial de inicio de sesión"
+
+#: ./skins/loginlockout_templates/loginlockout_history.pt:21
+msgid "Login of all successful login attempts"
+msgstr "Cuenta de usuario de todos los intentos de inicio de sesión con éxito"
+
+#: ./profiles/default/controlpanel.xml
+msgid "LoginLockout Configuration Panel"
+msgstr "Panel de desbloqueo de usuario"
+
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:147
+msgid "No accounts to reset"
+msgstr "Sin cuenta a restablecer"
+
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:29
+msgid "No filtering"
+msgstr "Sin filtrado"
+
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:101
+msgid "Non plone members:"
+msgstr "Sin usuarios rol Miembro Plone:"
+
+#. Default: "PAS plugin that can lock/unlock a user login after a predetermined number of incorrect attempts."
+#: ../profiles.zcml
+msgid "PAS plugin that can lock/unlock a user login after a predetermined number of incorrect attempts."
+msgstr "Plugin de PAS con el cual puede bloquear / desbloquear un inicio de sesión de usuario después de un número predeterminado de intentos incorrectos."
+
+#: ./skins/loginlockout_templates/plone_change_password.py:14
+msgid "Password change was canceled."
+msgstr "El cambio de contraseña ha sido cancelado."
+
+#: ./skins/loginlockout_templates/plone_change_password.py:47
+msgid "Password changed."
+msgstr "Contraseña cambiada."
+
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:41
+msgid "Plone members:"
+msgstr "Miembros Plone:"
+
+#: ./skins/loginlockout_templates/loginlockout_history.pt:33
+msgid "Search records"
+msgstr "Búsqueda de registros"
+
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:47
+msgid "Select/deselect all items"
+msgstr "Seleccionar/deseleccionar todos los elementos"
+
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:26
+msgid "Show password changes older than N days"
+msgstr "Mostrar los cambios de contraseña antiguas de más de N días"
+
+#: ./skins/loginlockout_templates/loginlockout_history.pt:13
+msgid "Successful login attempts"
+msgstr "Intentos de inicio de sesión exitoso"
+
+#: ./www/loginLockoutAdd.zpt:25
+msgid "Title"
+msgstr "Título"
+
+#: ./skins/loginlockout_templates/loginlockout_history.pt:31
+msgid "Username pattern"
+msgstr "Patrón de nombre de usuario"
+
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:32
+msgid "View and reset unsuccesful attempts"
+msgstr "Ver y restaurar los intentos infructuosos"
+
+#: ./skins/loginlockout_templates/loginlockout_history.pt:26
+msgid "View successful attempts"
+msgstr "Ver los intentos exitosos"
+
+#: ./skins/loginlockout_templates/plone_change_password.py:37
+msgid "While changing your password an AttributeError occurred. This is usually caused by your user being defined outside the portal."
+msgstr "Al cambiar su contraseña se ha producido un AttributeError. Esto suele estar causado por la utilización de usuarios definidos fuera del portal."
+
+#. Default: "Reset selected accounts"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:143
+msgid "button_reset"
+msgstr "Reiniciar cuentas de usuario seleccionadas"
+
+#. Default: "This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours."
+#: ./www/lockout.pt:27
+msgid "description_login_locked"
+msgstr "Esta cuenta ha sido bloqueada por razones de seguridad. Usted no podrá para iniciar sesión por un periodo de ${reset_period} horas."
+
+#. Default: "History of password changes per user"
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:21
+msgid "description_settings_form"
+msgstr "Historial del cambio de contraseña por usuario"
+
+#. Default: "Account has been locked"
+#: ./www/lockout.pt:22
+msgid "heading_login_locked"
+msgstr "Cuanta ha sido bloqueada"
+
+#. Default: "IP address"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:72
+msgid "label_IP"
+msgstr "Dirección IP"
+
+#. Default: "Number of attempts"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:66
+msgid "label_count"
+msgstr "Numero de intentos"
+
+#. Default: "Email"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:63
+msgid "label_email"
+msgstr "Correo electrónico"
+
+#. Default: "Full name"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:60
+msgid "label_fullname"
+msgstr "Nombre Completo"
+
+#. Default: "Last attempt"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:122
+msgid "label_last"
+msgstr "Último intento"
+
+#. Default: "Last attempt"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:69
+msgid "label_last_attempt"
+msgstr "Último intento"
+
+#. Default: "Logins"
+#: ./skins/loginlockout_templates/loginlockout_history.pt:43
+msgid "label_last_logins"
+msgstr "Inicios de sesión"
+
+#. Default: "Last password change"
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:47
+msgid "label_last_password_change"
+msgstr "Último cambio de contraseña"
+
+#. Default: "Login name"
+#: ./skins/loginlockout_templates/loginlockout_history.pt:40
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:57
+msgid "label_login"
+msgstr "Nombre de inicio de usuario"
+
+#. Default: "Select all"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:55
+msgid "label_reset"
+msgstr "Seleccionar todos"
+
+#. Default: "Username"
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:44
+msgid "label_username"
+msgstr "Nombre de usuario"
+
+#: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:33
+msgid "older than 3 months"
+msgstr "más de 3 meses"
+
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:86
+msgid "user profile"
+msgstr "Perfil de usuario"
+

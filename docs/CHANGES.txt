@@ -1,0 +1,141 @@
+Changes
+=======
+
+0.4.1 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+0.4.0 (2015-11-25)
+------------------
+
+- Fix incorrect flake8 in skins template python script.
+  [khink]
+
+
+0.3.9 (2015-11-18)
+------------------
+
+- Don't unicode error in portal message when resetting
+  [maartenkling]
+
+
+0.3.8 (2015-10-17)
+------------------
+
+- Include Travis build badge.
+  Fixed test setup, make code-analysis work, update README with development info.
+  (khink)
+
+
+0.3.7 (2015-06-08)
+------------------
+
+- Reset counter after reset period.
+  (ltakens)
+
+0.3.6 (2015-04-08)
+------------------
+
+- Render the lockout message in the site layout.
+  Show the reset period in the lockout message,
+  so people don't have to contact the site administrator again.
+  (khink)
+
+
+0.3.5 (2015-04-02)
+------------------
+
+- Make number of allowed attempts configurable through the ZMI
+  (khink)
+
+
+0.3.4 (2015-04-01)
+------------------
+
+- Make reset_period configurable through the ZMI (khink)
+- Added more strings classifiers items for this packages. (macagua)
+- Added plone_deprecated skins for gif icon. (macagua)
+- Added support for Configlet with GenericSetup profile. (macagua)
+- Added Spanish translation. (macagua)
+- Added i18n support. (macagua)
+
+- LoginLockout interface updated as follows (omiron):
+    - group user lockouts separate from bogus info
+    - links to users profile page
+    - provide full user name and email to ease "find in page"
+- Introduct 'select all' option in configlet (thepjot)
+- Re-enable 'reset_period', after reset_period has expired, user gets another chance (thepjot)
+
+
+0.3.3 (2013-11-20)
+------------------
+
+- check for fake_client_ip in a more defensive way (pysailor)
+
+
+0.3.2 (2012-03-12)
+------------------
+
+- fixed deprecation warnings (Andreas Jung)
+
+
+0.3.1 (2012-02-13)
+------------------
+
+- fixed some restructured text bugs in documentation  (Andreas Jung)
+
+
+0.3 (2011-03-04)
+----------------
+
+- internal cleanup
+
+- using GenericSetup where possible
+
+- added support for logging successful login attempts
+
+- added support logging password changes
+
+(Andreas Jung)
+
+
+0.2 (2009-04-20)
+----------------
+
+- Eggified merged configlet version
+
+- Started doctest
+
+(Dylan Jay)
+
+
+(2009-03-10)
+------------
+
+- Added configlet for viewing failed attempts and resetting accounts from the
+  plone control panel.
+
+- Quite probably, dropped support for pure Zope usage.
+
+(Kees Hink)
+
+
+(2008-12-18)
+------------
+
+- Added installer, using Extensions/Install.py.
+  (Unfortunately, Generic Setup does not yet seem to support uninstalling, but
+  the methods in setuphandlers.py and the import profile (profiles/default) are
+  there for when you want to use them. Just uncomment the relevant zcml
+  directives.)
+
+(Kees Hink)
+
+
+0.1 (unknown)
+-------------
+
+- Initial Version (Dylan Jay)
+

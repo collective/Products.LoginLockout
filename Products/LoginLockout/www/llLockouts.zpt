@@ -3,21 +3,21 @@
 <h2 tal:define="form_title string:ZODB Users"
     tal:replace="structure here/manage_tabs"> TABS </h2>
 
-<tal:block >
+<tal:block>
 
-<div >
 <div>
+<div i18n:domain="LoginLockout">
 
-<h3>Current Attempts</h3>
+<h3 i18n:translate="">Current Attempts</h3>
 
 <table width="100%" cellpadding="2" cellspacing="0">
 
  <tr>
   <td width="16" />
-  <th align="left" width="15%"> Login Name </th>
-  <th align="left" width="25%"> Attempts </th>
-  <th align="left" width="25%"> Last </th>
-  <th align="left" width="25%"> IP </th>
+  <th align="left" width="15%" i18n:translate=""> Login Name </th>
+  <th align="left" width="25%" i18n:translate=""> Attempts </th>
+  <th align="left" width="25%" i18n:translate=""> Last </th>
+  <th align="left" width="25%" i18n:translate=""> IP </th>
  </tr>
 
  <form action="." method="POST">
@@ -41,7 +41,7 @@
   <td colspan="4">
     <input type="hidden" name="logins:list:default" value="" />
     <input type="submit" name="manage_resetUsers:method"
-           value=" Reset Users " />
+           value=" Reset Users " i18n:attributes="value" />
   </td>
  </tr>
 

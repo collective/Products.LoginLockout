@@ -1,6 +1,12 @@
 LoginLockout
 ============
 
+.. image:: https://api.travis-ci.org/collective/Products.LoginLockout.svg
+  :target: https://travis-ci.org/collective/Products.LoginLockout
+
+.. image:: https://coveralls.io/repos/collective/Products.LoginLockout/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/collective/Products.LoginLockout?branch=master
+
 This Pluggable Authentication Service (PAS) plugin will lock a
 login after a predetermined number of incorrect attempts. Once
 locked, the user will be shown a page that tells them to contact
@@ -14,17 +20,41 @@ Requires:
 
 - (optional) PlonePAS and its dependencies
 
+
+Features
+--------
+
+- Configurable number of allowed incorrect attempts before lockout
+- Account will be usable again after a configurable amount of time
+  (the "reset period")
+  If the first login attempt after the reset period is invalid, the
+  invalid login counter is set to 1.
+- The user is presented with a message saying that the account was locked,
+  and for how long.
+  (It doesn't show remaining time, just the total lockout time.)
+
+
+Configuration
+-------------
+
+Go to the ZMI -> portal_properties -> loginlockout_properties,
+there you can changes these defaults:
+
+- allowed incorrect attempts: 3
+- reset period: 24 hours
+
+
 Details
 -------
 
-vLoginLockout can be used as a Plone plugin or with zope and PAS alone.
+LoginLockout can be used as a Plone plugin or with zope and PAS alone.
 First we'll show you how it works with Plone.
 
 
 To Install
 ----------
 
-Install into Plone via Add/Remove Products 
+Install into Plone via Add/Remove Products
 
 To Use
 ------
@@ -66,9 +96,9 @@ We've installed a Control panel to monitor the login attempts
 
     >>> admin_browser.getLink('LoginLockout').click()
     >>> print admin_browser.contents
-    <html>
-    ...
-    ...<td>user</td><td>2</td>...
+    <BLANKLINE>
+    ...<span>user</span>...
+    ...<span>1</span>...
 
 
 
@@ -89,8 +119,8 @@ If we try twice more we will be locked out::
 
 #   >>> print anon_browser.contents
 #   <html>
-#   ...
-#   You have been locked out. Please contact the system administrator
+    <BLANKLINE>
+    ...This account has now been locked for security purposes...
 
 
 Now even the correct password won't work::
@@ -108,11 +138,14 @@ The administrator can reset this persons account::
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
     >>> print admin_browser.contents
-    user attempts 4
-    >>> admin_browser.getControl('user').click()
-    >>> admin_browser.getControl('reset accounts').click()
+    <BLANKLINE>
+    ...<span>user</span>...
+    ...<span>3</span>...
+    >>> admin_browser.getControl(name='reset_ploneusers:list').value = ['user']
+    >>> admin_browser.getControl('Reset selected accounts').click()
     >>> print admin_browser.contents
-    User accounts reset...
+    <BLANKLINE>
+    ...Accounts were reset for these login names: user...
 
 and now they can log in again::
 
@@ -120,8 +153,9 @@ and now they can log in again::
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> print anon_browser.contents
-    You have logged in
+    >>> print browser.contents
+    <BLANKLINE>
+    ...You are now logged in...
 
 
 Manual Installation
@@ -173,6 +207,53 @@ updateCredentials is called when the login was successful and in this
 case we reset the unsuccessful login count.
 
 
+Troubleshooting
+---------------
+
+AttributeError: manage_addLoginLockout
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If, while running test, you get ``AttributeError: manage_addLoginLockout``,
+this is likely due to the fact that the ``initialize()`` method from ``__init__.py``
+isn't run during test setup.
+
+To resolve, explicitly call::
+
+    z2.installProduct(portal, 'Products.LoginLockout')
+
+
+Developing
+----------
+
+It's great that you want to help advance this add-on!
+
+To start development:
+
+::
+
+    git clone git@github.com:collective/Products.LoginLockout.git
+    cd Products.LoginLockout
+    virtualenv .
+    ./bin/python bootstrap.py
+    ./bin/buildout
+    ./bin/test
+
+
+Please observe the following:
+
+* Only start work when tests are currently passing.
+  If not, fix them, or ask someone (*) for help.
+
+* Make your work in a branch and create a pull request for it on github.
+  Ask for someone (*) to merge it.
+
+* Please adhere to guidelines: pep8.
+  We use plone.recipe.codeanalysis to enforce some of these.
+
+(*) People that might be able to help you out:
+    khink, djay, ajung, macagua
+
+
 Copyright, License, Author
 --------------------------
 
@@ -186,9 +267,19 @@ License BSD-ish, see LICENSE.txt
 
 Credits
 -------
+
 Dylan Jay, original code.
 
-Kees HinK for the Plone configlet and installer
+Contributors:
+
+* Kees Hink
+* Andreas Jung
+* Leonardo J. Caballero G.
+* Wolfgang Thomas
+* Peter Uittenbroek
+* Ovidiu Miron
+* Ludolf Takens
+* Maarten Kling
 
 Thanks to Daniel Nouri and BlueDynamics for their
 NoDuplicateLogin which served as the base for this.

@@ -10,6 +10,7 @@
 ##
 from Products.CMFPlone import PloneMessageFactory as _
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import safe_unicode
 
 # use the tool to proxy the plugin's methods
 lltool = getToolByName(context, 'loginlockout_tool')
@@ -26,7 +27,7 @@ state.setNextAction('redirect_to:string:loginlockout_settings')
 
 # give an informative message
 context.plone_utils.addPortalMessage(
-    _("Accounts were reset for these login names: %s" % ','.join(user_ids)))
+    _("Accounts were reset for these login names: %s" % safe_unicode(','.join(user_ids))))
 
 return state
 
