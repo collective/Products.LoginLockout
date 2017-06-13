@@ -41,7 +41,7 @@ def install(portal):
         movePluginToTop(pas, PLUGIN_ID, interface, out)
 
     # add tool
-    #addTool(portal, PROJECTNAME, TOOL_ID)
+    addTool(portal, PROJECTNAME, TOOL_ID)
 
     # install configlet
 

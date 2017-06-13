@@ -19,6 +19,7 @@
    The admin can view and reset attempts via the ZMI at any time
 """
 import sys
+from ipaddress import ip_address, ip_network
 from zope.component.hooks import getSite
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
@@ -94,7 +95,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
          }
           , { 'id'    : '_whitelist_ips'
             , 'label' : 'IP ranges to allow in. 127.0.0.1 is always allowed'
-            , 'type'  : 'textarea'
+            , 'type'  : 'lines'
             , 'mode'  : 'w'
             }
           , { 'id'    : '_fake_client_ip'
@@ -120,6 +121,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._reset_period = 24.0
         self._max_attempts = 3
         self._fake_client_ip = False
+        self._whitelist_ips = []
 
     def remote_ip(self):
         if getattr(self,'_fake_client_ip', False):
@@ -148,6 +150,13 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         if None in (login, password, pas_instance):
             return None
+
+        IP = self.remote_ip()
+        if self.isIPLocked(login, unicode(IP)):
+            #TODO: should there be some notification login is blocked due to IP?
+            log.info("Attempt denied due to IP: %s, %s ", login, IP)
+            raise Unauthorized
+
 
         if self.isLockedout(login):
             request['portal_status_message'] = (
@@ -291,6 +300,17 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         root = self.getRootPlugin()
         count, last, IP = root.getAttempts(login)
         return count >= root.getMaxAttempts()
+
+    security.declarePrivate('isLockedout')
+
+    def isIPLocked(self, login, IP):
+        client = ip_address(unicode(IP))
+        for range in self._whitelist_ips + ['127.0.0.1']:
+            if client in ip_network(unicode(range)):
+                return False
+        return True
+
+
 
     security.declarePrivate('resetAttempts')
 
