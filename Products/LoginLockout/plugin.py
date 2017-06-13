@@ -92,17 +92,17 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
          'label': 'Attempt Reset Period (hours)',
          'type': 'float',
          'mode': 'w',
-         }
-          , { 'id'    : '_whitelist_ips'
-            , 'label' : 'IP ranges to allow in. 127.0.0.1 is always allowed'
-            , 'type'  : 'lines'
-            , 'mode'  : 'w'
-            }
-          , { 'id'    : '_fake_client_ip'
-            , 'label' : 'Ignore HTTP_X_FORWARDED_FOR'
-            , 'type'  : 'boolean'
-            , 'mode'  : 'w'
-            }
+         },
+        { 'id'    : '_whitelist_ips',
+           'label' : 'Restrict to IP ranges (127.0.0.1 always allowed)',
+           'type'  : 'lines',
+           'mode'  : 'w'
+         },
+        { 'id'    : '_fake_client_ip',
+           'label' : 'Ignore HTTP_X_FORWARDED_FOR',
+           'type'  : 'boolean',
+           'mode'  : 'w'
+        }
     )
 
     lockout = PageTemplateFile(
@@ -256,7 +256,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             count += 1
         IP = self.remote_ip()
         log.info("user '%s' attempt #%i %s last: %s", login, count, IP, last)
-        sys.stderr.write(login+' '+str(count)+'\n')
+        #sys.stderr.write(login+' '+str(count)+'\n')
         last = DateTime()
         reference = AuthEncoding.pw_encrypt(password)
         root._login_attempts[login] = (count, last, IP, reference)
@@ -301,10 +301,10 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         count, last, IP = root.getAttempts(login)
         return count >= root.getMaxAttempts()
 
-    security.declarePrivate('isLockedout')
-
+    security.declarePrivate('isIPLocked')
     def isIPLocked(self, login, IP):
         client = ip_address(unicode(IP))
+        #TODO: could support rules that have different IP ranges for different groups
         for range in self._whitelist_ips + ['127.0.0.1']:
             if client in ip_network(unicode(range)):
                 return False

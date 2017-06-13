@@ -32,6 +32,8 @@ Features
 - The user is presented with a message saying that the account was locked,
   and for how long.
   (It doesn't show remaining time, just the total lockout time.)
+- You can restrict users to come from certain IP networks. You don't have to
+  use the incorrect login attempts to use this feature.
 
 
 Configuration
@@ -252,6 +254,20 @@ Please observe the following:
 
 (*) People that might be able to help you out:
     khink, djay, ajung, macagua
+
+
+TODO
+----
+Things that could be done on the LoginLockout product:
+- optional use of registry. If registry settings found it overrides plugin settings.
+  Then modify these settings in a configlet.
+  Get rid of portal_properties. loginlockout is supposed to work with or without plone.
+
+- optional path to store attempts db so it can be stored in historyless db.
+
+- perhaps have a short lock or a captcha to prevent rapid attempts instead of a full lockout
+
+- Only restrict certain groups to certain IP networks e.g. administrators. Maybe roles too?
 
 
 Copyright, License, Author

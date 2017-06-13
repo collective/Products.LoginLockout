@@ -4,7 +4,8 @@ Changes
 0.4.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Made changes so the basics works in plone 5 [djay]
+- Included the ability to restrict requests from certain IP networks [djay]
 
 
 0.4.0 (2015-11-25)
