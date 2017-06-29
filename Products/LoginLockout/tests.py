@@ -15,13 +15,12 @@ from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import TEST_USER_ID, TEST_USER_PASSWORD
 from plone.app.testing import PloneWithPackageLayer
 from plone.testing import Layer, layered
-from plone.testing.z2 import Browser
+from plone.testing.z2 import Browser, installProduct
 from plone.testing.z2 import ZSERVER_FIXTURE
 #from Testing.ZopeTestCase import FunctionalTestCase
 #from transaction import commit
 #from unittest2 import TestCase
 import Products.LoginLockout
-
 
 
 
@@ -69,6 +68,8 @@ ROBOT_TESTING = Layer(name='Products.LoginLockout:Robot')
 def setUp(doctest):
     #self.app = self.layer['app']
     #self.portal.invokeFactory('Folder', 'news')
+    installProduct('LoginLockout')
+
     layer = doctest.globs['layer']
     app = layer['app']
     portal = layer['portal']

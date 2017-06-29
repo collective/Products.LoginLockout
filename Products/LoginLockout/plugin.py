@@ -450,5 +450,7 @@ def logged_in_handler(event):
 
     user = event.object
     portal = getSite()
-    portal.acl_users.login_lockout_plugin.setSuccessfulAttempt(user.getUserId())
+    #TODO: don't hardcode name?
+    if hasattr(portal.acl_users, 'login_lockout_plugin'):
+        portal.acl_users.login_lockout_plugin.setSuccessfulAttempt(user.getUserId())
 
