@@ -457,5 +457,5 @@ def logged_in_handler(event):
 
     #TODO: don't hardcode name?
     if hasattr(portal.acl_users, 'login_lockout_plugin'):
-        portal.acl_users.login_lockout_plugin.setSuccessfulAttempt()
+        portal.acl_users.login_lockout_plugin.setSuccessfulAttempt(userid)
 
