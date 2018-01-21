@@ -13,6 +13,7 @@
 .*.cfg
 .installed.cfg
 .mr.developer.cfg
+pip-selfcheck.json
 .hg/
 .bzr/
 .svn/
@@ -27,6 +28,7 @@ fake-eggs/
 parts/
 dist/
 var/
+local/
 Products/LoginLockout/i18n/rebuild_i18n.log
 .coverage
 htmlcov/
