@@ -52,6 +52,7 @@ setup(
     ],
     extras_require={
         'test': [
+            'plone.app.testing',
             'Products.PloneTestCase',
             'zope.testing'
         ],
