@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<tool-setup>
+    <required tool_id="loginlockout_tool"
+           class="Products.LoginLockout.loginlockout_tool.LoginLockoutTool"/>
+</tool-setup>
