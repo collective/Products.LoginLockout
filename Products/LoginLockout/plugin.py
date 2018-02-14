@@ -460,10 +460,11 @@ def logged_in_handler(event):
 
     user = event.object
     portal = getSite()
-    if getattr(user, 'getUserId', None) is None:
-        userid = str(user)
-    else:
+    try:
         userid = user.getUserId()
+    except AttributeError:
+        # root (zmi) user doesn't have 'getUserId' attribute
+        userid = str(user)
 
     #TODO: don't hardcode name?
     if hasattr(portal.acl_users, 'login_lockout_plugin'):
