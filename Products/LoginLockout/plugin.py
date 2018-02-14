@@ -303,9 +303,19 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
     security.declarePrivate('isIPLocked')
     def isIPLocked(self, login, IP):
+        try:
+            whitelist_ips = self._whitelist_ips
+        except AttributeError:
+            # The attribute is not there
+            return False
+
+        if not whitelist_ips:
+            # Don't do the check if there is no whitelist set
+            return False
+
         client = ip_address(unicode(IP))
         #TODO: could support rules that have different IP ranges for different groups
-        for range in self._whitelist_ips + ['127.0.0.1']:
+        for range in whitelist_ips + ['127.0.0.1']:
             if client in ip_network(unicode(range)):
                 return False
         return True
