@@ -159,6 +159,59 @@ and now they can log in again::
     <BLANKLINE>
     ...You are now logged in...
 
+IP Locking feature
+------------------
+
+You can optionally ensure logins are only possible for certain IP address ranges. To enable this go into the
+ZMI and enter the ranges in the whitelist_ips property
+
+    >>> portal.acl_users.login_lockout._whitelist_ips = ['10.1.1.1']
+    
+Now even a valid login is won't work 
+
+# TODO: need to set REMOTE_ADDR somehow to not be localhost?
+
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = user_password
+    >>> anon_browser.getControl('Log in').click()
+    >>> 'This account has now been locked for security purposes.' in  anon_browser.contents
+    True
+
+Login's from localhost will still work however
+
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = user_password
+    >>> anon_browser.getControl('Log in').click()
+    >>> print browser.contents
+    <BLANKLINE>
+    ...You are now logged in...
+
+If there are proxies infront of zope you will have to ensure they set the ```X-Forwarded-For``` header.
+
+    >>> anon_browser.setHeader('X-Forwarded-For', '10.1.1.1, 192.168.1.1')
+
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = user_password
+    >>> anon_browser.getControl('Log in').click()
+    >>> print browser.contents
+    <BLANKLINE>
+    ...You are now logged in...
+
+If not from a valid IP then the login will fail
+
+    >>> anon_browser.setHeader('X-Forwarded-For', '2.2.2.2')
+
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = user_password
+    >>> anon_browser.getControl('Log in').click()
+    >>> print browser.contents
+    >>> 'This account has now been locked for security purposes.' in  anon_browser.contents
+    True        
+
 
 Manual Installation
 -------------------
