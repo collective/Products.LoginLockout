@@ -126,7 +126,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def remote_ip(self):
         if getattr(self,'_fake_client_ip', False):
             return '127.0.0.1-faked'
-        ip = self.REQUEST.get('HTTP_X_FORWARDED_FOR', '')
+        ip = self.REQUEST.get('HTTP_X_FORWARDED_FOR', '').split(',')[0].strip()
         if not ip:
             ip = self.REQUEST.get('REMOTE_ADDR', '')
         return ip
