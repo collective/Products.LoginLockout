@@ -49,13 +49,13 @@ def setUp(doctest):
                 registry = getUtility(IRegistry)
                 settings = registry.forInterface(ILoginLockoutSettings, prefix="Products.LoginLockout")
                 setattr(settings, key, value)
-                return
+                continue
             except ComponentLookupError:
                 pass
             try:
                 p_tool = getToolByName(portal, 'portal_properties')
                 p_tool.loginlockout_properties.setProperty(key, value)
-                return
+                continue
             except AttributeError:
                 raise
         commit()
