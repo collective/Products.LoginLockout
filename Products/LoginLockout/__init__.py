@@ -12,7 +12,9 @@ from Products.PluggableAuthService import registerMultiPlugin
 from plugin import LoginLockout
 from plugin import manage_addLoginLockout
 from plugin import manage_addLoginLockoutForm
+from zope.i18nmessageid import MessageFactory
 
+PloneMessageFactory = MessageFactory('plone')
 
 def initialize(context):
     """Initialize the LoginLockout plugin.

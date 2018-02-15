@@ -59,6 +59,25 @@ To Install
 
 Install into Plone via Add/Remove Products
 
+This will install and activate a two PAS plugins. It's very important the plugin is the top Challange plugin.
+
+   >>> pas = portal.acl_users
+   >>> registry = pas.plugins
+   >>> interface = registry._getInterfaceFromName('IChallengePlugin')
+   >>> registry.listPlugins(interface)
+   [('login_lockout_plugin', <LoginLockout at /plone/acl_users/login_lockout_plugin>)...]
+
+It will also install a plugin at the root of the zope instance. It's important this is also the top IAnonymousUserFactoryPlugin
+
+   >>> pas = portal.getPhysicalRoot().acl_users
+   >>> registry = pas.plugins
+   >>> interface = registry._getInterfaceFromName('IAnonymousUserFactoryPlugin')
+   >>> registry.listPlugins(interface)
+   [('login_lockout_plugin', <LoginLockout at /acl_users/login_lockout_plugin>)]
+
+
+
+
 To Use
 ------
 
@@ -148,7 +167,7 @@ The administrator can reset this persons account::
     >>> admin_browser.getControl('Reset selected accounts').click()
     >>> print admin_browser.contents
     <BLANKLINE>
-    ...<dd>Accounts were reset for these login names: test-user</dd>...
+    ...Accounts were reset for these login names: test-user...
 
 and now they can log in again::
 
@@ -172,11 +191,7 @@ each proxy otherwise this plugin will incorrectly use REMOTE_ADDR which will be 
 
 To enable this go into the ZMI and enter the ranges in the whitelist_ips property
 
-    >>> range = '10.1.1.1'
-
-    >>> admin_browser.open(portal.absolute_url()+'/acl_users/login_lockout_plugin/manage_propertiesForm')
-    >>> admin_browser.getControl(name='_whitelist_ips:lines').value = range
-    >>> admin_browser.getControl(name='manage_editProperties:method').click()
+    >>> config_property( whitelist_ips = u'10.1.1.1' )
 
 If there are proxies infront of zope you will have to ensure they set the ```X-Forwarded-For``` header.
 Note only the first forwarded IP will be used.
@@ -211,15 +226,11 @@ If not from a valid IP then the login will fail
 
 You can also set IP ranges e.g.
 
-    >>> range = """
+    >>> config_property( whitelist_ips = u"""10.1.1.1
     ... 10.1.1.1/24
     ... 2.2.2.2/24
-    ... """
+    ... """)
 
-
-    >>> admin_browser.open(portal.absolute_url()+'/acl_users/login_lockout_plugin/manage_propertiesForm')
-    >>> admin_browser.getControl(name='_whitelist_ips:lines').value = range
-    >>> admin_browser.getControl(name='manage_editProperties:method').click()
 
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id

@@ -1,9 +1,12 @@
 
 import unittest
 
+from Products.CMFCore.utils import getToolByName
+from plone.registry.interfaces import IRegistry
+from transaction import commit
 from zope.testing import doctest
 from zope.testing import doctestunit
-from zope.component import testing
+from zope.component import testing, getUtility, ComponentLookupError
 #import DateTime
 #from DateTime.interfaces import DateTimeError, SyntaxError, DateError, TimeError
 #from plone.login.interfaces import IPloneLoginLayer
@@ -21,8 +24,7 @@ from plone.testing.z2 import ZSERVER_FIXTURE
 #from transaction import commit
 #from unittest2 import TestCase
 import Products.LoginLockout
-
-
+from Products.LoginLockout.interfaces import ILoginLockoutSettings
 
 FIXTURE = PloneWithPackageLayer(
     zcml_package=Products.LoginLockout,
@@ -52,6 +54,27 @@ def setUp(doctest):
     #self.portal_url = 'http://nohost/plone'
     user_id = TEST_USER_NAME
     user_password = TEST_USER_PASSWORD
+
+    def config_property(**kw):
+        #admin_browser.open(portal.absolute_url() + '/acl_users/login_lockout_plugin/manage_propertiesForm')
+        #admin_browser.getControl(name='_whitelist_ips:lines').value = range
+        #admin_browser.getControl(name='manage_editProperties:method').click()
+        for key,value in kw.items():
+            try:
+                registry = getUtility(IRegistry)
+                settings = registry.forInterface(ILoginLockoutSettings)
+                setattr(settings, key, value)
+                return
+            except ComponentLookupError:
+                pass
+            try:
+                p_tool = getToolByName(portal, 'portal_properties')
+                p_tool.loginlockout_properties.setProperty(key, value)
+                return
+            except AttributeError:
+                raise
+        commit()
+
     doctest.globs.update(locals())
     #alsoProvides(self.request, IPloneFormLayer)
     #alsoProvides(self.request, IPloneLoginLayer)

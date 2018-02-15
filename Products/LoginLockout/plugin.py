@@ -19,8 +19,14 @@
    The admin can view and reset attempts via the ZMI at any time
 """
 import sys
+
+from Products.CMFPlone.interfaces import ILoginSchema
 from ipaddress import ip_address, ip_network
+from plone.registry.interfaces import IRegistry
+from zope.component import getUtility, ComponentLookupError
 from zope.component.hooks import getSite
+
+from Products.LoginLockout.interfaces import ILoginLockoutSettings
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
 
@@ -124,7 +130,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._whitelist_ips = []
 
     def remote_ip(self):
-        if getattr(self,'_fake_client_ip', False):
+        if hasattr(self,'_fake_client_ip') and self._fake_client_ip:
             return '127.0.0.1-faked'
         ip = self.REQUEST.get('HTTP_X_FORWARDED_FOR', '').split(',')[0].strip()
         if not ip:
@@ -147,6 +153,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         login = credentials.get('login')
         password = credentials.get('password')
+
 
         if None in (login, password, pas_instance):
             return None
@@ -284,15 +291,40 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             count = 1
         return count, last, IP
 
-    def getResetPeriod(self):
-        p_tool = getToolByName(self, 'portal_properties')
-        return p_tool.loginlockout_properties.getProperty('reset_period',
-                                                          self._reset_period)
 
+    def _getsetting(self, setting):
+
+        default = getattr(self, '_'+setting)
+
+        try:
+            registry = getUtility(IRegistry)
+            settings = registry.forInterface(ILoginLockoutSettings)
+            return getattr(settings, setting)
+        except ComponentLookupError:
+            pass
+        try:
+            p_tool = getToolByName(self, 'portal_properties')
+            return p_tool.loginlockout_properties.getProperty(setting, default)
+        except AttributeError:
+            pass
+        return default
+
+
+    security.declarePrivate('getResetPeriod')
+    def getResetPeriod(self):
+        return self._getsetting('reset_period')
+
+    security.declarePrivate('getMaxAttempts')
     def getMaxAttempts(self):
-        p_tool = getToolByName(self, 'portal_properties')
-        return p_tool.loginlockout_properties.getProperty('max_attempts',
-                                                          self._max_attempts)
+        return self._getsetting('max_attempts')
+
+    security.declarePrivate('getWhitelistIPs')
+    def getWhitelistIPs(self):
+        value =  self._getsetting('whitelist_ips')
+        if isinstance(value, basestring):
+            return (x.strip() for x in value.split('\n') if x.strip())
+        else:
+            return value
 
     security.declarePrivate('isLockedout')
 
@@ -303,11 +335,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
     security.declarePrivate('isIPLocked')
     def isIPLocked(self, login, IP):
-        try:
-            whitelist_ips = self._whitelist_ips
-        except AttributeError:
-            # The attribute is not there
-            return False
+
+        whitelist_ips = self.getWhitelistIPs()
 
         if not whitelist_ips:
             # Don't do the check if there is no whitelist set
