@@ -46,7 +46,8 @@ class Fixture(PloneSandboxLayer):
 #             **{'email_from_address': 'mdummy@address.com'})
 #
 
-#FIXTURE = Fixture()
+# FIXTURE = Fixture()
+
 
 FIXTURE = PloneWithPackageLayer(
     zcml_package=Products.LoginLockout,
@@ -60,31 +61,33 @@ INTEGRATION_TESTING = IntegrationTesting(
     name='Products.LoginLockout:Integration',
 )
 FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(FIXTURE,ZSERVER_FIXTURE),
+    bases=(FIXTURE, ZSERVER_FIXTURE),
     name='Products.LoginLockout:Functional',
 )
 ROBOT_TESTING = Layer(name='Products.LoginLockout:Robot')
 
-def setUp(doctest):
-    #self.app = self.layer['app']
-    #self.portal.invokeFactory('Folder', 'news')
-    installProduct('LoginLockout')
 
+def setUp(doctest):
+    """ """
     layer = doctest.globs['layer']
     app = layer['app']
     portal = layer['portal']
+
+    # Let's install the product
+    installProduct(app, 'Products.LoginLockout')
+
+    # Adds browsers for testing
     anon_browser = Browser(app)
     admin_browser = Browser(app)
     admin_browser.addHeader('Authorization', 'Basic admin:secret')
 
-    #self.portal_url = 'http://nohost/plone'
     user_id = TEST_USER_NAME
     user_password = TEST_USER_PASSWORD
     doctest.globs.update(locals())
-    #alsoProvides(self.request, IPloneFormLayer)
-    #alsoProvides(self.request, IPloneLoginLayer)
-    #self.afterSetUp()
-    #commit()
+    # alsoProvides(self.request, IPloneFormLayer)
+    # alsoProvides(self.request, IPloneLoginLayer)
+    # self.afterSetUp()
+    # commit()
 #
 #     def afterSetUp(self):
 #        # sm = getSiteManager(context=self.portal)
@@ -106,15 +109,18 @@ def setUp(doctest):
     from Products.SiteErrorLog.SiteErrorLog import SiteErrorLog
     SiteErrorLog.raising = raising
 
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTests([
+
         layered(doctest.DocFileSuite(
-            '../../README.rst',setUp = setUp,
+            '../../README.rst',
+            setUp=setUp,
             optionflags=doctest.REPORT_ONLY_FIRST_FAILURE |
-                        doctest.NORMALIZE_WHITESPACE |
-                        doctest.ELLIPSIS),
-        layer=FUNCTIONAL_TESTING,
+            doctest.NORMALIZE_WHITESPACE |
+            doctest.ELLIPSIS),
+            layer=FUNCTIONAL_TESTING,
         ),
     ])
     return suite
