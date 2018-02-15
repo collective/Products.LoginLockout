@@ -32,4 +32,3 @@ class ILoginLockoutSettings(Interface):
         default=False,
         required=False
     )
-

@@ -5,6 +5,7 @@ Changes
 ------------------
 
 - Made changes so the basics works in plone 5 [djay]
+- Plone 5 now uses registry for config [djay]
 - Included the ability to restrict requests from certain IP networks [djay]
 
 
