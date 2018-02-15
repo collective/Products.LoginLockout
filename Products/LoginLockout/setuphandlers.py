@@ -40,9 +40,6 @@ def install(portal):
     for (pas, interface) in move_to_top_for.iteritems():
         movePluginToTop(pas, PLUGIN_ID, interface, out)
 
-    # add tool
-    addTool(portal, PROJECTNAME, TOOL_ID)
-
     # install configlet
 
     print >> out, "Successfully installed %s." % PROJECTNAME
@@ -100,14 +97,6 @@ def movePluginToTop(pas, plugin_id, interface_name, out):
     while registry.listPlugins(interface)[0][0] != plugin_id:
         registry.movePluginsUp(interface, [plugin_id])
     print >> out, "Moved " + plugin_id + " to top in " + interface_name + "."
-
-
-def addTool(portal, product_name, tool_id):
-    try:
-        ctool = getToolByName(portal, tool_id)  # NOQA
-    except AttributeError:
-        portal.manage_addProduct[product_name].manage_addTool(
-            product_name, None)
 
 
 def installConfiglets(portal, out, configlets, uninstall=False):

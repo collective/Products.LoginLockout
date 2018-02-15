@@ -37,3 +37,7 @@ htmlcov/
 .DS_Store
 include/
 lib/
+
+# IDE
+/.idea
+/*.sublime-*
