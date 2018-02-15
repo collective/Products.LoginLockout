@@ -75,10 +75,11 @@ Now we'll open up a new browser and attempt to login::
     <BLANKLINE>
     ...You are now logged in...
 
+    >>> anon_browser.open(portal.absolute_url()+'/logout')
+
 
 Let's try again with another password::
 
-    >>> anon_browser.open(portal.absolute_url()+'/logout')
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = 'notpassword'
@@ -105,7 +106,6 @@ We've installed a Control panel to monitor the login attempts
 
 If we try twice more we will be locked out::
 
-    >>> anon_browser.open(portal.absolute_url()+'/logout')
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = 'notpassword2'
@@ -164,16 +164,18 @@ IP Lockdown
 
 You can optionally ensure logins are only possible for certain IP address ranges. 
 
-By default IP Locking is disabled. 
+By default IP Locking is disabled.
+
+NOTE: If you are using Zope behind a proxy then you must enable X-Forward-For headers on
+each proxy otherwise this plugin will incorrectly use REMOTE_ADDR which will be a local IP.
 
 To enable this go into the ZMI and enter the ranges in the whitelist_ips property
 
-    >>> admin_browser.open(portal.absolute_url()+'/acl_users/login_lockout_plugin/manage_propertiesForm')
-    >>> admin_browser.getControl(name='_whitelist_ips:lines').value = '10.1.1.1'
-    >>> admin_browser.getControl(name='manage_editProperties:method').click()
+    >>> range = '10.1.1.1'
 
-    >>> portal.acl_users.login_lockout_plugin._whitelist_ips
-    ('10.1.1.1',)
+    >>> admin_browser.open(portal.absolute_url()+'/acl_users/login_lockout_plugin/manage_propertiesForm')
+    >>> admin_browser.getControl(name='_whitelist_ips:lines').value = range
+    >>> admin_browser.getControl(name='manage_editProperties:method').click()
 
 If there are proxies infront of zope you will have to ensure they set the ```X-Forwarded-For``` header.
 Note only the first forwarded IP will be used.
@@ -188,10 +190,9 @@ Note only the first forwarded IP will be used.
     <BLANKLINE>
     ...You are now logged in...
 
-Remove 'X-Forwarded-For' value
+    >>> anon_browser.open(portal.absolute_url()+'/logout')
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
-    >>> anon_browser.mech_browser.addheaders.pop()
-    ('X-Forwarded-For', '10.1.1.1, 192.168.1.1')
 
 If not from a valid IP then the login will fail
 
@@ -201,17 +202,23 @@ If not from a valid IP then the login will fail
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> 'This account has now been locked for security purposes.' in  anon_browser.contents
-    True
-    
-You can also set IP ranges
+    Traceback (most recent call last):
+    ...
+    Unauthorized: Unauthorized()
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+
+You can also set IP ranges e.g.
+
+    >>> range = """
+    ... 10.1.1.1/24
+    ... 2.2.2.2/24
+    ... """
+
 
     >>> admin_browser.open(portal.absolute_url()+'/acl_users/login_lockout_plugin/manage_propertiesForm')
-    >>> admin_browser.getControl(name='_whitelist_ips:lines').value = '10.1.1.1/24\n2.2.2.2/24'
+    >>> admin_browser.getControl(name='_whitelist_ips:lines').value = range
     >>> admin_browser.getControl(name='manage_editProperties:method').click()
-    
-    >>> portal.acl_users.login_lockout_plugin._whitelist_ips
-    ('10.1.1.1/24', '2.2.2.2/24')
 
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
@@ -220,6 +227,9 @@ You can also set IP ranges
     >>> print anon_browser.contents
     <BLANKLINE>
     ...You are now logged in...
+
+    >>> anon_browser.open(portal.absolute_url()+'/logout')
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
 
 Manual Installation

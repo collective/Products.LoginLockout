@@ -315,7 +315,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         client = ip_address(unicode(IP))
         #TODO: could support rules that have different IP ranges for different groups
-        for range in whitelist_ips + ['127.0.0.1']:
+        for range in whitelist_ips + ('127.0.0.1',):
             if client in ip_network(unicode(range)):
                 return False
         return True
