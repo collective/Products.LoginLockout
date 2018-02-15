@@ -24,30 +24,6 @@ import Products.LoginLockout
 
 
 
-class Fixture(PloneSandboxLayer):
-
-    defaultBases = (PLONE_FIXTURE,)
-
-#     def setUpZope(self, app, configurationContext):
-#         # Load ZCML
-#         import Products.LoginLockout
-#         self.loadZCML(
-#             package=Products.LoginLockout, context=configurationContext)
-#
-#     def setUpPloneSite(self, portal):
-#         self.applyProfile(portal, 'Products.LoginLockout:default')
-#         portal.acl_users.userFolderAddUser('admin',
-#                                            'secret',
-#                                            ['Manager'],
-#                                            [])
-#         login(portal, 'admin')
-#         setRoles(portal, TEST_USER_ID, ['Manager'])
-#         portal.manage_changeProperties(
-#             **{'email_from_address': 'mdummy@address.com'})
-#
-
-#FIXTURE = Fixture()
-
 FIXTURE = PloneWithPackageLayer(
     zcml_package=Products.LoginLockout,
     zcml_filename='configure.zcml',
@@ -66,10 +42,6 @@ FUNCTIONAL_TESTING = FunctionalTesting(
 ROBOT_TESTING = Layer(name='Products.LoginLockout:Robot')
 
 def setUp(doctest):
-    #self.app = self.layer['app']
-    #self.portal.invokeFactory('Folder', 'news')
-    installProduct('LoginLockout')
-
     layer = doctest.globs['layer']
     app = layer['app']
     portal = layer['portal']
