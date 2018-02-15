@@ -20,6 +20,7 @@ Requires:
 
 - (optional) PlonePAS and its dependencies
 
+- (optional) Plone 4.3.x, 5.0.x or 5.1.x
 
 Features
 --------
@@ -343,15 +344,20 @@ Please observe the following:
 TODO
 ----
 Things that could be done on the LoginLockout product:
-- optional use of registry. If registry settings found it overrides plugin settings.
-  Then modify these settings in a configlet.
-  Get rid of portal_properties. loginlockout is supposed to work with or without plone.
+
+- upgrade step for moving portal_properties to registry. Keep ZMI so can be used without plone
+
+- Move skins to browser views
+
+- get rid of overrides for pw resets. Should be able to do in PAS or using events
 
 - optional path to store attempts db so it can be stored in historyless db.
 
 - perhaps have a short lock or a captcha to prevent rapid attempts instead of a full lockout
 
 - Only restrict certain groups to certain IP networks e.g. administrators. Maybe roles too?
+
+-
 
 
 Copyright, License, Author
