@@ -44,6 +44,7 @@ there you can changes these defaults:
 
 - allowed incorrect attempts: 3
 - reset period: 24 hours
+- whitelist_ips: [] # any origin IP is allowed
 
 
 Details
