@@ -8,7 +8,6 @@ python:
 env:
   - PLONE=4.3
   - PLONE=5.0
-  - PLONE=5.1
 matrix:
   exclude:
     - python: 2.7

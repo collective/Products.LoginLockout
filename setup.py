@@ -22,6 +22,7 @@ setup(
         "Environment :: Web Environment",
         "Framework :: Plone :: 4.3",
         "Framework :: Plone :: 5.0",
+        "Framework :: Plone :: 5.1",
         "Framework :: Zope2",
         "Intended Audience :: System Administrators",
         "License :: OSI Approved :: BSD License",
