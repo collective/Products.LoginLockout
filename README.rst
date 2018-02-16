@@ -20,6 +20,7 @@ Requires:
 
 - (optional) PlonePAS and its dependencies
 
+- (optional) Plone 4.3.x, 5.0.x or 5.1.x
 
 Features
 --------
@@ -44,6 +45,7 @@ there you can changes these defaults:
 
 - allowed incorrect attempts: 3
 - reset period: 24 hours
+- whitelist_ips: [] # any origin IP is allowed
 
 
 Details
@@ -57,6 +59,25 @@ To Install
 ----------
 
 Install into Plone via Add/Remove Products
+
+This will install and activate a two PAS plugins. It's very important the plugin is the top Challange plugin.
+
+   >>> pas = portal.acl_users
+   >>> registry = pas.plugins
+   >>> interface = registry._getInterfaceFromName('IChallengePlugin')
+   >>> registry.listPlugins(interface)
+   [('login_lockout_plugin', <LoginLockout at /plone/acl_users/login_lockout_plugin>)...]
+
+It will also install a plugin at the root of the zope instance. It's important this is also the top IAnonymousUserFactoryPlugin
+
+   >>> pas = portal.getPhysicalRoot().acl_users
+   >>> registry = pas.plugins
+   >>> interface = registry._getInterfaceFromName('IAnonymousUserFactoryPlugin')
+   >>> registry.listPlugins(interface)
+   [('login_lockout_plugin', <LoginLockout at /acl_users/login_lockout_plugin>)]
+
+
+
 
 To Use
 ------
@@ -75,10 +96,11 @@ Now we'll open up a new browser and attempt to login::
     <BLANKLINE>
     ...You are now logged in...
 
+    >>> anon_browser.open(portal.absolute_url()+'/logout')
+
 
 Let's try again with another password::
 
-    >>> anon_browser.open(portal.absolute_url()+'/logout')
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = 'notpassword'
@@ -95,18 +117,16 @@ We've installed a Control panel to monitor the login attempts
 
     >>> admin_browser.open(portal.absolute_url())
     >>> admin_browser.getLink('Site Setup').click()
-
     >>> admin_browser.getLink('LoginLockout').click()
     >>> print admin_browser.contents
     <BLANKLINE>
-    ...<span>user</span>...
-    ...<span>1</span>...
+    ...<td>test-user</td>...
+    ...<td>1</td>...
 
 
 
 If we try twice more we will be locked out::
 
-    >>> anon_browser.open(portal.absolute_url()+'/logout')
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = 'notpassword2'
@@ -131,8 +151,9 @@ Now even the correct password won't work::
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> 'This account has now been locked for security purposes.' in  anon_browser.contents
-    True
+    Traceback (most recent call last):
+    ...
+    Unauthorized: Unauthorized()
 
 
 The administrator can reset this persons account::
@@ -141,13 +162,13 @@ The administrator can reset this persons account::
     >>> admin_browser.getLink('LoginLockout').click()
     >>> print admin_browser.contents
     <BLANKLINE>
-    ...<span>user</span>...
-    ...<span>3</span>...
-    >>> admin_browser.getControl(name='reset_ploneusers:list').value = ['user']
+    ...<td>test-user</td>...
+    ...<td>3</td>...
+    >>> admin_browser.getControl(name='reset_nonploneusers:list').value = ['test-user']
     >>> admin_browser.getControl('Reset selected accounts').click()
     >>> print admin_browser.contents
     <BLANKLINE>
-    ...Accounts were reset for these login names: user...
+    ...Accounts were reset for these login names: test-user...
 
 and now they can log in again::
 
@@ -155,7 +176,7 @@ and now they can log in again::
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> print browser.contents
+    >>> print anon_browser.contents
     <BLANKLINE>
     ...You are now logged in...
 
@@ -164,84 +185,64 @@ IP Lockdown
 
 You can optionally ensure logins are only possible for certain IP address ranges. 
 
-By default IP Locking is disabled. 
+By default IP Locking is disabled.
 
-    >>> anon_browser.setHeader('REMOTE_ADDR', '2.2.2.2')
-
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
-    >>> anon_browser.getControl('Login Name').value = user_id
-    >>> anon_browser.getControl('Password').value = user_password
-    >>> anon_browser.getControl('Log in').click()
-    >>> print browser.contents
-    >>> print browser.contents
-    <BLANKLINE>
-    ...You are now logged in...       
-
+NOTE: If you are using Zope behind a proxy then you must enable X-Forward-For headers on
+each proxy otherwise this plugin will incorrectly use REMOTE_ADDR which will be a local IP.
 
 To enable this go into the ZMI and enter the ranges in the whitelist_ips property
 
-    >>> portal.acl_users.login_lockout._whitelist_ips = ['10.1.1.1']
-    
-Now even a valid login is won't work 
-
-# TODO: need to set REMOTE_ADDR somehow to not be localhost?
-
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
-    >>> anon_browser.getControl('Login Name').value = user_id
-    >>> anon_browser.getControl('Password').value = user_password
-    >>> anon_browser.getControl('Log in').click()
-    >>> 'This account has now been locked for security purposes.' in  anon_browser.contents
-    True
-
-Login's from localhost will still work however
-
-    >>> anon_browser.setHeader('REMOTE_ADDR', '127.0.0.1')
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
-    >>> anon_browser.getControl('Login Name').value = user_id
-    >>> anon_browser.getControl('Password').value = user_password
-    >>> anon_browser.getControl('Log in').click()
-    >>> print browser.contents
-    <BLANKLINE>
-    ...You are now logged in...
+    >>> config_property( whitelist_ips = u'10.1.1.1' )
 
 If there are proxies infront of zope you will have to ensure they set the ```X-Forwarded-For``` header.
 Note only the first forwarded IP will be used.
 
-    >>> anon_browser.setHeader('X-Forwarded-For', '10.1.1.1, 192.168.1.1')
+    >>> anon_browser.addHeader('X-Forwarded-For', '10.1.1.1, 192.168.1.1')
 
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> print browser.contents
+    >>> print anon_browser.contents
     <BLANKLINE>
     ...You are now logged in...
+
+    >>> anon_browser.open(portal.absolute_url()+'/logout')
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+
 
 If not from a valid IP then the login will fail
 
-    >>> anon_browser.setHeader('X-Forwarded-For', '2.2.2.2')
+    >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
 
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> print browser.contents
-    >>> 'This account has now been locked for security purposes.' in  anon_browser.contents
-    True        
+    Traceback (most recent call last):
+    ...
+    Unauthorized: Unauthorized()
 
-You can also set IP ranges
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
-    >>> portal.acl_users.login_lockout._whitelist_ips = ['10.1.1.1/24','2.2.2.2/24']
+You can also set IP ranges e.g.
+
+    >>> config_property( whitelist_ips = u"""10.1.1.1
+    ... 10.1.1.1/24
+    ... 2.2.2.2/24
+    ... """)
+
 
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> print browser.contents
+    >>> print anon_browser.contents
     <BLANKLINE>
     ...You are now logged in...
 
-
+    >>> anon_browser.open(portal.absolute_url()+'/logout')
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
 
 Manual Installation
@@ -343,15 +344,20 @@ Please observe the following:
 TODO
 ----
 Things that could be done on the LoginLockout product:
-- optional use of registry. If registry settings found it overrides plugin settings.
-  Then modify these settings in a configlet.
-  Get rid of portal_properties. loginlockout is supposed to work with or without plone.
+
+- upgrade step for moving portal_properties to registry. Keep ZMI so can be used without plone
+
+- Move skins to browser views
+
+- get rid of overrides for pw resets. Should be able to do in PAS or using events
 
 - optional path to store attempts db so it can be stored in historyless db.
 
 - perhaps have a short lock or a captcha to prevent rapid attempts instead of a full lockout
 
 - Only restrict certain groups to certain IP networks e.g. administrators. Maybe roles too?
+
+-
 
 
 Copyright, License, Author

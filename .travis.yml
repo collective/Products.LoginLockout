@@ -4,11 +4,11 @@ cache:
   - $HOME/buildout-cache
 language: python
 python:
-  - 2.6
   - 2.7
 env:
   - PLONE=4.3
   - PLONE=5.0
+  - PLONE=5.1
 matrix:
   exclude:
     - python: 2.7
@@ -25,7 +25,6 @@ install:
   - python bootstrap.py -c travis.cfg
   - bin/buildout -c travis.cfg annotate
   - bin/buildout -c travis.cfg -N
-#script: bin/code-analysis && bin/test
-script: bin/test
+script: bin/code-analysis && bin/test
 after_success:
   - bin/coverage.sh 75 && pip install -q coveralls==0.5 && coveralls || true

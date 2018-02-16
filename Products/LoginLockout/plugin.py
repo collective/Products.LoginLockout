@@ -1,3 +1,31 @@
+from ipaddress import ip_address, ip_network
+from plone.registry.interfaces import IRegistry
+from zope.component import getUtility, ComponentLookupError
+from zope.component.hooks import getSite
+
+from Products.LoginLockout.interfaces import ILoginLockoutSettings
+from AccessControl import AuthEncoding
+from AccessControl import ClassSecurityInfo
+from AccessControl.class_init import InitializeClass
+from BTrees.OOBTree import OOBTree
+from DateTime import DateTime
+from OFS.Cache import Cacheable
+from OFS.Folder import Folder
+from Products.CMFCore.utils import getToolByName
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from Products.PluggableAuthService.interfaces.plugins import IAnonymousUserFactoryPlugin  # NOQA
+from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # NOQA
+from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
+from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin  # NOQA
+from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdatePlugin  # NOQA
+from Products.PluggableAuthService.permissions import ManageUsers
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from zExceptions import Unauthorized
+import logging
+
+__author__ = "Dylan Jay <software@pretaweb.com>"
+
 
 """LoginLockout.
    Locks out the user when they make too many different unsuccessful login
@@ -18,31 +46,7 @@
 
    The admin can view and reset attempts via the ZMI at any time
 """
-import sys
-from ipaddress import ip_address, ip_network
-from zope.component.hooks import getSite
 
-__author__ = "Dylan Jay <software@pretaweb.com>"
-
-from AccessControl import AuthEncoding
-from AccessControl import ClassSecurityInfo
-from AccessControl.class_init import InitializeClass
-from BTrees.OOBTree import OOBTree
-from DateTime import DateTime
-from OFS.Cache import Cacheable
-from OFS.Folder import Folder
-from Products.CMFCore.utils import getToolByName
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.PluggableAuthService.interfaces.plugins import IAnonymousUserFactoryPlugin  # NOQA
-from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # NOQA
-from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
-from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin  # NOQA
-from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdatePlugin  # NOQA
-from Products.PluggableAuthService.permissions import ManageUsers
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-from Products.PluggableAuthService.utils import classImplements
-from zExceptions import Unauthorized
-import logging
 
 log = logging.getLogger('LoginLockout')
 
@@ -93,16 +97,16 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
          'type': 'float',
          'mode': 'w',
          },
-        { 'id'    : '_whitelist_ips',
-           'label' : 'Restrict to IP ranges (127.0.0.1 always allowed)',
-           'type'  : 'lines',
-           'mode'  : 'w'
+        {'id': '_whitelist_ips',
+         'label': 'Restrict to IP ranges (127.0.0.1 always allowed)',
+         'type': 'lines',
+         'mode': 'w'
          },
-        { 'id'    : '_fake_client_ip',
-           'label' : 'Ignore HTTP_X_FORWARDED_FOR',
-           'type'  : 'boolean',
-           'mode'  : 'w'
-        }
+        {'id': '_fake_client_ip',
+         'label': 'Ignore HTTP_X_FORWARDED_FOR',
+         'type': 'boolean',
+         'mode': 'w'
+         },
     )
 
     lockout = PageTemplateFile(
@@ -124,7 +128,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self._whitelist_ips = []
 
     def remote_ip(self):
-        if getattr(self,'_fake_client_ip', False):
+        if hasattr(self, '_fake_client_ip') and self._fake_client_ip:
             return '127.0.0.1-faked'
         ip = self.REQUEST.get('HTTP_X_FORWARDED_FOR', '').split(',')[0].strip()
         if not ip:
@@ -153,10 +157,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         IP = self.remote_ip()
         if self.isIPLocked(login, unicode(IP)):
-            #TODO: should there be some notification login is blocked due to IP?
+            # TODO: should there be some notification login is blocked due to IP?
             log.info("Attempt denied due to IP: %s, %s ", login, IP)
             raise Unauthorized
-
 
         if self.isLockedout(login):
             request['portal_status_message'] = (
@@ -256,7 +259,6 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             count += 1
         IP = self.remote_ip()
         log.info("user '%s' attempt #%i %s last: %s", login, count, IP, last)
-        #sys.stderr.write(login+' '+str(count)+'\n')
         last = DateTime()
         reference = AuthEncoding.pw_encrypt(password)
         root._login_attempts[login] = (count, last, IP, reference)
@@ -284,15 +286,43 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             count = 1
         return count, last, IP
 
+    def _getsetting(self, setting):
+
+        default = getattr(self, '_' + setting)
+
+        # TODO: Need tu add an upgrade step for properties to registry
+
+        try:
+            registry = getUtility(IRegistry)
+            settings = registry.forInterface(ILoginLockoutSettings, prefix="Products.LoginLockout")
+            return getattr(settings, setting)
+        except ComponentLookupError:
+            pass
+        try:
+            p_tool = getToolByName(self, 'portal_properties')
+            return p_tool.loginlockout_properties.getProperty(setting, default)
+        except AttributeError:
+            pass
+        return default
+
+    security.declarePrivate('getResetPeriod')
+
     def getResetPeriod(self):
-        p_tool = getToolByName(self, 'portal_properties')
-        return p_tool.loginlockout_properties.getProperty('reset_period',
-                                                          self._reset_period)
+        return self._getsetting('reset_period')
+
+    security.declarePrivate('getMaxAttempts')
 
     def getMaxAttempts(self):
-        p_tool = getToolByName(self, 'portal_properties')
-        return p_tool.loginlockout_properties.getProperty('max_attempts',
-                                                          self._max_attempts)
+        return self._getsetting('max_attempts')
+
+    security.declarePrivate('getWhitelistIPs')
+
+    def getWhitelistIPs(self):
+        value = self._getsetting('whitelist_ips')
+        if isinstance(value, basestring):
+            return [x.strip() for x in value.split('\n') if x.strip()]
+        else:
+            return value
 
     security.declarePrivate('isLockedout')
 
@@ -302,25 +332,21 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         return count >= root.getMaxAttempts()
 
     security.declarePrivate('isIPLocked')
-    def isIPLocked(self, login, IP):
-        try:
-            whitelist_ips = self._whitelist_ips
-        except AttributeError:
-            # The attribute is not there
-            return False
+
+    def isIPLocked(self, login, ip):
+
+        whitelist_ips = self.getWhitelistIPs()
 
         if not whitelist_ips:
             # Don't do the check if there is no whitelist set
             return False
 
-        client = ip_address(unicode(IP))
-        #TODO: could support rules that have different IP ranges for different groups
-        for range in whitelist_ips + ['127.0.0.1']:
+        client = ip_address(unicode(ip))
+        # TODO: could support rules that have different IP ranges for different groups
+        for range in list(whitelist_ips) + ['127.0.0.1']:
             if client in ip_network(unicode(range)):
                 return False
         return True
-
-
 
     security.declarePrivate('resetAttempts')
 
@@ -354,10 +380,10 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         (
             {'label': 'Users',
                 'action': 'manage_users', },
-        )
-        + BasePlugin.manage_options[:1]
-        + Folder.manage_options[:1]
-        + Folder.manage_options[2:]
+        ) +
+        BasePlugin.manage_options[:1] +
+        Folder.manage_options[:1] +
+        Folder.manage_options[2:]
     )
 
     security.declareProtected(ManageUsers, 'manage_users')
@@ -457,7 +483,6 @@ def logged_in_handler(event):
     Listen to loggedin event so we can reset counter
     """
 
-
     user = event.object
     portal = getSite()
     if getattr(user, 'getUserId', None) is None:
@@ -465,7 +490,6 @@ def logged_in_handler(event):
     else:
         userid = user.getUserId()
 
-    #TODO: don't hardcode name?
+    # TODO: don't hardcode name?
     if hasattr(portal.acl_users, 'login_lockout_plugin'):
         portal.acl_users.login_lockout_plugin.setSuccessfulAttempt(userid)
-

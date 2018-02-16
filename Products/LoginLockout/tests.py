@@ -1,52 +1,18 @@
-
 import unittest
-
+from Products.CMFCore.utils import getToolByName
+from plone.registry.interfaces import IRegistry
+from transaction import commit
 from zope.testing import doctest
-from zope.testing import doctestunit
-from zope.component import testing
-#import DateTime
-#from DateTime.interfaces import DateTimeError, SyntaxError, DateError, TimeError
-#from plone.login.interfaces import IPloneLoginLayer
-# -*- coding: utf-8 -*-
+from zope.component import getUtility, ComponentLookupError
 from plone.app.testing import FunctionalTesting, TEST_USER_NAME
 from plone.app.testing import IntegrationTesting
-from plone.app.testing import PLONE_FIXTURE
-from plone.app.testing import PloneSandboxLayer
-from plone.app.testing import TEST_USER_ID, TEST_USER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.testing import PloneWithPackageLayer
 from plone.testing import Layer, layered
-from plone.testing.z2 import Browser, installProduct
+from plone.testing.z2 import Browser
 from plone.testing.z2 import ZSERVER_FIXTURE
-#from Testing.ZopeTestCase import FunctionalTestCase
-#from transaction import commit
-#from unittest2 import TestCase
 import Products.LoginLockout
-
-
-
-class Fixture(PloneSandboxLayer):
-
-    defaultBases = (PLONE_FIXTURE,)
-
-#     def setUpZope(self, app, configurationContext):
-#         # Load ZCML
-#         import Products.LoginLockout
-#         self.loadZCML(
-#             package=Products.LoginLockout, context=configurationContext)
-#
-#     def setUpPloneSite(self, portal):
-#         self.applyProfile(portal, 'Products.LoginLockout:default')
-#         portal.acl_users.userFolderAddUser('admin',
-#                                            'secret',
-#                                            ['Manager'],
-#                                            [])
-#         login(portal, 'admin')
-#         setRoles(portal, TEST_USER_ID, ['Manager'])
-#         portal.manage_changeProperties(
-#             **{'email_from_address': 'mdummy@address.com'})
-#
-
-#FIXTURE = Fixture()
+from Products.LoginLockout.interfaces import ILoginLockoutSettings
 
 FIXTURE = PloneWithPackageLayer(
     zcml_package=Products.LoginLockout,
@@ -60,16 +26,13 @@ INTEGRATION_TESTING = IntegrationTesting(
     name='Products.LoginLockout:Integration',
 )
 FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(FIXTURE,ZSERVER_FIXTURE),
+    bases=(FIXTURE, ZSERVER_FIXTURE),
     name='Products.LoginLockout:Functional',
 )
 ROBOT_TESTING = Layer(name='Products.LoginLockout:Robot')
 
-def setUp(doctest):
-    #self.app = self.layer['app']
-    #self.portal.invokeFactory('Folder', 'news')
-    installProduct('LoginLockout')
 
+def setUp(doctest):
     layer = doctest.globs['layer']
     app = layer['app']
     portal = layer['portal']
@@ -77,14 +40,27 @@ def setUp(doctest):
     admin_browser = Browser(app)
     admin_browser.addHeader('Authorization', 'Basic admin:secret')
 
-    #self.portal_url = 'http://nohost/plone'
     user_id = TEST_USER_NAME
     user_password = TEST_USER_PASSWORD
+
+    def config_property(**kw):
+        for key, value in kw.items():
+            try:
+                registry = getUtility(IRegistry)
+                settings = registry.forInterface(ILoginLockoutSettings, prefix="Products.LoginLockout")
+                setattr(settings, key, value)
+                continue
+            except ComponentLookupError:
+                pass
+            try:
+                p_tool = getToolByName(portal, 'portal_properties')
+                p_tool.loginlockout_properties.setProperty(key, value)
+                continue
+            except AttributeError:
+                raise
+        commit()
+
     doctest.globs.update(locals())
-    #alsoProvides(self.request, IPloneFormLayer)
-    #alsoProvides(self.request, IPloneLoginLayer)
-    #self.afterSetUp()
-    #commit()
 #
 #     def afterSetUp(self):
 #        # sm = getSiteManager(context=self.portal)
@@ -106,15 +82,14 @@ def setUp(doctest):
     from Products.SiteErrorLog.SiteErrorLog import SiteErrorLog
     SiteErrorLog.raising = raising
 
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTests([
         layered(doctest.DocFileSuite(
-            '../../README.rst',setUp = setUp,
-            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE |
-                        doctest.NORMALIZE_WHITESPACE |
-                        doctest.ELLIPSIS),
-        layer=FUNCTIONAL_TESTING,
+            '../../README.rst', setUp=setUp,
+            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE | doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
+            layer=FUNCTIONAL_TESTING,
         ),
     ])
     return suite

@@ -1,8 +1,3 @@
-"""LoginLockout
-"""
-
-__author__ = "Dylan Jay <software@pretaweb.com>"
-
 from AccessControl.Permissions import add_user_folders
 from Products.CMFCore import utils
 from Products.CMFCore.DirectoryView import registerDirectory
@@ -12,6 +7,15 @@ from Products.PluggableAuthService import registerMultiPlugin
 from plugin import LoginLockout
 from plugin import manage_addLoginLockout
 from plugin import manage_addLoginLockoutForm
+from zope.i18nmessageid import MessageFactory
+
+"""LoginLockout
+"""
+
+__author__ = "Dylan Jay <software@pretaweb.com>"
+
+
+PloneMessageFactory = MessageFactory('plone')
 
 
 def initialize(context):
