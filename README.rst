@@ -79,8 +79,8 @@ It will also install a plugin at the root of the zope instance. It's important t
 
 
 
-To Use
-------
+Lockout on incorrect password attempts
+--------------------------------------
 
 First login as manager::
 
@@ -181,7 +181,7 @@ and now they can log in again::
     ...You are now logged in...
 
 IP Lockdown
-----------
+-----------
 
 You can optionally ensure logins are only possible for certain IP address ranges. 
 
@@ -243,6 +243,24 @@ You can also set IP ranges e.g.
 
     >>> anon_browser.open(portal.absolute_url()+'/logout')
     >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+
+
+If you are unsure of what is being detected as your current Client IP you can see it in
+the control panel
+
+    >>> admin_browser.addHeader('X-Forwarded-For', '10.1.1.1, 192.168.1.1')
+
+    >>> admin_browser.getLink('Site Setup').click()
+    >>> admin_browser.getLink('LoginLockout').click()
+    >>> print admin_browser.contents
+    <BLANKLINE>
+    ...Current detected Client IP: <span>10.1.1.1</span>...
+
+
+Password Reset History
+----------------------
+
+    >>> # TODO tests go here
 
 
 Manual Installation

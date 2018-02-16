@@ -1,6 +1,7 @@
 from AccessControl import ClassSecurityInfo
 from AccessControl.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
+from Products.CMFCore.permissions import ManageUsers
 from Products.CMFCore.utils import UniqueObject, getToolByName
 from Products.LoginLockout.config import TOOL_ID
 from Products.LoginLockout.plugin import PROJECTNAME
@@ -21,6 +22,8 @@ class LoginLockoutTool(UniqueObject, SimpleItem):
     def _getPlugin(self):
         acl_users = getToolByName(self, 'acl_users')
         return acl_users.login_lockout_plugin
+
+    security.declareProtected(ManageUsers, 'listGroupedAttempts')
 
     def listGroupedAttempts(self):
         """Return attempts but grouped
@@ -49,8 +52,12 @@ class LoginLockoutTool(UniqueObject, SimpleItem):
                     purl(), user['login'])
         return (plone_members, non_plone_members)
 
+    security.declareProtected(ManageUsers, 'listAttempts')
+
     def listAttempts(self):
         return self._getPlugin().listAttempts()
+
+    security.declareProtected(ManageUsers, 'listSuccessfulAttempts')
 
     def listSuccessfulAttempts(self):
         pattern = self.REQUEST.get('pattern', '')
@@ -62,18 +69,33 @@ class LoginLockoutTool(UniqueObject, SimpleItem):
                 result.append(dict(username=username, attempts=attempts))
         return result
 
+    security.declareProtected(ManageUsers, 'manage_resetUsers')
+
     def manage_resetUsers(self, logins, RESPONSE=None):
         return self._getPlugin().manage_resetUsers(logins, RESPONSE=None)
 
+    security.declareProtected(ManageUsers, 'manage_resetUsers')
+
     def manage_setSuccessfulLoginAttempt(self, login):
         return self._getPlugin().setSuccessfulAttempt(login)
+
+    security.declareProtected(ManageUsers, 'manage_credentialsUpdated')
 
     def manage_credentialsUpdated(self, username):
         """ register timestamp of last password change """
         return self._getPlugin().manage_credentialsUpdated(username)
 
+    security.declareProtected(ManageUsers, 'manage_getPasswordChanges')
+
     def manage_getPasswordChanges(self, min_days=0):
         """ Return history of password changes"""
         return self._getPlugin().manage_getPasswordChanges(min_days)
+
+    security.declareProtected(ManageUsers, 'getRemoteIP')
+
+    def getRemoteIP(self):
+        """ getRemoteIP to show in control panel"""
+        return self._getPlugin().remote_ip()
+
 
 InitializeClass(LoginLockoutTool)

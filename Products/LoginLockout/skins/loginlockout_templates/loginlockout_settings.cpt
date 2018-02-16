@@ -26,6 +26,9 @@
       <p i18n:translate="">
         Configuration and logging for the LoginLockout plugin.
       </p>
+      <p i18n:translate="">
+        Current detected Client IP: <span tal:content="tool/getRemoteIP">127.0.0.1</span>
+      </p>
       <form method="post"
             tal:define="attempts tool/listGroupedAttempts"
             tal:attributes="action request/URL">
