@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="LoginLockout">
+
+    <browser:page
+        name="loginlockout-settings"
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        class=".controlpanel.LoginLockoutSetting"
+        permission="zope2.View"
+    />
+    <adapter factory=".controlpanel.LoginLockoutSettingsAdapter" />
+</configure>

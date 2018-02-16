@@ -154,6 +154,11 @@
         <a href="loginlockout_history" i18n:translate="">Login history</a>
         &bull;
         <a href="loginlockout_last_password_changes" i18n:translate="">History password changes</a>
+        &bull;
+        <a
+          tal:attributes="href
+              string:${context/portal_url}/@@loginlockout-settings"
+          i18n:translate="">Configuration Settings</a>
       </form>
     </span>
   </body>

@@ -23,7 +23,7 @@ class ILoginLockoutSettings(Interface):
         title=_(u'Lock logins to IP Ranges'),
         description=u'List of IP Ranges which Client IP must be in to login. Empty disables',
         default=u'',
-        required=True
+        required=False
     )
 
     fake_client_ip = schema.Bool(
