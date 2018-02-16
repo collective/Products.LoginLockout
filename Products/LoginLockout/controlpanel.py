@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 from .interfaces import ILoginLockoutSettings
 from plone.app.registry.browser import controlpanel
-from plone import api
 from plone.app.iterate import PloneMessageFactory as _
 from plone.registry.interfaces import IRegistry
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFPlone.utils import safe_hasattr
+from zope.site.hooks import getSite
 from zope.component import adapter
 from zope.interface import implementer
 from z3c.form import button
@@ -19,7 +19,7 @@ class LoginLockoutSettingsAdapter(object):
     def __init__(self, context):
         """ """
         self.context = context
-        self.portal = api.portal.get()
+        self.portal = getSite()
         self.encoding = 'utf-8'
         registry = queryUtility(IRegistry)
         self.settings = registry.forInterface(
