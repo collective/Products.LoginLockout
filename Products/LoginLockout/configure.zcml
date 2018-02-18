@@ -6,8 +6,9 @@
     i18n_domain="LoginLockout">
 
   <include file="skins.zcml" />
-  <include file="profiles.zcml" />
   <include file="controlpanel.zcml" />
+  <include file="profiles.zcml" />
+  <include file="upgrades.zcml" />
 
 <subscriber
         for="Products.PluggableAuthService.interfaces.events.IUserLoggedInEvent"
