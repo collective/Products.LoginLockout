@@ -47,16 +47,7 @@
                </th>
             </tr>
             <tr>
-              <th class="nosort">
-                  <input class="noborder"
-                    title="Select/deselect all items" i18n:attributes="title"
-                    type="checkbox"
-                    onClick="toggleSelect(this, 'reset_ploneusers:list');"
-                    name="selectButton"
-                    src="select_all_icon.png"
-                    tal:attributes="src string:${context/portal_url}/select_all_icon.png"
-                  />
-                  <span i18n:translate="label_reset">Select all</span>
+              <th>
               </th>
               <th i18n:translate="label_login">
                 Login name
@@ -107,15 +98,7 @@
                </th>
             </tr>
             <tr>
-              <th class="nosort">
-                  <input class="noborder" title="Select/deselect all items"
-                    type="checkbox" i18n:attributes="title"
-                    onClick="toggleSelect(this, 'reset_nonploneusers:list');"
-                    name="selectButton"
-                    src="select_all_icon.png"
-                    tal:attributes="src string:${context/portal_url}/select_all_icon.png"
-                  />
-                  <span i18n:translate="label_reset">Select all</span>
+              <th>
               </th>
               <th i18n:translate="label_login">
                 Login name
