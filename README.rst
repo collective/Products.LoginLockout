@@ -40,28 +40,12 @@ Features
 Configuration
 -------------
 
-Go to the Plone Control Panel -> LoginLockout Configuration Panel -> Configuration Settings,
-there you can changes these defaults:
+Go to the Plone Control Panel -> LoginLockout Settings , there you can changes these defaults:
 
 - allowed incorrect attempts: 3
 - reset period: 24 hours
 - whitelist_ips: [] # any origin IP is allowed
 - Fake Client IP: false
-
-Go to Plone Control Panel::
-    >>> from zope.component import getUtility
-    >>> from plone.registry.interfaces import IRegistry
-    >>> from Products.LoginLockout.interfaces import ILoginLockoutSettings
-    >>> settings = getUtility(IRegistry).forInterface(ILoginLockoutSettings, prefix="Products.LoginLockout")
-    >>> settings.fake_client_ip
-    False
-    >>> admin_browser.open(portal.absolute_url() + '/plone_control_panel')
-    >>> admin_browser.getLink('LoginLockout Configuration Panel').click()
-    >>> admin_browser.getLink('Configuration Settings').click()
-    >>> admin_browser.getControl(name='form.widgets.fake_client_ip:list').value = ['1']
-    >>> admin_browser.getControl(name='form.buttons.save').click()
-    >>> settings.fake_client_ip
-    True
 
 
 Details
@@ -277,6 +261,19 @@ Password Reset History
 ----------------------
 
     >>> # TODO tests go here
+
+Loginlockout Settings
+---------------------
+
+    >>> settings = get_loginlockout_settings()
+    >>> settings.fake_client_ip
+    False
+    >>> admin_browser.open(portal.absolute_url() + '/plone_control_panel')
+    >>> admin_browser.getLink('LoginLockout Settings').click()
+    >>> admin_browser.getControl(name='form.widgets.fake_client_ip:list').value = ['1']
+    >>> admin_browser.getControl(name='form.buttons.save').click()
+    >>> settings.fake_client_ip
+    True
 
 
 Manual Installation

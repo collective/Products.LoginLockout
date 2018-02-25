@@ -10,4 +10,28 @@
   <permission>Manage portal</permission>
  </configlet>
 
+ <configlet title="LoginLockout History" action_id="LoginLockoutHistory"
+    appId="LoginLockout" category="Products" condition_expr=""
+    icon_expr="string:${portal_url}/lock_icon.gif"
+    url_expr="string:${portal_url}/loginlockout_history"
+    visible="True" i18n:attributes="title">
+  <permission>Manage portal</permission>
+ </configlet>
+
+ <configlet title="LoginLockout History (password changes)" action_id="LoginLockoutPasswordHistory"
+    appId="LoginLockout" category="Products" condition_expr=""
+    icon_expr="string:${portal_url}/lock_icon.gif"
+    url_expr="string:${portal_url}/loginlockout_last_password_changes"
+    visible="True" i18n:attributes="title">
+  <permission>Manage portal</permission>
+ </configlet>
+
+ <configlet title="LoginLockout Settings" action_id="LoginLockoutSettings"
+    appId="LoginLockout" category="Products" condition_expr=""
+    icon_expr="string:${portal_url}/lock_icon.gif"
+    url_expr="string:${portal_url}/@@loginlockout-settings"
+    visible="True" i18n:attributes="title">
+  <permission>Manage portal</permission>
+ </configlet>
+
 </object>
