@@ -2,7 +2,7 @@
 <object name="portal_controlpanel" meta_type="Plone Control Panel Tool"
   i18n:domain="LoginLockout" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
- <configlet title="LoginLockout Configuration Panel" action_id="LoginLockoutConf"
+ <configlet title="LoginLockout" action_id="LoginLockoutConf"
     appId="LoginLockout" category="Products" condition_expr=""
     icon_expr="string:${portal_url}/lock_icon.gif"
     url_expr="string:${portal_url}/loginlockout_settings"
@@ -10,6 +10,7 @@
   <permission>Manage portal</permission>
  </configlet>
 
+ <!--
  <configlet title="LoginLockout History" action_id="LoginLockoutHistory"
     appId="LoginLockout" category="Products" condition_expr=""
     icon_expr="string:${portal_url}/lock_icon.gif"
@@ -33,5 +34,7 @@
     visible="True" i18n:attributes="title">
   <permission>Manage portal</permission>
  </configlet>
+
+-->
 
 </object>

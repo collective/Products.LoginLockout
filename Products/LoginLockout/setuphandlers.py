@@ -49,14 +49,13 @@ def uninstall(portal):
     out = StringIO()
     print >> out, "Uninstalling %s:" % PROJECTNAME
     plone_pas = getToolByName(portal, 'acl_users')
+    # TODO: probably shouldn't delete zope plugin because it can break other sites. Leave it but make sure it doesn't do anything
+    # - but leaving the plugin would break the site if package goes away?
     zope_pas = portal.getPhysicalRoot().acl_users
     for pas in [plone_pas, zope_pas]:
         existing = pas.objectIds()
         if PLUGIN_ID in existing:
             pas.manage_delObjects(PLUGIN_ID)
-
-    # uninstall configlets
-    # installConfiglets(portal, out, CONFIGLETS, uninstall=True)
 
 
 def activatePluginSelectedInterfaces(
@@ -96,26 +95,6 @@ def movePluginToTop(pas, plugin_id, interface_name, out):
     while registry.listPlugins(interface)[0][0] != plugin_id:
         registry.movePluginsUp(interface, [plugin_id])
     print >> out, "Moved " + plugin_id + " to top in " + interface_name + "."
-
-
-def installConfiglets(portal, out, configlets, uninstall=False):
-
-    """
-    Install a configlet for the plone site. configlets parameter should be a
-    list of hashes.
-    """
-
-    print >> out, 'Installing configlet...'
-
-    ctool = getToolByName(portal, 'portal_controlpanel')
-
-    for c in configlets:
-        print >> out, "-> installing configlet %s" % c['name']
-        ctool.unregisterConfiglet(c['id'])
-        if not uninstall:
-            ctool.registerConfiglet(**c)
-
-    print >> out, "done."
 
 
 def setupVarious(context):

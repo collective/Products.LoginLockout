@@ -40,12 +40,40 @@ Features
 Configuration
 -------------
 
+You can use this plugin with Zope without Plone, or with Plone. When using it with Plone you will configure it via the
+Plone registry (plone 5+) or via portal_properties if plone 4.
+
 Go to the Plone Control Panel -> LoginLockout Settings , there you can changes these defaults:
+
+    >>> admin_browser.getLink('Site Setup').click()
+    >>> admin_browser.getLink('LoginLockout').click()
+    >>> admin_browser.getLink('Settings').click()
 
 - allowed incorrect attempts: 3
 - reset period: 24 hours
 - whitelist_ips: [] # any origin IP is allowed
 - Fake Client IP: false
+
+    >>> print admin_browser.getControl("Max Attempts").value
+    3
+    >>> print admin_browser.getControl("Reset Period (hours)").value
+    24.0
+    >>> print admin_browser.getControl('Lock logins to IP Ranges').value
+
+    >>> print admin_browser.getControl('Fake Client IP').selected
+    False
+
+
+Let's ensure that the settings actually change
+
+    >>> admin_browser.getControl(name='form.widgets.fake_client_ip:list').value = ['1']
+    >>> settings = get_loginlockout_settings()
+    >>> settings.fake_client_ip
+    False
+    >>> admin_browser.getControl(name='form.buttons.save').click()
+    >>> settings.fake_client_ip
+    True
+
 
 
 Details
@@ -115,7 +143,6 @@ this incorrect attempt  will show up in the log::
 
 We've installed a Control panel to monitor the login attempts
 
-    >>> admin_browser.open(portal.absolute_url())
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
     >>> print admin_browser.contents
@@ -257,23 +284,47 @@ the control panel
     ...Current detected Client IP: <span>10.1.1.1</span>...
 
 
+Login History
+-------------
+
+It is also possible to view a history of successful logins for a particular user. Note this is the user id rather
+than user login and they can be different. User test_user_1_ had 4 successful logins.
+
+    >>> admin_browser.getLink('Login history').click()
+    >>> admin_browser.getControl('Username pattern').value = 'test_user_1_'
+    >>> admin_browser.getControl('Search records').click()
+    >>> print admin_browser.contents
+    <BLANKLINE>
+    ...
+                        <td valign="top">test_user_1_</td>
+                        <td valign="top">
+                            <ul>
+                                <li>
+                                    ...
+                                    ()
+                                </li>
+                                <li>
+                                    ...
+                                    ()
+                                </li>
+                                <li>
+                                    ...
+                                    (10.1.1.1)
+                                </li>
+                                <li>
+                                    ...
+                                    ()
+                                </li>
+                            </ul>
+    ...
+
+
+
 Password Reset History
 ----------------------
 
     >>> # TODO tests go here
 
-Loginlockout Settings
----------------------
-
-    >>> settings = get_loginlockout_settings()
-    >>> settings.fake_client_ip
-    False
-    >>> admin_browser.open(portal.absolute_url() + '/plone_control_panel')
-    >>> admin_browser.getLink('LoginLockout Settings').click()
-    >>> admin_browser.getControl(name='form.widgets.fake_client_ip:list').value = ['1']
-    >>> admin_browser.getControl(name='form.buttons.save').click()
-    >>> settings.fake_client_ip
-    True
 
 
 Manual Installation
@@ -376,8 +427,6 @@ TODO
 ----
 Things that could be done on the LoginLockout product:
 
-- upgrade step for moving portal_properties to registry. Keep ZMI so can be used without plone
-
 - Move skins to browser views
 
 - get rid of overrides for pw resets. Should be able to do in PAS or using events
@@ -388,7 +437,6 @@ Things that could be done on the LoginLockout product:
 
 - Only restrict certain groups to certain IP networks e.g. administrators. Maybe roles too?
 
--
 
 
 Copyright, License, Author
