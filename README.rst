@@ -323,7 +323,37 @@ than user login and they can be different. User test_user_1_ had 4 successful lo
 Password Reset History
 ----------------------
 
-    >>> # TODO tests go here
+When a user changes their password
+
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = user_password
+    >>> anon_browser.getControl('Log in').click()
+    >>> anon_browser.open('./@@change-password')
+    >>> anon_browser.getControl('Current password').value = user_password
+    >>> anon_browser.getControl('New password').value = '12345'
+    >>> anon_browser.getControl('Confirm password').value = '12345'
+    >>> anon_browser.getControl('Change Password').click()
+    >>> 'Password changed' in anon_browser.contents
+    True
+
+
+The the administrators can see the password was changed
+
+    >>> admin_browser.getLink('History password changes').click()
+    >>> print admin_browser.contents
+    <BLANKLINE>
+    ...
+          <table class="listing">
+            <tr>
+              <th>Username</th>
+              <th>Last password change</th>
+            </tr>
+    <BLANKLINE>
+            <tr>
+                        <td valign="top">test_user_1_</td>
+                        <td valign="top">
+            </tr>
+          </table>
 
 
 
