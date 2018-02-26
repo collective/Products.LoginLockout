@@ -60,6 +60,11 @@ def setUp(doctest):
                 raise
         commit()
 
+    def get_loginlockout_settings():
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(ILoginLockoutSettings, prefix="Products.LoginLockout")
+        return settings
+
     doctest.globs.update(locals())
 #
 #     def afterSetUp(self):

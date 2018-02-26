@@ -40,12 +40,12 @@ Features
 Configuration
 -------------
 
-Go to the ZMI -> portal_properties -> loginlockout_properties,
-there you can changes these defaults:
+Go to the Plone Control Panel -> LoginLockout Settings , there you can changes these defaults:
 
 - allowed incorrect attempts: 3
 - reset period: 24 hours
 - whitelist_ips: [] # any origin IP is allowed
+- Fake Client IP: false
 
 
 Details
@@ -183,7 +183,7 @@ and now they can log in again::
 IP Lockdown
 -----------
 
-You can optionally ensure logins are only possible for certain IP address ranges. 
+You can optionally ensure logins are only possible for certain IP address ranges.
 
 By default IP Locking is disabled.
 
@@ -261,6 +261,19 @@ Password Reset History
 ----------------------
 
     >>> # TODO tests go here
+
+Loginlockout Settings
+---------------------
+
+    >>> settings = get_loginlockout_settings()
+    >>> settings.fake_client_ip
+    False
+    >>> admin_browser.open(portal.absolute_url() + '/plone_control_panel')
+    >>> admin_browser.getLink('LoginLockout Settings').click()
+    >>> admin_browser.getControl(name='form.widgets.fake_client_ip:list').value = ['1']
+    >>> admin_browser.getControl(name='form.buttons.save').click()
+    >>> settings.fake_client_ip
+    True
 
 
 Manual Installation

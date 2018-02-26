@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
+
+  <genericsetup:upgradeSteps
+     profile="Products.LoginLockout:default"
+     source="20090310-01"
+     destination="20180218-01">
+      <genericsetup:upgradeStep
+        handler=".upgrades.run_upgrade_2009031001_to_2018021801"
+        title="Run Products.LoginLockout: 20090310-01 to 20180218-01"
+        description="Migration from portal properties to portal registry"
+        />
+  </genericsetup:upgradeSteps>
+</configure>
