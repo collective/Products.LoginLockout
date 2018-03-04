@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<registry>
+  <records remove="True" interface="Products.LoginLockout.interfaces.ILoginLockoutSettings" prefix='Products.LoginLockout'/>
+</registry>

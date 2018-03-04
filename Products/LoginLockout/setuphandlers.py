@@ -2,6 +2,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.LoginLockout.plugin import PLUGIN_ID, manage_addLoginLockout
 from Products.LoginLockout.plugin import PLUGIN_TITLE
 from Products.LoginLockout.plugin import PROJECTNAME
+from Products.LoginLockout.plugin import log
 from StringIO import StringIO
 
 
@@ -106,3 +107,12 @@ def setupVarious(context):
 
     site = context.getSite()
     install(site)
+
+
+def uninstallVarious(context):
+    """"""
+    # Only run step if a flag file is present
+    if context.readDataFile('loginlockout.txt') is None:
+        return
+    log.info('LoginLockout uninstall process is starting...')
+    # may be plugin uninstall here?
