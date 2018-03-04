@@ -39,6 +39,7 @@ def setUp(doctest):
     anon_browser = Browser(app)
     admin_browser = Browser(app)
     admin_browser.addHeader('Authorization', 'Basic admin:secret')
+    admin_browser.open(portal.absolute_url())
 
     user_id = TEST_USER_NAME
     user_password = TEST_USER_PASSWORD

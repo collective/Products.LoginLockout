@@ -2,11 +2,6 @@
       lang="en"
       metal:use-macro="here/prefs_main_template/macros/master"
       i18n:domain="LoginLockout">
-    <metal:block fill-slot="top_slot">
-      <tal:defines tal:define="
-           disable_column_one python:request.set('disable_plone.leftcolumn', 1);
-           disable_column_two python:request.set('disable_plone.rightcolumn',1);"/>
-    </metal:block>
   <body>
     <span metal:fill-slot="prefs_configlet_main"
         tal:define="tool context/loginlockout_tool" >
@@ -59,13 +54,13 @@
                Email
               </th>
               <th i18n:translate="label_count">
-                Number of attempts
+                Attempts
               </th>
               <th i18n:translate="label_last_attempt">
                 Last attempt
               </th>
               <th i18n:translate="label_IP">
-                IP address
+                Client IP
               </th>
             </tr>
            </thead>
@@ -104,13 +99,13 @@
                 Login name
               </th>
               <th i18n:translate="label_count">
-                Number of attempts
+                Attempts
               </th>
               <th i18n:translate="label_last">
                 Last attempt
               </th>
               <th i18n:translate="label_IP">
-                IP address
+                Client IP
               </th>
             </tr>
            </thead>
@@ -141,7 +136,7 @@
         <a
           tal:attributes="href
               string:${context/portal_url}/@@loginlockout-settings"
-          i18n:translate="">Configuration Settings</a>
+          i18n:translate="">Settings</a>
       </form>
     </span>
   </body>

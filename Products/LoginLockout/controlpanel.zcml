@@ -3,6 +3,8 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="LoginLockout">
 
+    <include package="plone.app.registry" />
+
     <browser:page
         name="loginlockout-settings"
         for="Products.CMFPlone.interfaces.IPloneSiteRoot"

@@ -245,6 +245,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def setAttempt(self, login, password):
         "increment attempt count and record date stamp last attempt and IP"
 
+        # TODO: why are the login attempts stored in the root? The usernames aren't unique in the root.
+
         root = self.getRootPlugin()
         count, last, IP, reference = root._login_attempts.get(
             login, (0, None, '', None))
@@ -289,8 +291,6 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def _getsetting(self, setting):
 
         default = getattr(self, '_' + setting)
-
-        # TODO: Need tu add an upgrade step for properties to registry
 
         try:
             registry = getUtility(IRegistry)
@@ -451,6 +451,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def manage_credentialsUpdated(self, username):
         """ register timestamp of last password change """
         self._last_pw_change[username] = DateTime()
+
+    security.declareProtected(ManageUsers, 'manage_getPasswordChanges')
 
     def manage_getPasswordChanges(self, min_days=0):
         """ Return history of password changes where the

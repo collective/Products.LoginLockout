@@ -40,12 +40,40 @@ Features
 Configuration
 -------------
 
+You can use this plugin with Zope without Plone, or with Plone. When using it with Plone you will configure it via the
+Plone registry (plone 5+) or via portal_properties if plone 4.
+
 Go to the Plone Control Panel -> LoginLockout Settings , there you can changes these defaults:
+
+    >>> admin_browser.getLink('Site Setup').click()
+    >>> admin_browser.getLink('LoginLockout').click()
+    >>> admin_browser.getLink('Settings').click()
 
 - allowed incorrect attempts: 3
 - reset period: 24 hours
 - whitelist_ips: [] # any origin IP is allowed
 - Fake Client IP: false
+
+    >>> print admin_browser.getControl("Max Attempts").value
+    3
+    >>> print admin_browser.getControl("Reset Period (hours)").value
+    24.0
+    >>> print admin_browser.getControl('Lock logins to IP Ranges').value
+
+    >>> print admin_browser.getControl('Fake Client IP').selected
+    False
+
+
+Let's ensure that the settings actually change
+
+    >>> admin_browser.getControl(name='form.widgets.fake_client_ip:list').value = ['1']
+    >>> settings = get_loginlockout_settings()
+    >>> settings.fake_client_ip
+    False
+    >>> admin_browser.getControl(name='form.buttons.save').click()
+    >>> settings.fake_client_ip
+    True
+
 
 
 Details
@@ -58,25 +86,86 @@ First we'll show you how it works with Plone.
 To Install
 ----------
 
-Install into Plone via Add/Remove Products
+Install into Plone via Add/Remove Products. If you are installing into zope without
+plone then you will need to follow these manual install steps.
 
-This will install and activate a two PAS plugins. It's very important the plugin is the top Challange plugin.
+This will install and activate a two PAS plugins.
 
-   >>> pas = portal.acl_users
-   >>> registry = pas.plugins
-   >>> interface = registry._getInterfaceFromName('IChallengePlugin')
-   >>> registry.listPlugins(interface)
+Manual Installation
+-------------------
+
+This plugin needs to be installed in two places, the instance PAS where logins
+occur and the root acl_users.
+
+ 1. Place the Product directory 'LoginLockout' in your 'Products/'
+ directory. Restart Zope.
+
+ 2. In your instance PAS 'acl_users', select 'LoginLockout' from the add
+ list.  Give it an id and title, and push the add button.
+
+ 3. Enable the 'Authentication', 'Challenge' and the 'Update Credentials'
+ plugin interfaces in the after-add screen.
+
+ 4. Rearrange the order of your 'Challenge plugins' so that the
+ 'LoginLockout' plugin is at the top.
+
+ 5. Repeat the above for your root PAS but as a plugin to
+
+    -  Anonymoususerfactory
+
+    -  Challenge
+
+   and ensure LoginLockout is the first Anonymoususerfactory and Challenge plugin
+
+Steps 2 through 5 below will be done for you by the Plone installer.
+
+That's it! Test it out.
+
+
+Plone LoginLockout PAS Plugin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It's very important the plugin is the *first* Challange plugin in the activated plugins list.
+This ensures we redirect a person attempting to make a login into a locked account to a special page.
+
+   >>> plone_pas = portal.acl_users.plugins
+   >>> IChallengePlugin = plone_pas._getInterfaceFromName('IChallengePlugin')
+   >>> plone_pas.listPlugins(IChallengePlugin)
    [('login_lockout_plugin', <LoginLockout at /plone/acl_users/login_lockout_plugin>)...]
 
-It will also install a plugin at the root of the zope instance. It's important this is also the top IAnonymousUserFactoryPlugin
 
-   >>> pas = portal.getPhysicalRoot().acl_users
-   >>> registry = pas.plugins
-   >>> interface = registry._getInterfaceFromName('IAnonymousUserFactoryPlugin')
-   >>> registry.listPlugins(interface)
+In addition it is installed as a IAuthenticationPlugin. This both collects the username and login and
+will prevent a login should it be locked.
+
+   >>> IAuthenticationPlugin = plone_pas._getInterfaceFromName('IAuthenticationPlugin')
+   >>> 'login_lockout_plugin' in [p[0] for p in plone_pas.listPlugins(IAuthenticationPlugin)]
+   True
+
+and a ICredentialsUpdatePlugin. This records when a login was successful to reset attempt data.
+
+
+   >>> ICredentialsUpdatePlugin = plone_pas._getInterfaceFromName('ICredentialsUpdatePlugin')
+   >>> 'login_lockout_plugin' in [p[0] for p in plone_pas.listPlugins(ICredentialsUpdatePlugin)]
+   True
+
+
+Root Zope LoginLockout PAS Plugin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It will also install a plugin at the root of the zope instance.
+
+It's important this is also the *first* IAnonymousUserFactoryPlugin. On a normal Zope instance it will be the only one.
+This ensures it collects data on unsuccessful attempted logins.
+
+   >>> root_pas = portal.getPhysicalRoot().acl_users.plugins
+   >>> IAnonymousUserFactoryPlugin = plone_pas._getInterfaceFromName('IAnonymousUserFactoryPlugin')
+   >>> root_pas.listPlugins(IAnonymousUserFactoryPlugin)
    [('login_lockout_plugin', <LoginLockout at /acl_users/login_lockout_plugin>)]
 
+It is also installed as a IChallengePlugin.
 
+   >>> 'login_lockout_plugin' in [p[0] for p in root_pas.listPlugins(IChallengePlugin)]
+   True
 
 
 Lockout on incorrect password attempts
@@ -115,7 +204,6 @@ this incorrect attempt  will show up in the log::
 
 We've installed a Control panel to monitor the login attempts
 
-    >>> admin_browser.open(portal.absolute_url())
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
     >>> print admin_browser.contents
@@ -257,54 +345,49 @@ the control panel
     ...Current detected Client IP: <span>10.1.1.1</span>...
 
 
+Login History
+-------------
+
+It is also possible to view a history of successful logins for a particular user. Note this is the user id rather
+than user login and they can be different. User test_user_1_ had 4 successful logins.
+
+    >>> admin_browser.getLink('Login history').click()
+    >>> admin_browser.getControl('Username pattern').value = 'test_user_1_'
+    >>> admin_browser.getControl('Search records').click()
+    >>> print admin_browser.contents
+    <BLANKLINE>
+    ...
+                        <td valign="top">test_user_1_</td>
+                        <td valign="top">
+                            <ul>
+                                <li>
+                                    ...
+                                    ()
+                                </li>
+                                <li>
+                                    ...
+                                    ()
+                                </li>
+                                <li>
+                                    ...
+                                    (10.1.1.1)
+                                </li>
+                                <li>
+                                    ...
+                                    ()
+                                </li>
+                            </ul>
+    ...
+
+
+
 Password Reset History
 ----------------------
 
     >>> # TODO tests go here
 
-Loginlockout Settings
----------------------
-
-    >>> settings = get_loginlockout_settings()
-    >>> settings.fake_client_ip
-    False
-    >>> admin_browser.open(portal.absolute_url() + '/plone_control_panel')
-    >>> admin_browser.getLink('LoginLockout Settings').click()
-    >>> admin_browser.getControl(name='form.widgets.fake_client_ip:list').value = ['1']
-    >>> admin_browser.getControl(name='form.buttons.save').click()
-    >>> settings.fake_client_ip
-    True
 
 
-Manual Installation
--------------------
-
-This plugin needs to be installed in two places, the instance PAS where logins
-occur and the root acl_users.
-
- 1. Place the Product directory 'LoginLockout' in your 'Products/'
- directory. Restart Zope.
-
- 2. In your instance PAS 'acl_users', select 'LoginLockout' from the add
- list.  Give it an id and title, and push the add button.
-
- 3. Enable the 'Authentication', 'Challenge' and the 'Update Credentials'
- plugin interfaces in the after-add screen.
-
- 4. Rearrange the order of your 'Challenge plugins' so that the
- 'LoginLockout' plugin is at the top.
-
- 5. Repeat the above for your root PAS but as a plugin to
-
-    -  Anonymoususerfactory
-
-    -  Update Credentials
-
-   and ensure LoginLockout is the first Anonymoususerfactory
-
-Steps 2 through 5 below will be done for you by the Plone installer.
-
-That's it! Test it out.
 
 
 Implementation
@@ -313,7 +396,7 @@ Implementation
 If the root anonymoususerfactory plugin is activated following an
 authentication plugin activation then this is an unsuccesful login
 attempt. If the password was different from the last unsuccessful
-attempt then we incriment a counter in data stored persistently
+attempt then we increment a counter in data stored persistently
 in the root plugin.
 
 If the instance plugin tries to authenticate a user that has been
@@ -376,8 +459,6 @@ TODO
 ----
 Things that could be done on the LoginLockout product:
 
-- upgrade step for moving portal_properties to registry. Keep ZMI so can be used without plone
-
 - Move skins to browser views
 
 - get rid of overrides for pw resets. Should be able to do in PAS or using events
@@ -388,7 +469,6 @@ Things that could be done on the LoginLockout product:
 
 - Only restrict certain groups to certain IP networks e.g. administrators. Maybe roles too?
 
--
 
 
 Copyright, License, Author
