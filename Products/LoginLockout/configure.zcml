@@ -15,4 +15,12 @@
         handler=".plugin.logged_in_handler"
         />
 
+
+
+   <subscriber
+       for="Products.PluggableAuthService.interfaces.authservice.IBasicUser
+            Products.PluggableAuthService.interfaces.events.ICredentialsUpdatedEvent"
+        handler=".plugin.credentials_updated_handler"
+       />
+
 </configure>
