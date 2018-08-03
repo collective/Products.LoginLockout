@@ -313,6 +313,32 @@ If not from a valid IP then the login will fail
 
     >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
+
+Basic Auth will works with the right IP
+
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
+    >>> anon_browser.addHeader('X-Forwarded-For', '10.1.1.1')
+
+    >>> anon_browser.open(portal.absolute_url())
+    >>> anon_browser.getLink('Log out')
+    <Link text='Log out'...>
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+
+
+and basic auth fails with the wrong IP
+
+    >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
+
+    >>> anon_browser.open(portal.absolute_url())
+    Traceback (most recent call last):
+    ...
+    Unauthorized: Unauthorized()
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
+
+
 You can also set IP ranges e.g.
 
     >>> config_property( whitelist_ips = u"""10.1.1.1
@@ -320,6 +346,7 @@ You can also set IP ranges e.g.
     ... 2.2.2.2/24
     ... """)
 
+    >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
 
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
@@ -343,6 +370,7 @@ the control panel
     >>> print admin_browser.contents
     <BLANKLINE>
     ...Current detected Client IP: <span>10.1.1.1</span>...
+    >>> _ = admin_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
 
 Login History
@@ -374,7 +402,7 @@ than user login and they can be different. User test_user_1_ had 4 successful lo
                                 </li>
                                 <li>
                                     ...
-                                    ()
+                                    (2.2.2.2)
                                 </li>
                             </ul>
     ...
