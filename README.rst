@@ -339,6 +339,26 @@ and basic auth fails with the wrong IP
     >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
 
 
+We can still use a root login at the root
+
+    >>> anon_browser.addHeader('Authorization', 'Basic admin:secret')
+    >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
+
+    >>> anon_browser.open(portal.absolute_url()+'/../manage_top_frame')
+    >>> 'Logged in as' in anon_browser.contents
+    True
+
+but not in the plone site
+
+    >>> anon_browser.open(portal.absolute_url())
+    Traceback (most recent call last):
+    ...
+    Unauthorized: Unauthorized()
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
+
+
 You can also set IP ranges e.g.
 
     >>> config_property( whitelist_ips = u"""10.1.1.1
