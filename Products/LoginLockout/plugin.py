@@ -23,6 +23,7 @@ from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
 from zExceptions import Unauthorized
 import logging
+import os
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
 
@@ -47,6 +48,7 @@ __author__ = "Dylan Jay <software@pretaweb.com>"
    The admin can view and reset attempts via the ZMI at any time
 """
 
+ENV_WHITELIST = 'LOGINLOCKOUT_IP_WHITELIST'
 
 log = logging.getLogger('LoginLockout')
 
@@ -319,10 +321,21 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
     def getWhitelistIPs(self):
         value = self._getsetting('whitelist_ips')
+        if not value:
+            return []
+        # remove comments
         if isinstance(value, basestring):
-            return [x.strip() for x in value.split('\n') if x.strip()]
+            ranges = [x.split('#')[0].strip() for x in value.split('\n')]
         else:
-            return value
+            ranges = list(value)
+        ranges = [x for x in ranges if x]
+        if not ranges:
+            return []
+        if ENV_WHITELIST in os.environ:
+            ranges += [x.split('#')[0].strip() for x in os.environ[ENV_WHITELIST].split('\n')]
+
+        ranges = [x for x in ranges if x]
+        return ranges
 
     security.declarePrivate('isLockedout')
 
@@ -344,8 +357,14 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         client = ip_address(unicode(ip))
         # TODO: could support rules that have different IP ranges for different groups
         for range in list(whitelist_ips) + ['127.0.0.1']:
-            if client in ip_network(unicode(range)):
-                return False
+            try:
+                if client in ip_network(unicode(range)):
+                    return False
+            except ValueError:
+                # we can get this if the range not in the right format.
+                # in which case we skip this check.
+                # TODO: should handle it better by validating the value when its set
+                continue
         return True
 
     security.declarePrivate('resetAttempts')

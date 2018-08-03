@@ -362,8 +362,8 @@ but not in the plone site
 You can also set IP ranges e.g.
 
     >>> config_property( whitelist_ips = u"""10.1.1.1
-    ... 10.1.1.1/24
-    ... 2.2.2.2/24
+    ... 10.1.0.0/16 # range 1
+    ... 2.2.0.0/16 # range 2
     ... """)
 
     >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
@@ -378,6 +378,45 @@ You can also set IP ranges e.g.
 
     >>> anon_browser.open(portal.absolute_url()+'/logout')
     >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+
+You can also set a env variable LOGINLOCKOUT_IP_WHITELIST which is merged with the config.
+This allows those with filesystem access a way to get in if they have set their config wrong.
+It also allows a set of IP ranges to be set for any site in a Plone multisite setup as long
+as the site has loginlockout installed.
+
+
+    >>> anon_browser.getLink('Log in')
+    <Link text='Log in'...
+
+    >>> import os; os.environ["LOGINLOCKOUT_IP_WHITELIST"] = "3.3.3.3"
+
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
+    >>> anon_browser.addHeader('X-Forwarded-For', '3.3.3.3')
+
+    >>> anon_browser.open(portal.absolute_url())
+    >>> anon_browser.getLink('Log out')
+    <Link text='Log out'...>
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
+
+
+Note that you still have to have the IP lockout config set otherwise logins are allowed from anywhere
+even with the env variable set
+
+    >>> config_property( whitelist_ips = u"""
+    ... """)
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
+    >>> anon_browser.addHeader('X-Forwarded-For', '4.4.4.4')
+
+    >>> anon_browser.open(portal.absolute_url())
+    >>> anon_browser.getLink('Log out')
+    <Link text='Log out'...>
+
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
+    >>> del os.environ["LOGINLOCKOUT_IP_WHITELIST"]
 
 
 If you are unsure of what is being detected as your current Client IP you can see it in
