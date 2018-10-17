@@ -21,4 +21,9 @@ install:
   - bin/buildout -c travis.cfg -N
 script: bin/code-analysis && bin/test
 after_success:
-  - bin/coverage.sh 75 && pip install -q coveralls==0.5 && coveralls || true
+# XXX: https://github.com/urllib3/urllib3/issues/1456
+- pip install urllib3==1.23
+- pip install coverage
+- coverage run bin/test
+- pip install coveralls
+- coveralls
