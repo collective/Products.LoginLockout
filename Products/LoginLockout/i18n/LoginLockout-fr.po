@@ -14,79 +14,79 @@ msgstr ""
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: LoginLockout\n"
-"Language: es\n"
+"Language: fr\n"
 "X-Generator: Virtaal 0.7.1\n"
-"Language-code: es\n"
-"Language-name: Spanish\n"
-"X-Is-Fallback-For: es-ar es-bo es-cl es-co es-cr es-do es-ec es-es es-sv es-gt es-hn es-mx es-ni es-pa es-py es-pe es-pr es-us es-uy es-ve\n"
+"Language-code: fr\n"
+"Language-name: French\n"
+"X-Is-Fallback-For: fr-fr fr-be\n"
 
 #. Default: "Add"
 #: ./www/loginLockoutAdd.zpt:38
 msgid " Add "
-msgstr " Agregar "
+msgstr " Ajouter "
 
 #. Default: "Reset Users"
 #: ./www/llLockouts.zpt:43
 msgid " Reset Users "
-msgstr " Reiniciar Usuarios "
+msgstr " Réinitiliser les utilisateurs "
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:30
 msgid "1 month"
-msgstr "1 mes"
+msgstr "plus d'1 mois"
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:31
 msgid "2 months"
-msgstr "2 meses"
+msgstr "plus de 2 mois"
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:32
 msgid "3 months"
-msgstr "3 meses"
+msgstr "plus de 3 mois"
 
 #: ./www/loginLockoutAdd.zpt:6
 msgid "A plugin that rejects multiple logins attempts and locks out the user until the administrator unlocks them"
-msgstr "Un plugin que rechaza múltiples intentos de inicio de sesión y bloquea al usuario hasta que el administrador lo desbloquee"
+msgstr "Un plugin qui rejète les tentatives de connexion multiples et verrouille l'utilisateur jusqu'à ce que l'administrateur le déverrouille"
 
 #: ./skins/loginlockout_templates/reset_accounts.cpy:30
 msgid "Accounts were reset for these login names: %s,"
-msgstr "Cuentas de usuario que se reiniciaron para estos nombres de usuario: %s,"
+msgstr "Les comptes ont été remis à zéro pour les utilisateurs suivants: %s,"
 
 #: ./www/llLockouts.zpt:18
 msgid "Attempts"
-msgstr "Intentos"
+msgstr "Tentatives"
 
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:21
 msgid "Configuration and logging for the LoginLockout plugin."
-msgstr "Configuración y registro para el plugin de desbloqueo inicio de sesión."
+msgstr "Configuration et journal du module LoginLockout."
 
 #: ./www/llLockouts.zpt:11
 msgid "Current Attempts"
-msgstr "Actuales intentos"
+msgstr "Tentatives actuelles"
 
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:25
 msgid "Current detected Client IP: ${remote_ip}"
-msgstr ""
+msgstr "Adresse IP client détectée: ${remote_ip}"
 
 #: ./skins/loginlockout_templates/plone_change_password.py:20
 msgid "Does not match current password."
-msgstr "No coincide con la contraseña actual."
+msgstr "Ne correspond pas au mot de passe actuel."
 
 #: ./interfaces.py:32
 msgid "Fake Client IP"
-msgstr ""
+msgstr "Adresse IP client simulée"
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:36
 msgid "Filter"
-msgstr "Filtro"
+msgstr "Filtrer"
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:66
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:13
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:134
 msgid "History password changes"
-msgstr "Histórico de cambios de contraseña"
+msgstr "Historique des changements de mot de passe"
 
 #: ./www/llLockouts.zpt:20
 msgid "IP"
-msgstr "Dirección IP"
+msgstr "IP"
 
 #: ./www/loginLockoutAdd.zpt:15
 msgid "Id"
@@ -94,210 +94,210 @@ msgstr "Id"
 
 #: ./interfaces.py:33
 msgid "Ignore X-Forward-For and REMOTE_ADDR headers"
-msgstr ""
+msgstr "Ignorer les entêtes html X-Forward-For et REMOTE_ADDR"
 
 #: ./www/llLockouts.zpt:19
 msgid "Last"
-msgstr "Últimas"
+msgstr "Dernier"
 
 #: ./interfaces.py:26
 msgid "List of IP Ranges which Client IP must be in to login. Empty disables"
-msgstr ""
+msgstr "Liste des pages IP dans lesquelles l'adresse client doit être pour se connecter. Une valeur vide désactive cette fonctionnalité."
 
 #: ./interfaces.py:25
 msgid "Lock logins to IP Ranges"
-msgstr ""
+msgstr "Restreindre les connexions depuis les plages IP"
 
 #: ./interfaces.py:19
 msgid "Locked accounts are reenabled after this time"
-msgstr ""
+msgstr "Les comptes verrouillés sont déverrouillés après ce délai"
 
 #. Default: "Login Lockout Plugin"
 #: ./profiles.zcml:12
 msgid "Login Lockout Plugin"
-msgstr "Plugin de desbloqueo inicio de sesión"
+msgstr "Module Login Lockout"
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:64
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:57
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:13
 msgid "Login Lockout configuration"
-msgstr "Configuración de desbloqueo de usuario"
+msgstr "Configuration de Login Lockout"
 
 #: ./www/llLockouts.zpt:17
 msgid "Login Name"
-msgstr "Nombre de inicio de sesión"
+msgstr "Nom d'utilisateur"
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:59
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:132
 msgid "Login history"
-msgstr "Historial de inicio de sesión"
+msgstr "Historique de connexion"
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:21
 msgid "Login of all successful login attempts"
-msgstr "Cuenta de usuario de todos los intentos de inicio de sesión con éxito"
+msgstr "Journal des tentatives de connexion réussies"
 
 #: ./profiles/default/controlpanel.xml
 msgid "LoginLockout"
-msgstr ""
+msgstr "LoginLockout"
 
 #: ./controlpanel.py:17
 msgid "LoginLockout Settings"
-msgstr ""
+msgstr "Paramétrage de LoginLockout"
 
 #: ./interfaces.py:11
 msgid "Max Attempts"
-msgstr ""
+msgstr "Nombre de tentatives max"
 
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:129
 msgid "No accounts to reset"
-msgstr "Sin cuenta a restablecer"
+msgstr "Aucun compte à réinitialiser"
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:29
 msgid "No filtering"
-msgstr "Sin filtrado"
+msgstr "tous"
 
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:91
 msgid "Non plone members:"
-msgstr "Sin usuarios rol Miembro Plone:"
+msgstr "Anonymes:"
 
 #: ./interfaces.py:12
 msgid "Number of unsuccessful logins before account locked"
-msgstr ""
+msgstr "Nombre de tentative de connexion avant que le compte soit verrouillé"
 
 #. Default: "PAS plugin that can lock/unlock a user login after a predetermined number of incorrect attempts."
 #: ./profiles.zcml:12
 msgid "PAS plugin that can lock/unlock a user login after a predetermined number of incorrect attempts."
-msgstr "Plugin de PAS con el cual puede bloquear / desbloquear un inicio de sesión de usuario después de un número predeterminado de intentos incorrectos."
+msgstr "Plugin PAS qui peut verrouiller un compte utilisateur après un nombre déterminé de tentatives de connexion incorrectes."
 
 #: ./skins/loginlockout_templates/plone_change_password.py:14
 msgid "Password change was canceled."
-msgstr "El cambio de contraseña ha sido cancelado."
+msgstr "Le changement de mot de passe a été annulé."
 
 #: ./skins/loginlockout_templates/plone_change_password.py:47
 msgid "Password changed."
-msgstr "Contraseña cambiada."
+msgstr "Mot de passe changé."
 
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:40
 msgid "Plone members:"
-msgstr "Miembros Plone:"
+msgstr "Membres Plone:"
 
 #: ./interfaces.py:18
 msgid "Reset Period (hours)"
-msgstr ""
+msgstr "Temps de déverrouillage automatique (heures)"
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:33
 msgid "Search records"
-msgstr "Búsqueda de registros"
+msgstr "Chercher"
 
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:136
 msgid "Settings"
-msgstr ""
+msgstr "Paramétrage"
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:26
 msgid "Show password changes older than N days"
-msgstr "Mostrar los cambios de contraseña antiguas de más de N días"
+msgstr "Montrer les changements de mot de passe plus vieux de"
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:13
 msgid "Successful login attempts"
-msgstr "Intentos de inicio de sesión exitoso"
+msgstr "Tentatives de connexion réussies"
 
 #: ./www/loginLockoutAdd.zpt:25
 msgid "Title"
-msgstr "Título"
+msgstr "Titre"
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:31
 msgid "Username pattern"
-msgstr "Patrón de nombre de usuario"
+msgstr "Id utilisateur (expression régulière)"
 
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:31
 msgid "View and reset unsuccesful attempts"
-msgstr "Ver y restaurar los intentos infructuosos"
+msgstr "Voir et réinitialiser les tentatives de connexion échouées"
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:26
 msgid "View successful attempts"
-msgstr "Ver los intentos exitosos"
+msgstr "Voir les tentatives de connexion réussies"
 
 #: ./skins/loginlockout_templates/plone_change_password.py:37
 msgid "While changing your password an AttributeError occurred. This is usually caused by your user being defined outside the portal."
-msgstr "Al cambiar su contraseña se ha producido un AttributeError. Esto suele estar causado por la utilización de usuarios definidos fuera del portal."
+msgstr "Une erreur s'est produite lors du changement de mot de passe. Votre utilisateur est peut-être défini hors du portail Plone."
 
 #. Default: "Reset selected accounts"
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:125
 msgid "button_reset"
-msgstr "Reiniciar cuentas de usuario seleccionadas"
+msgstr "Réinitialiser les comptes sélectionnés"
 
 #. Default: "This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours."
 #: ./www/lockout.pt:27
 msgid "description_login_locked"
-msgstr "Esta cuenta ha sido bloqueada por razones de seguridad. Usted no podrá para iniciar sesión por un periodo de ${reset_period} horas."
+msgstr "Ce compte a été verrouillé pour des raisons de sécurité. Vous ne pourrez vous connecter pendant une période de ${reset_period} heures."
 
 #. Default: "History of password changes per user"
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:21
 msgid "description_settings_form"
-msgstr "Historial del cambio de contraseña por usuario"
+msgstr "Historique des changements de mots de passe par utilisateur"
 
 #. Default: "Account has been locked"
 #: ./www/lockout.pt:22
 msgid "heading_login_locked"
-msgstr "Cuanta ha sido bloqueada"
+msgstr "Le compte a été verrouillé"
 
 #. Default: "Client IP"
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:62
 #, fuzzy
 msgid "label_IP"
-msgstr "Dirección IP"
+msgstr "Adresse IP"
 
 #. Default: "Attempts"
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:56
 #, fuzzy
 msgid "label_count"
-msgstr "Numero de intentos"
+msgstr "Nombre de tentatives"
 
 #. Default: "Email"
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:53
 msgid "label_email"
-msgstr "Correo electrónico"
+msgstr "Adresse email"
 
 #. Default: "Full name"
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:50
 msgid "label_fullname"
-msgstr "Nombre Completo"
+msgstr "Nom complet"
 
 #. Default: "Last attempt"
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:104
 msgid "label_last"
-msgstr "Último intento"
+msgstr "Dernière tentative"
 
 #. Default: "Last attempt"
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:59
 msgid "label_last_attempt"
-msgstr "Último intento"
+msgstr "Dernière tentative"
 
 #. Default: "Logins"
 #: ./skins/loginlockout_templates/loginlockout_history.pt:43
 msgid "label_last_logins"
-msgstr "Inicios de sesión"
+msgstr "Dernières connexions"
 
 #. Default: "Last password change"
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:47
 msgid "label_last_password_change"
-msgstr "Último cambio de contraseña"
+msgstr "Dernier changement de mot de passe"
 
 #. Default: "Login name"
 #: ./skins/loginlockout_templates/loginlockout_history.pt:40
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:47
 msgid "label_login"
-msgstr "Nombre de inicio de usuario"
+msgstr "Nom de l'utilisateur"
 
 #. Default: "Username"
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:44
 msgid "label_username"
-msgstr "Nombre de usuario"
+msgstr "Nom d'utilisateur"
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:33
 msgid "older than 3 months"
-msgstr "más de 3 meses"
+msgstr "l'infini et l'au-delà"
 
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:76
 msgid "user profile"
-msgstr "Perfil de usuario"
+msgstr "Profil utilisateur"

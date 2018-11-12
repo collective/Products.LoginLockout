@@ -307,7 +307,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             pass
         return default
 
-    security.declarePrivate('getResetPeriod')
+    security.declarePublic('getResetPeriod')
 
     def getResetPeriod(self):
         return self._getsetting('reset_period')
