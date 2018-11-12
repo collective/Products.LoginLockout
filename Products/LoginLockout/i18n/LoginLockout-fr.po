@@ -243,13 +243,11 @@ msgstr "Le compte a été verrouillé"
 
 #. Default: "Client IP"
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:62
-#, fuzzy
 msgid "label_IP"
 msgstr "Adresse IP"
 
 #. Default: "Attempts"
 #: ./skins/loginlockout_templates/loginlockout_settings.cpt:56
-#, fuzzy
 msgid "label_count"
 msgstr "Nombre de tentatives"
 
