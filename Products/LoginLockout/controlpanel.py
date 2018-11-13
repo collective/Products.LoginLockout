@@ -1,9 +1,9 @@
 # _*_ coding: utf-8 _*_
-from .interfaces import ILoginLockoutSettings
 from plone.app.registry.browser import controlpanel
-from plone.app.iterate import PloneMessageFactory as _
-from z3c.form import form
 from plone.z3cform import layout
+from Products.LoginLockout.interfaces import _
+from Products.LoginLockout.interfaces import ILoginLockoutSettings
+from z3c.form import form
 
 
 class LoginLockoutSettingsForm(controlpanel.RegistryEditForm):
