@@ -112,7 +112,11 @@ def setupVarious(context):
 def uninstallVarious(context):
     """"""
     # Only run step if a flag file is present
-    if context.readDataFile('loginlockout.txt') is None:
+    if context.readDataFile('loginlockout_uninstall.txt') is None:
         return
     log.info('LoginLockout uninstall process is starting...')
     # may be plugin uninstall here?
+    site = context.getSite()
+    if 'loginlockout_properties' in site.portal_properties:
+        site.portal_properties.manage_delObjects(ids=['loginlockout_properties'])
+    uninstall(site)

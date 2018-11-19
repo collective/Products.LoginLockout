@@ -21,8 +21,7 @@
  </skin-path>
 
  <skin-path name="*">
-  <layer remove="True" name="loginlockout_templates"
-     insert-after="custom"/>
+  <layer remove="True" name="loginlockout_templates" />
  </skin-path>
 
 </object>

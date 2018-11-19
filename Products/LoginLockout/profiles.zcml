@@ -32,6 +32,7 @@
       description="Uninstall various import steps for Products.LoginLockout"
       handler="Products.LoginLockout.setuphandlers.uninstallVarious">
     <depends name="skins"/>
+    <depends name="propertiestool"/>
   </genericsetup:importStep>
 
 </configure>
