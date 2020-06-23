@@ -23,6 +23,7 @@ setup(
         "Framework :: Plone :: 4.3",
         "Framework :: Plone :: 5.0",
         "Framework :: Plone :: 5.1",
+        "Framework :: Plone :: 5.2",
         "Framework :: Zope2",
         "Intended Audience :: System Administrators",
         "License :: OSI Approved :: BSD License",
@@ -30,6 +31,8 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Programming Language :: Zope",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: System :: Systems Administration",
@@ -46,7 +49,8 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'ipaddress'
+        'ipaddress',
+        'six'
         # -*- Extra requirements: -*-
         # Products.PluggableAuthService is a dep, but can't be explicit in Plone 3.
     ],
