@@ -17,6 +17,6 @@ env:
 matrix:
   exclude:
     - python: 3.7
-      env:
-        - PLONE_VERSION=4.3
-        - PLONE_VERSION=5.0
+      env: PLONE_VERSION=4.3
+    - python: 3.7
+      env: PLONE_VERSION=5.0
