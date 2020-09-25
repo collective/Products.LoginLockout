@@ -3,7 +3,7 @@ from Products.LoginLockout.plugin import PLUGIN_ID, manage_addLoginLockout
 from Products.LoginLockout.plugin import PLUGIN_TITLE
 from Products.LoginLockout.plugin import PROJECTNAME
 from Products.LoginLockout.plugin import log
-from io import StringIO
+from six import StringIO
 
 
 def install(portal):
