@@ -1,4 +1,4 @@
-from plugin import PROJECTNAME
+from Products.LoginLockout.plugin import PROJECTNAME
 
 TOOL_ID = "loginlockout_tool"
 

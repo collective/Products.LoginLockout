@@ -1,8 +1,8 @@
+import doctest
 import unittest
 from Products.CMFCore.utils import getToolByName
 from plone.registry.interfaces import IRegistry
 from transaction import commit
-from zope.testing import doctest
 from zope.component import getUtility, ComponentLookupError
 from plone.app.testing import FunctionalTesting, TEST_USER_NAME
 from plone.app.testing import IntegrationTesting
@@ -83,7 +83,7 @@ def setUp(doctest):
     def raising(self, info):
         import traceback
         traceback.print_tb(info[2])
-        print info[1]
+        print(info[1])
 
     from Products.SiteErrorLog.SiteErrorLog import SiteErrorLog
     SiteErrorLog.raising = raising
