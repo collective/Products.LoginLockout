@@ -5,13 +5,14 @@ cache:
 language: python
 python:
   - 2.7
+  - 3.7
 env:
   - PLONE=4.3
   - PLONE=5.0
-  - PLONE=5.1
+  - PLONE=5.2
 matrix:
   exclude:
-    - python: 2.6
+    - python: 3.7
       env: PLONE=4.3
 install:
   - sed -ie "s#travis-4.x.cfg#travis-$PLONE.x.cfg#" travis.cfg
@@ -21,8 +22,6 @@ install:
   - bin/buildout -c travis.cfg -N
 script: bin/code-analysis && bin/test
 after_success:
-# XXX: https://github.com/urllib3/urllib3/issues/1456
-- pip install urllib3==1.23
 - pip install coverage
 - coverage run bin/test
 - pip install coveralls
