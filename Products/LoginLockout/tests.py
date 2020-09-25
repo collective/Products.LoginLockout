@@ -83,7 +83,7 @@ def setUp(doctest):
     def raising(self, info):
         import traceback
         traceback.print_tb(info[2])
-        print (info[1])
+        print(info[1])
 
     from Products.SiteErrorLog.SiteErrorLog import SiteErrorLog
     SiteErrorLog.raising = raising
