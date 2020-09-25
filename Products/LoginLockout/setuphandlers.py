@@ -14,7 +14,7 @@ def install(portal):
     Different interfaces need to be activated for either case.
     """
     out = StringIO()
-    print("Installing %s:" % PROJECTNAME, end="", file=out)
+    out.write("Installing %s:" % PROJECTNAME)
 
     plone_pas = getToolByName(portal, 'acl_users')
     zope_pas = portal.getPhysicalRoot().acl_users
@@ -42,13 +42,13 @@ def install(portal):
 
     # install configlet
 
-    print("Successfully installed %s:" % PROJECTNAME, end="", file=out)
+    out.write("Successfully installed %s:" % PROJECTNAME)
     return out.getvalue()
 
 
 def uninstall(portal):
     out = StringIO()
-    print("Uninstalling %s:" % PROJECTNAME, end="", file=out)
+    out.write("Uninstalling %s:" % PROJECTNAME)
     plone_pas = getToolByName(portal, 'acl_users')
     # TODO: probably shouldn't delete zope plugin because it can break other sites. Leave it but make sure it doesn't do anything
     # - but leaving the plugin would break the site if package goes away?
@@ -79,12 +79,12 @@ def activatePluginSelectedInterfaces(
                 interface_name in selected_interfaces:
             if interface_name in disable:
                 disable.append(interface_name)
-                print(" - Disabling: " + info['title'], end="", file=out)
+                out.write(" - Disabling: " + info['title'])
             else:
                 activatable.append(interface_name)
-                print(" - Activating: " + info['title'], end="", file=out)
+                out.write(" - Activating: " + info['title'])
     plugin_obj.manage_activateInterfaces(activatable)
-    print(plugin + " activated.", end="", file=out)
+    out.write(plugin + " activated.")
 
 
 def movePluginToTop(pas, plugin_id, interface_name, out):
@@ -95,10 +95,8 @@ def movePluginToTop(pas, plugin_id, interface_name, out):
     interface = registry._getInterfaceFromName(interface_name)
     while registry.listPlugins(interface)[0][0] != plugin_id:
         registry.movePluginsUp(interface, [plugin_id])
-    print(
-        "Moved " + plugin_id + " to top in " + interface_name + ".",
-        end="",
-        file=out
+    out.write(
+        "Moved " + plugin_id + " to top in " + interface_name + "."
     )
 
 
