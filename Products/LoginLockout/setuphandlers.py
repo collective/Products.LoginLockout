@@ -3,7 +3,7 @@ from Products.LoginLockout.plugin import PLUGIN_ID, manage_addLoginLockout
 from Products.LoginLockout.plugin import PLUGIN_TITLE
 from Products.LoginLockout.plugin import PROJECTNAME
 from Products.LoginLockout.plugin import log
-from StringIO import StringIO
+from io import StringIO
 
 
 def install(portal):
@@ -14,7 +14,7 @@ def install(portal):
     Different interfaces need to be activated for either case.
     """
     out = StringIO()
-    print >> out, "Installing %s:" % PROJECTNAME
+    print("Installing %s:" % PROJECTNAME, end="", file=out)
 
     plone_pas = getToolByName(portal, 'acl_users')
     zope_pas = portal.getPhysicalRoot().acl_users
@@ -25,7 +25,7 @@ def install(portal):
                     'ICredentialsUpdatePlugin'],
         zope_pas: ['IChallengePlugin', 'IAnonymousUserFactoryPlugin'],
     }
-    for (pas, interfaces) in interfaces_for_paservices.iteritems():
+    for (pas, interfaces) in interfaces_for_paservices.items():
         existing = pas.objectIds()
         if PLUGIN_ID not in existing:
             loginlockout = pas.manage_addProduct[PROJECTNAME]
@@ -37,18 +37,18 @@ def install(portal):
         plone_pas: 'IChallengePlugin',
         zope_pas: 'IAnonymousUserFactoryPlugin',
     }
-    for (pas, interface) in move_to_top_for.iteritems():
+    for (pas, interface) in move_to_top_for.items():
         movePluginToTop(pas, PLUGIN_ID, interface, out)
 
     # install configlet
 
-    print >> out, "Successfully installed %s." % PROJECTNAME
+    print("Successfully installed %s:" % PROJECTNAME, end="", file=out)
     return out.getvalue()
 
 
 def uninstall(portal):
     out = StringIO()
-    print >> out, "Uninstalling %s:" % PROJECTNAME
+    print("Uninstalling %s:" % PROJECTNAME, end="", file=out)
     plone_pas = getToolByName(portal, 'acl_users')
     # TODO: probably shouldn't delete zope plugin because it can break other sites. Leave it but make sure it doesn't do anything
     # - but leaving the plugin would break the site if package goes away?
@@ -79,12 +79,12 @@ def activatePluginSelectedInterfaces(
                 interface_name in selected_interfaces:
             if interface_name in disable:
                 disable.append(interface_name)
-                print >> out, " - Disabling: " + info['title']
+                print(" - Disabling: " + info['title'], end="", file=out)
             else:
                 activatable.append(interface_name)
-                print >> out, " - Activating: " + info['title']
+                print(" - Activating: " + info['title'], end="", file=out)
     plugin_obj.manage_activateInterfaces(activatable)
-    print >> out, plugin + " activated."
+    print(plugin + " activated.", end="", file=out)
 
 
 def movePluginToTop(pas, plugin_id, interface_name, out):
@@ -95,7 +95,11 @@ def movePluginToTop(pas, plugin_id, interface_name, out):
     interface = registry._getInterfaceFromName(interface_name)
     while registry.listPlugins(interface)[0][0] != plugin_id:
         registry.movePluginsUp(interface, [plugin_id])
-    print >> out, "Moved " + plugin_id + " to top in " + interface_name + "."
+    print(
+        "Moved " + plugin_id + " to top in " + interface_name + ".",
+        end="",
+        file=out
+    )
 
 
 def setupVarious(context):

@@ -54,13 +54,13 @@ Go to the Plone Control Panel -> LoginLockout Settings , there you can changes t
 - whitelist_ips: [] # any origin IP is allowed
 - Fake Client IP: false
 
-    >>> print admin_browser.getControl("Max Attempts").value
+    >>> print(admin_browser.getControl("Max Attempts").value)
     3
-    >>> print admin_browser.getControl("Reset Period (hours)").value
+    >>> print(admin_browser.getControl("Reset Period (hours)").value)
     24.0
-    >>> print admin_browser.getControl('Lock logins to IP Ranges').value
+    >>> print(admin_browser.getControl('Lock logins to IP Ranges').value)
 
-    >>> print admin_browser.getControl('Fake Client IP').selected
+    >>> print(admin_browser.getControl('Fake Client IP').selected)
     False
 
 
@@ -206,7 +206,7 @@ We've installed a Control panel to monitor the login attempts
 
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...<td>test-user</td>...
     ...<td>1</td>...
@@ -248,13 +248,13 @@ The administrator can reset this persons account::
 
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...<td>test-user</td>...
     ...<td>3</td>...
     >>> admin_browser.getControl(name='reset_nonploneusers:list').value = ['test-user']
     >>> admin_browser.getControl('Reset selected accounts').click()
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...Accounts were reset for these login names: test-user...
 
@@ -426,7 +426,7 @@ the control panel
 
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...Current detected Client IP: <span>10.1.1.1</span>...
     >>> _ = admin_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
@@ -441,7 +441,7 @@ than user login and they can be different. User test_user_1_ had 4 successful lo
     >>> admin_browser.getLink('Login history').click()
     >>> admin_browser.getControl('Username pattern').value = 'test_user_1_'
     >>> admin_browser.getControl('Search records').click()
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...
                         <td valign="top">test_user_1_</td>
@@ -522,7 +522,7 @@ To start development:
     git clone git@github.com:collective/Products.LoginLockout.git
     cd Products.LoginLockout
     virtualenv .
-    ./bin/python bootstrap.py
+    ./bin/pip install -r requirements.txt
     ./bin/buildout
     ./bin/test
 
