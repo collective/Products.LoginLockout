@@ -25,6 +25,7 @@ from Products.PluggableAuthService.utils import classImplements
 from zExceptions import Unauthorized
 import logging
 import os
+import six
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
 
@@ -325,7 +326,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         if not value:
             return []
         # remove comments
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             ranges = [x.split('#')[0].strip() for x in value.split('\n')]
         else:
             ranges = list(value)
