@@ -71,11 +71,9 @@ jobs:
       - name: code-analysis
         run: echo "${{ matrix.plone-version }}" | grep 5.1 || bin/code-analysis  
       - name: createcoverage
-        if: success()
         run: |
             bin/createcoverage
       - name: Coveralls
-        if: success()
         uses: AndreMiras/coveralls-python-action@develop
         with:
           parallel: true
