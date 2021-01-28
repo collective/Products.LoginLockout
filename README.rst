@@ -461,12 +461,13 @@ Password Reset History
 
 When a user changes their password
 
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
 
-    >>> anon_browser.open('./@@change-password')
+    >>> anon_browser.getLink("Preferences").click()
+    >>> anon_browser.getLink("Password").click()
     >>> anon_browser.getControl('Current password').value = user_password
     >>> anon_browser.getControl('New password').value = '12345'
     >>> anon_browser.getControl('Confirm password').value = '12345'
@@ -477,22 +478,22 @@ When a user changes their password
 
 The the administrators can see the password was changed
 
+    >>> admin_browser = make_admin_browser('/loginlockout_settings')
     >>> admin_browser.getLink('History password changes').click()
-    >>> print admin_browser.contents
-    <BLANKLINE>
+    >>> print(admin_browser.contents)
+    <...
     ...
           <table class="listing">
             <tr>
               <th>Username</th>
               <th>Last password change</th>
             </tr>
-    <BLANKLINE>
-            <tr>
-                        <td valign="top">test_user_1_</td>
-                        <td valign="top">
+            <tr class="even">
+                <td>test_user_1_</td>
+                <td>...</td>
             </tr>
           </table>
-
+    ...
 
 
 
