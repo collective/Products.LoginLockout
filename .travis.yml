@@ -16,9 +16,8 @@ matrix:
 install:
   - sed -ie "s#travis-4.x.cfg#travis-$PLONE.x.cfg#" travis.cfg
   - mkdir -p buildout-cache/downloads
-  - python bootstrap.py -c travis.cfg
-  - bin/buildout -c travis.cfg annotate
-  - bin/buildout -c travis.cfg -N
+  - bootstrap.sh test-$PLONE.x.cfg
+  - bin/buildout -c test-$PLONE.x.cfg -N
 script: bin/code-analysis && bin/test
 after_success:
 # XXX: https://github.com/urllib3/urllib3/issues/1456
