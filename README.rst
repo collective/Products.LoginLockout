@@ -473,9 +473,11 @@ Password Reset History
 
 When a user changes their password
 
+    >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
+
     >>> anon_browser.open('./@@change-password')
     >>> anon_browser.getControl('Current password').value = user_password
     >>> anon_browser.getControl('New password').value = '12345'
