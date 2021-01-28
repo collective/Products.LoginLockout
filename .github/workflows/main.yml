@@ -45,7 +45,7 @@ jobs:
             ~/buildout-cache
             ~/extends
             ~/.cache/pip
-          key: ${{ runner.os }}-buildout-${{ hashFiles('**/*.cfg') }}-${{ matrix.plone-version }}-${{ matrix.python-version }}
+          key: ${{ runner.os }}-buildout-${{ matrix.plone-version }}-${{ matrix.python-version }}
           restore-keys: |
             ${{ runner.os }}-buildout-
       - name: setup buildout cache
@@ -80,7 +80,7 @@ jobs:
         uses: AndreMiras/coveralls-python-action@develop
         with:
           parallel: true
-          flag-name: Unit Test      
+          flag-name: ${{ matrix.plone-version }}-${{ matrix.python-version }}     
       # - name: Archive test results
       #   if: failure()
       #   uses: actions/upload-artifact@v1
