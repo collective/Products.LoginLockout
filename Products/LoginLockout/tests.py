@@ -2,7 +2,7 @@ import unittest
 from Products.CMFCore.utils import getToolByName
 from plone.registry.interfaces import IRegistry
 from transaction import commit
-from zope.testing import doctest
+import doctest
 from zope.component import getUtility, ComponentLookupError
 from plone.app.testing import FunctionalTesting, TEST_USER_NAME
 from plone.app.testing import IntegrationTesting
