@@ -183,7 +183,7 @@ Now we'll open up a new browser and attempt to login::
     >>> anon_browser.getControl('Log in').click()
     >>> 'Login failed' in anon_browser.contents
     False
-    >>> print anon_browser.contents
+    >>> print(anon_browser.contents)
     <BLANKLINE>
     ...You are now logged in...
 
