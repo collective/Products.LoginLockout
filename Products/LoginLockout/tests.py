@@ -100,6 +100,10 @@ def test_suite():
     ])
     return suite
 
+# from zope.testing import doctestcase
+# @doctestcase.doctestfiles('../../README.rst', optionflags=doctest.REPORT_ONLY_FIRST_FAILURE | doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
+# class ReadmeTests(unittest.TestCase):
+#     setUp = setUp
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
