@@ -28,7 +28,7 @@ def install(portal):
                     'ICredentialsUpdatePlugin'],
         zope_pas: ['IChallengePlugin', 'IAnonymousUserFactoryPlugin'],
     }
-    for (pas, interfaces) in interfaces_for_paservices.iteritems():
+    for (pas, interfaces) in interfaces_for_paservices.items():
         existing = pas.objectIds()
         if PLUGIN_ID not in existing:
             loginlockout = pas.manage_addProduct[PROJECTNAME]
@@ -40,7 +40,7 @@ def install(portal):
         plone_pas: 'IChallengePlugin',
         zope_pas: 'IAnonymousUserFactoryPlugin',
     }
-    for (pas, interface) in move_to_top_for.iteritems():
+    for (pas, interface) in move_to_top_for.items():
         movePluginToTop(pas, PLUGIN_ID, interface, out)
 
     # install configlet
