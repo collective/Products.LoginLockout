@@ -1,3 +1,8 @@
 [run]
 relative_files = True
 
+[report]
+include =
+    Products/*
+omit =
+    */test*
