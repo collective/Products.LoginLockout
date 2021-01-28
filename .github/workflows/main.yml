@@ -73,8 +73,10 @@ jobs:
       - name: createcoverage
         run: |
             bin/createcoverage
-            pip install -q coveralls
-            coveralls
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}            
       # - name: Archive test results
       #   if: failure()
       #   uses: actions/upload-artifact@v1
