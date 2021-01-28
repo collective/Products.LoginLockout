@@ -54,11 +54,10 @@ jobs:
             echo "eggs-directory = $HOME/buildout-cache/eggs" >> $HOME/.buildout/default.cfg
       - name: bootstrap buildout
         run: |
-          sed -ie "s#travis-4.x.cfg#travis-$PLONE.x.cfg#" travis.cfg
-          ./bootstrap.sh travis.cfg
+          ./bootstrap.sh test-$PLONE.x.cfg
       - name: buildout
         run: |
-          bin/buildout -t 10 -Nc travis.cfg
+          bin/buildout -t 10 -Nc test-$PLONE.x.cfg
           bin/pip install zest.pocompile
           bin/pocompile src
       - name: test
