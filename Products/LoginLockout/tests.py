@@ -103,7 +103,7 @@ def test_suite():
     suite.addTests([
         layered(doctest.DocFileSuite(
             '../../README.rst', setUp=setUp,
-            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE | doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
+            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE | doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS | doctest.IGNORE_EXCEPTION_DETAIL),
             layer=FUNCTIONAL_TESTING,
         ),
     ])
