@@ -76,7 +76,7 @@ jobs:
       - name: createcoverage
         run: |
             bin/createcoverage
-            bin/converage json -i
+            bin/coverage json -i
       - name: Coveralls
         uses: AndreMiras/coveralls-python-action@develop
         with:
