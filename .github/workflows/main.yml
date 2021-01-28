@@ -18,9 +18,12 @@ jobs:
           - '5.0'
           - '5.1'
           - '5.2'
-        # include:
-        #   - plone-version: 5.2
-        #     python-version: 3.8
+        include:
+          - plone-version: 5.2
+            python-version: 3.8
+        include:
+          - plone-version: 5.2
+            python-version: 3.7
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
