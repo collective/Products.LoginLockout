@@ -74,12 +74,12 @@ jobs:
         if: success()
         run: |
             bin/createcoverage
-      # - name: Coveralls
-      #   if: success()
-      #   uses: AndreMiras/coveralls-python-action@develop
-      #   with:
-      #     parallel: true
-      #     flag-name: Unit Test      
+      - name: Coveralls
+        if: success()
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel: true
+          flag-name: Unit Test      
       # - name: Archive test results
       #   if: failure()
       #   uses: actions/upload-artifact@v1
@@ -87,11 +87,11 @@ jobs:
       #     name: test_results
       #     path: ./test
 
-# coveralls_finish:
-#   needs: build
-#   runs-on: ubuntu-latest
-#   steps:
-#   - name: Coveralls Finished
-#     uses: AndreMiras/coveralls-python-action@develop
-#     with:
-#       parallel-finished: true
+  coveralls_finish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: AndreMiras/coveralls-python-action@develop
+      with:
+        parallel-finished: true
