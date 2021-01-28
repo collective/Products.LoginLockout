@@ -17,6 +17,9 @@ jobs:
           - '4.3'
           - '5.0'
           - '5.1'
+        include:
+          - plone-version: 5.2
+            python-version: 3.8
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
@@ -85,11 +88,11 @@ jobs:
       #     name: test_results
       #     path: ./test
 
-  # coveralls_finish:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Coveralls Finished
-  #     uses: AndreMiras/coveralls-python-action@develop
-  #     with:
-  #       parallel-finished: true
+  coveralls_finish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: AndreMiras/coveralls-python-action@develop
+      with:
+        parallel-finished: true
