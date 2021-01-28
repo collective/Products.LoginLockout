@@ -1,8 +1,8 @@
 LoginLockout
 ============
 
-.. image:: https://api.travis-ci.org/collective/Products.LoginLockout.svg
-  :target: https://travis-ci.org/collective/Products.LoginLockout
+.. image:: https://github.com/collective/Products.LoginLockout/workflows/CI/badge.svg
+  :target: https://github.com/collective/Products.LoginLockout/actions
 
 .. image:: https://coveralls.io/repos/collective/Products.LoginLockout/badge.svg?branch=master&service=github
   :target: https://coveralls.io/github/collective/Products.LoginLockout?branch=master
@@ -86,25 +86,86 @@ First we'll show you how it works with Plone.
 To Install
 ----------
 
-Install into Plone via Add/Remove Products
+Install into Plone via Add/Remove Products. If you are installing into zope without
+plone then you will need to follow these manual install steps.
 
-This will install and activate a two PAS plugins. It's very important the plugin is the top Challange plugin.
+This will install and activate a two PAS plugins.
 
-   >>> pas = portal.acl_users
-   >>> registry = pas.plugins
-   >>> interface = registry._getInterfaceFromName('IChallengePlugin')
-   >>> registry.listPlugins(interface)
+Manual Installation
+-------------------
+
+This plugin needs to be installed in two places, the instance PAS where logins
+occur and the root acl_users.
+
+ 1. Place the Product directory 'LoginLockout' in your 'Products/'
+ directory. Restart Zope.
+
+ 2. In your instance PAS 'acl_users', select 'LoginLockout' from the add
+ list.  Give it an id and title, and push the add button.
+
+ 3. Enable the 'Authentication', 'Challenge' and the 'Update Credentials'
+ plugin interfaces in the after-add screen.
+
+ 4. Rearrange the order of your 'Challenge plugins' so that the
+ 'LoginLockout' plugin is at the top.
+
+ 5. Repeat the above for your root PAS but as a plugin to
+
+    -  Anonymoususerfactory
+
+    -  Challenge
+
+   and ensure LoginLockout is the first Anonymoususerfactory and Challenge plugin
+
+Steps 2 through 5 below will be done for you by the Plone installer.
+
+That's it! Test it out.
+
+
+Plone LoginLockout PAS Plugin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It's very important the plugin is the *first* Challange plugin in the activated plugins list.
+This ensures we redirect a person attempting to make a login into a locked account to a special page.
+
+   >>> plone_pas = portal.acl_users.plugins
+   >>> IChallengePlugin = plone_pas._getInterfaceFromName('IChallengePlugin')
+   >>> plone_pas.listPlugins(IChallengePlugin)
    [('login_lockout_plugin', <LoginLockout at /plone/acl_users/login_lockout_plugin>)...]
 
-It will also install a plugin at the root of the zope instance. It's important this is also the top IAnonymousUserFactoryPlugin
 
-   >>> pas = portal.getPhysicalRoot().acl_users
-   >>> registry = pas.plugins
-   >>> interface = registry._getInterfaceFromName('IAnonymousUserFactoryPlugin')
-   >>> registry.listPlugins(interface)
+In addition it is installed as a IAuthenticationPlugin. This both collects the username and login and
+will prevent a login should it be locked.
+
+   >>> IAuthenticationPlugin = plone_pas._getInterfaceFromName('IAuthenticationPlugin')
+   >>> 'login_lockout_plugin' in [p[0] for p in plone_pas.listPlugins(IAuthenticationPlugin)]
+   True
+
+and a ICredentialsUpdatePlugin. This records when a login was successful to reset attempt data.
+
+
+   >>> ICredentialsUpdatePlugin = plone_pas._getInterfaceFromName('ICredentialsUpdatePlugin')
+   >>> 'login_lockout_plugin' in [p[0] for p in plone_pas.listPlugins(ICredentialsUpdatePlugin)]
+   True
+
+
+Root Zope LoginLockout PAS Plugin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It will also install a plugin at the root of the zope instance.
+
+It's important this is also the *first* IAnonymousUserFactoryPlugin. On a normal Zope instance it will be the only one.
+This ensures it collects data on unsuccessful attempted logins.
+
+   >>> root_pas = portal.getPhysicalRoot().acl_users.plugins
+   >>> IAnonymousUserFactoryPlugin = plone_pas._getInterfaceFromName('IAnonymousUserFactoryPlugin')
+   >>> root_pas.listPlugins(IAnonymousUserFactoryPlugin)
    [('login_lockout_plugin', <LoginLockout at /acl_users/login_lockout_plugin>)]
 
+It is also installed as a IChallengePlugin.
 
+   >>> 'login_lockout_plugin' in [p[0] for p in root_pas.listPlugins(IChallengePlugin)]
+   True
 
 
 Lockout on incorrect password attempts
@@ -252,13 +313,60 @@ If not from a valid IP then the login will fail
 
     >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
+
+Basic Auth will works with the right IP
+
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
+    >>> anon_browser.addHeader('X-Forwarded-For', '10.1.1.1')
+
+    >>> anon_browser.open(portal.absolute_url())
+    >>> anon_browser.getLink('Log out')
+    <Link text='Log out'...>
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+
+
+and basic auth fails with the wrong IP
+
+    >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
+
+    >>> anon_browser.open(portal.absolute_url())
+    Traceback (most recent call last):
+    ...
+    Unauthorized: Unauthorized()
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
+
+
+We can still use a root login at the root
+
+    >>> anon_browser.addHeader('Authorization', 'Basic admin:secret')
+    >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
+
+    >>> anon_browser.open(portal.absolute_url()+'/../manage_top_frame')
+    >>> 'Logged in as' in anon_browser.contents
+    True
+
+but not in the plone site
+
+    >>> anon_browser.open(portal.absolute_url())
+    Traceback (most recent call last):
+    ...
+    Unauthorized: Unauthorized()
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
+
+
 You can also set IP ranges e.g.
 
     >>> config_property( whitelist_ips = u"""10.1.1.1
-    ... 10.1.1.1/24
-    ... 2.2.2.2/24
+    ... 10.1.0.0/16 # range 1
+    ... 2.2.0.0/16 # range 2
     ... """)
 
+    >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
 
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
@@ -271,6 +379,45 @@ You can also set IP ranges e.g.
     >>> anon_browser.open(portal.absolute_url()+'/logout')
     >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
+You can also set a env variable LOGINLOCKOUT_IP_WHITELIST which is merged with the config.
+This allows those with filesystem access a way to get in if they have set their config wrong.
+It also allows a set of IP ranges to be set for any site in a Plone multisite setup as long
+as the site has loginlockout installed.
+
+
+    >>> anon_browser.getLink('Log in')
+    <Link text='Log in'...
+
+    >>> import os; os.environ["LOGINLOCKOUT_IP_WHITELIST"] = "3.3.3.3"
+
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
+    >>> anon_browser.addHeader('X-Forwarded-For', '3.3.3.3')
+
+    >>> anon_browser.open(portal.absolute_url())
+    >>> anon_browser.getLink('Log out')
+    <Link text='Log out'...>
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
+
+
+Note that you still have to have the IP lockout config set otherwise logins are allowed from anywhere
+even with the env variable set
+
+    >>> config_property( whitelist_ips = u"""
+    ... """)
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
+    >>> anon_browser.addHeader('X-Forwarded-For', '4.4.4.4')
+
+    >>> anon_browser.open(portal.absolute_url())
+    >>> anon_browser.getLink('Log out')
+    <Link text='Log out'...>
+
+
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
+    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
+    >>> del os.environ["LOGINLOCKOUT_IP_WHITELIST"]
+
 
 If you are unsure of what is being detected as your current Client IP you can see it in
 the control panel
@@ -282,6 +429,7 @@ the control panel
     >>> print admin_browser.contents
     <BLANKLINE>
     ...Current detected Client IP: <span>10.1.1.1</span>...
+    >>> _ = admin_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
 
 Login History
@@ -313,7 +461,7 @@ than user login and they can be different. User test_user_1_ had 4 successful lo
                                 </li>
                                 <li>
                                     ...
-                                    ()
+                                    (2.2.2.2)
                                 </li>
                             </ul>
     ...
@@ -357,35 +505,6 @@ The the administrators can see the password was changed
 
 
 
-Manual Installation
--------------------
-
-This plugin needs to be installed in two places, the instance PAS where logins
-occur and the root acl_users.
-
- 1. Place the Product directory 'LoginLockout' in your 'Products/'
- directory. Restart Zope.
-
- 2. In your instance PAS 'acl_users', select 'LoginLockout' from the add
- list.  Give it an id and title, and push the add button.
-
- 3. Enable the 'Authentication', 'Challenge' and the 'Update Credentials'
- plugin interfaces in the after-add screen.
-
- 4. Rearrange the order of your 'Challenge plugins' so that the
- 'LoginLockout' plugin is at the top.
-
- 5. Repeat the above for your root PAS but as a plugin to
-
-    -  Anonymoususerfactory
-
-    -  Update Credentials
-
-   and ensure LoginLockout is the first Anonymoususerfactory
-
-Steps 2 through 5 below will be done for you by the Plone installer.
-
-That's it! Test it out.
 
 
 Implementation
@@ -394,7 +513,7 @@ Implementation
 If the root anonymoususerfactory plugin is activated following an
 authentication plugin activation then this is an unsuccesful login
 attempt. If the password was different from the last unsuccessful
-attempt then we incriment a counter in data stored persistently
+attempt then we increment a counter in data stored persistently
 in the root plugin.
 
 If the instance plugin tries to authenticate a user that has been

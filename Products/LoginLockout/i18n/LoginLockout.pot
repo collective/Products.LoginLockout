@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2015-04-08 11:27+0000\n"
+"POT-Creation-Date: 2018-11-12 10:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 msgid "A plugin that rejects multiple logins attempts and locks out the user until the administrator unlocks them"
 msgstr ""
 
-#: ./skins/loginlockout_templates/reset_accounts.cpy:29
+#: ./skins/loginlockout_templates/reset_accounts.cpy:30
 msgid "Accounts were reset for these login names: %s,"
 msgstr ""
 
@@ -51,7 +51,7 @@ msgstr ""
 msgid "Attempts"
 msgstr ""
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:26
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:21
 msgid "Configuration and logging for the LoginLockout plugin."
 msgstr ""
 
@@ -59,8 +59,16 @@ msgstr ""
 msgid "Current Attempts"
 msgstr ""
 
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:25
+msgid "Current detected Client IP: ${remote_ip}"
+msgstr ""
+
 #: ./skins/loginlockout_templates/plone_change_password.py:20
 msgid "Does not match current password."
+msgstr ""
+
+#: ./interfaces.py:32
+msgid "Fake Client IP"
 msgstr ""
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:36
@@ -69,7 +77,7 @@ msgstr ""
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:66
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:13
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:152
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:134
 msgid "History password changes"
 msgstr ""
 
@@ -81,18 +89,33 @@ msgstr ""
 msgid "Id"
 msgstr ""
 
+#: ./interfaces.py:33
+msgid "Ignore X-Forward-For and REMOTE_ADDR headers"
+msgstr ""
+
 #: ./www/llLockouts.zpt:19
 msgid "Last"
 msgstr ""
 
-#. Default: "Login Lockout Plugin"
-#: ../profiles.zcml
+#: ./interfaces.py:26
+msgid "List of IP Ranges which Client IP must be in to login. Empty disables"
+msgstr ""
+
+#: ./interfaces.py:25
+msgid "Lock logins to IP Ranges"
+msgstr ""
+
+#: ./interfaces.py:19
+msgid "Locked accounts are reenabled after this time"
+msgstr ""
+
+#: ./profiles.zcml:12
 msgid "Login Lockout Plugin"
 msgstr ""
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:64
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:57
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:18
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:13
 msgid "Login Lockout configuration"
 msgstr ""
 
@@ -100,12 +123,8 @@ msgstr ""
 msgid "Login Name"
 msgstr ""
 
-#: ./skins/loginlockout_templates/logged_in.cpy:19
-msgid "Login failed. Both login name and password are case sensitive, check that caps lock is not enabled."
-msgstr ""
-
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:59
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:150
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:132
 msgid "Login history"
 msgstr ""
 
@@ -114,10 +133,18 @@ msgid "Login of all successful login attempts"
 msgstr ""
 
 #: ./profiles/default/controlpanel.xml
-msgid "LoginLockout Configuration Panel"
+msgid "LoginLockout"
 msgstr ""
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:147
+#: ./controlpanel.py:17
+msgid "LoginLockout Settings"
+msgstr ""
+
+#: ./interfaces.py:11
+msgid "Max Attempts"
+msgstr ""
+
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:129
 msgid "No accounts to reset"
 msgstr ""
 
@@ -125,12 +152,15 @@ msgstr ""
 msgid "No filtering"
 msgstr ""
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:101
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:91
 msgid "Non plone members:"
 msgstr ""
 
-#. Default: "PAS plugin that can lock/unlock a user login after a predetermined number of incorrect attempts."
-#: ../profiles.zcml
+#: ./interfaces.py:12
+msgid "Number of unsuccessful logins before account locked"
+msgstr ""
+
+#: ./profiles.zcml:12
 msgid "PAS plugin that can lock/unlock a user login after a predetermined number of incorrect attempts."
 msgstr ""
 
@@ -142,16 +172,20 @@ msgstr ""
 msgid "Password changed."
 msgstr ""
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:41
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:40
 msgid "Plone members:"
+msgstr ""
+
+#: ./interfaces.py:18
+msgid "Reset Period (hours)"
 msgstr ""
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:33
 msgid "Search records"
 msgstr ""
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:47
-msgid "Select/deselect all items"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:136
+msgid "Settings"
 msgstr ""
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:26
@@ -170,7 +204,7 @@ msgstr ""
 msgid "Username pattern"
 msgstr ""
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:32
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:31
 msgid "View and reset unsuccesful attempts"
 msgstr ""
 
@@ -183,7 +217,7 @@ msgid "While changing your password an AttributeError occurred. This is usually 
 msgstr ""
 
 #. Default: "Reset selected accounts"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:143
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:125
 msgid "button_reset"
 msgstr ""
 
@@ -202,33 +236,33 @@ msgstr ""
 msgid "heading_login_locked"
 msgstr ""
 
-#. Default: "IP address"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:72
+#. Default: "Client IP"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:62
 msgid "label_IP"
 msgstr ""
 
-#. Default: "Number of attempts"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:66
+#. Default: "Attempts"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:56
 msgid "label_count"
 msgstr ""
 
 #. Default: "Email"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:63
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:53
 msgid "label_email"
 msgstr ""
 
 #. Default: "Full name"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:60
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:50
 msgid "label_fullname"
 msgstr ""
 
 #. Default: "Last attempt"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:122
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:104
 msgid "label_last"
 msgstr ""
 
 #. Default: "Last attempt"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:69
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:59
 msgid "label_last_attempt"
 msgstr ""
 
@@ -244,13 +278,8 @@ msgstr ""
 
 #. Default: "Login name"
 #: ./skins/loginlockout_templates/loginlockout_history.pt:40
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:57
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:47
 msgid "label_login"
-msgstr ""
-
-#. Default: "Select all"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:55
-msgid "label_reset"
 msgstr ""
 
 #. Default: "Username"
@@ -262,7 +291,6 @@ msgstr ""
 msgid "older than 3 months"
 msgstr ""
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:86
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:76
 msgid "user profile"
 msgstr ""
-

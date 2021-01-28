@@ -9,7 +9,14 @@ Changes
 - Included the ability to restrict requests from certain IP networks. Config page shows current client IP [djay]
 - Remove 'select all' buttons.
   [ivanteoh]
-
+- Corrected private method bug.
+  Added french translations.
+  Corrected translation domain.
+  Added some translations.
+  Corrected control panel icon.
+  [sgeulette]
+- Corrected uninstall profile
+  [sgeulette]
 
 0.4.0 (2015-11-25)
 ------------------
@@ -142,4 +149,3 @@ Changes
 -------------
 
 - Initial Version (Dylan Jay)
-

@@ -2,7 +2,7 @@ import unittest
 from Products.CMFCore.utils import getToolByName
 from plone.registry.interfaces import IRegistry
 from transaction import commit
-from zope.testing import doctest
+import doctest
 from zope.component import getUtility, ComponentLookupError
 from plone.app.testing import FunctionalTesting, TEST_USER_NAME
 from plone.app.testing import IntegrationTesting
@@ -99,6 +99,11 @@ def test_suite():
         ),
     ])
     return suite
+
+# from zope.testing import doctestcase
+# @doctestcase.doctestfiles('../../README.rst', optionflags=doctest.REPORT_ONLY_FIRST_FAILURE | doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
+# class ReadmeTests(unittest.TestCase):
+#     setUp = setUp
 
 
 if __name__ == '__main__':

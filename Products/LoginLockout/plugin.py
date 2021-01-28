@@ -27,6 +27,8 @@ from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
 from zExceptions import Unauthorized
 import logging
+import os
+
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
 
@@ -50,6 +52,8 @@ __author__ = "Dylan Jay <software@pretaweb.com>"
 
    The admin can view and reset attempts via the ZMI at any time
 """
+
+ENV_WHITELIST = 'LOGINLOCKOUT_IP_WHITELIST'
 
 
 log = logging.getLogger('LoginLockout')
@@ -249,6 +253,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def setAttempt(self, login, password):
         "increment attempt count and record date stamp last attempt and IP"
 
+        # TODO: why are the login attempts stored in the root? The usernames aren't unique in the root.
+
         root = self.getRootPlugin()
         count, last, IP, reference = root._login_attempts.get(
             login, (0, None, '', None))
@@ -309,7 +315,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             pass
         return default
 
-    security.declarePrivate('getResetPeriod')
+    security.declarePublic('getResetPeriod')
 
     def getResetPeriod(self):
         return self._getsetting('reset_period')
@@ -323,10 +329,21 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
     def getWhitelistIPs(self):
         value = self._getsetting('whitelist_ips')
+        if not value:
+            return []
+        # remove comments
         if isinstance(value, basestring):
-            return [x.strip() for x in value.split('\n') if x.strip()]
+            ranges = [x.split('#')[0].strip() for x in value.split('\n')]
         else:
-            return value
+            ranges = list(value)
+        ranges = [x for x in ranges if x]
+        if not ranges:
+            return []
+        if ENV_WHITELIST in os.environ:
+            ranges += [x.split('#')[0].strip() for x in os.environ[ENV_WHITELIST].split('\n')]
+
+        ranges = [x for x in ranges if x]
+        return ranges
 
     security.declarePrivate('isLockedout')
 
@@ -348,8 +365,14 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         client = ip_address(unicode(ip))
         # TODO: could support rules that have different IP ranges for different groups
         for range in list(whitelist_ips) + ['127.0.0.1']:
-            if client in ip_network(unicode(range)):
-                return False
+            try:
+                if client in ip_network(unicode(range)):
+                    return False
+            except ValueError:
+                # we can get this if the range not in the right format.
+                # in which case we skip this check.
+                # TODO: should handle it better by validating the value when its set
+                continue
         return True
 
     security.declarePrivate('resetAttempts')
@@ -456,6 +479,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         """ register timestamp of last password change """
         self._last_pw_change[username] = DateTime()
 
+    security.declareProtected(ManageUsers, 'manage_getPasswordChanges')
+
     def manage_getPasswordChanges(self, min_days=0):
         """ Return history of password changes where the
             timestamp is older than ``min_days`` days.
@@ -498,16 +523,16 @@ def logged_in_handler(event):
     if hasattr(portal.acl_users, 'login_lockout_plugin'):
         portal.acl_users.login_lockout_plugin.setSuccessfulAttempt(userid)
 
+
 @adapter(IBasicUser, ICredentialsUpdatedEvent)
 def credentials_updated_handler(principal, event):
-
-    #TODO: currently doesn;t work because plone doesn't generate this event.
+    # TODO: currently doesn;t work because plone doesn't generate this event.
     #  https://github.com/plone/Products.PlonePAS/issues/33
 
     pas = aq_parent(principal)
 
-    #portal = getSite()
-    #password = event.password
+    # portal = getSite()
+    # password = event.password
 
     userid = principal.getId()
 

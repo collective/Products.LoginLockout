@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.3.6\n"
-"POT-Creation-Date: 2015-04-08 11:27+0000\n"
+"POT-Creation-Date: 2018-11-12 10:34+0000\n"
 "PO-Revision-Date: 2015-04-08 10:55+0000\n"
 "Last-Translator: Kees Hink <keeshink@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,7 +42,7 @@ msgstr "3 maanden"
 msgid "A plugin that rejects multiple logins attempts and locks out the user until the administrator unlocks them"
 msgstr "Een plugin die herhaalde inlogpogingen verhindert en de gebruiker uitsluit tot de beheerder ze ontsluit"
 
-#: ./skins/loginlockout_templates/reset_accounts.cpy:29
+#: ./skins/loginlockout_templates/reset_accounts.cpy:30
 msgid "Accounts were reset for these login names: %s,"
 msgstr "Accounts werden hersteld voor deze inlognamen: %s"
 
@@ -50,7 +50,7 @@ msgstr "Accounts werden hersteld voor deze inlognamen: %s"
 msgid "Attempts"
 msgstr "Pogingen"
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:26
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:21
 msgid "Configuration and logging for the LoginLockout plugin."
 msgstr "Configuratie en logging voor de LoginLockout-plugin"
 
@@ -58,9 +58,17 @@ msgstr "Configuratie en logging voor de LoginLockout-plugin"
 msgid "Current Attempts"
 msgstr "Huidige pogingen"
 
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:25
+msgid "Current detected Client IP: ${remote_ip}"
+msgstr ""
+
 #: ./skins/loginlockout_templates/plone_change_password.py:20
 msgid "Does not match current password."
 msgstr "Komt niet overeen met huidige wachtwoord."
+
+#: ./interfaces.py:32
+msgid "Fake Client IP"
+msgstr ""
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:36
 msgid "Filter"
@@ -68,7 +76,7 @@ msgstr "Filter"
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:66
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:13
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:152
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:134
 msgid "History password changes"
 msgstr "GEschiedenis van wachtwoord-aanpassingen"
 
@@ -80,18 +88,34 @@ msgstr "IP"
 msgid "Id"
 msgstr "Id"
 
+#: ./interfaces.py:33
+msgid "Ignore X-Forward-For and REMOTE_ADDR headers"
+msgstr ""
+
 #: ./www/llLockouts.zpt:19
 msgid "Last"
 msgstr "Laatst"
 
+#: ./interfaces.py:26
+msgid "List of IP Ranges which Client IP must be in to login. Empty disables"
+msgstr ""
+
+#: ./interfaces.py:25
+msgid "Lock logins to IP Ranges"
+msgstr ""
+
+#: ./interfaces.py:19
+msgid "Locked accounts are reenabled after this time"
+msgstr ""
+
 #. Default: "Login Lockout Plugin"
-#: ../profiles.zcml
+#: ./profiles.zcml:12
 msgid "Login Lockout Plugin"
 msgstr "Login Lockout Plugin"
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:64
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:57
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:18
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:13
 msgid "Login Lockout configuration"
 msgstr "Login Lockout instelling"
 
@@ -99,12 +123,8 @@ msgstr "Login Lockout instelling"
 msgid "Login Name"
 msgstr "Inlognaam"
 
-#: ./skins/loginlockout_templates/logged_in.cpy:19
-msgid "Login failed. Both login name and password are case sensitive, check that caps lock is not enabled."
-msgstr "Login mislukt. Loginnaam en wachtwoord zijn hoofdlettergevoelig, let op dat Caps Lock niet aan staat."
-
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:59
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:150
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:132
 msgid "Login history"
 msgstr "Inloggeschiedenis"
 
@@ -113,10 +133,18 @@ msgid "Login of all successful login attempts"
 msgstr "Login van alle succesvolle inlogpogingen"
 
 #: ./profiles/default/controlpanel.xml
-msgid "LoginLockout Configuration Panel"
-msgstr "LoginLockout configuratiepaneel"
+msgid "LoginLockout"
+msgstr ""
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:147
+#: ./controlpanel.py:17
+msgid "LoginLockout Settings"
+msgstr ""
+
+#: ./interfaces.py:11
+msgid "Max Attempts"
+msgstr ""
+
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:129
 msgid "No accounts to reset"
 msgstr "Geen accounts om te herstellen"
 
@@ -124,12 +152,16 @@ msgstr "Geen accounts om te herstellen"
 msgid "No filtering"
 msgstr "Geen filtering"
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:101
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:91
 msgid "Non plone members:"
 msgstr "Niet-Plone-leden:"
 
+#: ./interfaces.py:12
+msgid "Number of unsuccessful logins before account locked"
+msgstr ""
+
 #. Default: "PAS plugin that can lock/unlock a user login after a predetermined number of incorrect attempts."
-#: ../profiles.zcml
+#: ./profiles.zcml:12
 msgid "PAS plugin that can lock/unlock a user login after a predetermined number of incorrect attempts."
 msgstr "PAS-plugin die een account kan blokkeren na een aantal foute inlogpogingen."
 
@@ -141,17 +173,21 @@ msgstr "Wachtwoordverandering is geannuleerd."
 msgid "Password changed."
 msgstr "Wachtwoord veranderd."
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:41
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:40
 msgid "Plone members:"
 msgstr "Plone-leden:"
+
+#: ./interfaces.py:18
+msgid "Reset Period (hours)"
+msgstr ""
 
 #: ./skins/loginlockout_templates/loginlockout_history.pt:33
 msgid "Search records"
 msgstr "Zoek velden"
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:47
-msgid "Select/deselect all items"
-msgstr "Selecteer alle items / niets"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:136
+msgid "Settings"
+msgstr ""
 
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:26
 msgid "Show password changes older than N days"
@@ -169,7 +205,7 @@ msgstr "Titel"
 msgid "Username pattern"
 msgstr "Gebruikersnaam-patroon"
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:32
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:31
 msgid "View and reset unsuccesful attempts"
 msgstr "Bekijk en herstel mislukte pogingen"
 
@@ -182,7 +218,7 @@ msgid "While changing your password an AttributeError occurred. This is usually 
 msgstr "Terwijl uw wachtwoord werd veranderd ontstaond een AttributeError. Dit komt vaak doordat uw gebruiker buiten de website is gedefiniëerd."
 
 #. Default: "Reset selected accounts"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:143
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:125
 msgid "button_reset"
 msgstr "Herstel geselecteerde accounts"
 
@@ -201,33 +237,35 @@ msgstr "Geschiedenis van wachtwoordwijzingen per gebruiker"
 msgid "heading_login_locked"
 msgstr "Account is geblokkeerd"
 
-#. Default: "IP address"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:72
+#. Default: "Client IP"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:62
+#, fuzzy
 msgid "label_IP"
 msgstr "IP-adres"
 
-#. Default: "Number of attempts"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:66
+#. Default: "Attempts"
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:56
+#, fuzzy
 msgid "label_count"
 msgstr "Aantal pogingen"
 
 #. Default: "Email"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:63
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:53
 msgid "label_email"
 msgstr "Email"
 
 #. Default: "Full name"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:60
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:50
 msgid "label_fullname"
 msgstr "Volledige naam"
 
 #. Default: "Last attempt"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:122
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:104
 msgid "label_last"
 msgstr "Laatste poging"
 
 #. Default: "Last attempt"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:69
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:59
 msgid "label_last_attempt"
 msgstr "Laatste poging"
 
@@ -243,14 +281,9 @@ msgstr "Laatste wachtwoordwijzigingen"
 
 #. Default: "Login name"
 #: ./skins/loginlockout_templates/loginlockout_history.pt:40
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:57
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:47
 msgid "label_login"
 msgstr "Inlognaam"
-
-#. Default: "Select all"
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:55
-msgid "label_reset"
-msgstr "Alles selecteren"
 
 #. Default: "Username"
 #: ./skins/loginlockout_templates/loginlockout_last_password_changes.pt:44
@@ -261,7 +294,6 @@ msgstr "Gebruikersnaam"
 msgid "older than 3 months"
 msgstr "ouder dan 3 maanden"
 
-#: ./skins/loginlockout_templates/loginlockout_settings.cpt:86
+#: ./skins/loginlockout_templates/loginlockout_settings.cpt:76
 msgid "user profile"
 msgstr "gebruikersprofiel"
-

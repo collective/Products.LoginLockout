@@ -1,6 +1,8 @@
+[run]
+relative_files = True
+
 [report]
+include =
+    Products/*
 omit =
-    buildout-cache/eggs/*
-    parts/*
-    eggs/*
     */test*

@@ -4,9 +4,9 @@
 
  <configlet title="LoginLockout" action_id="LoginLockoutConf"
     appId="LoginLockout" category="Products" condition_expr=""
-    icon_expr="string:${portal_url}/lock_icon.png"
+    icon_expr="string:${portal_url}/lock_icon.gif"
     url_expr="string:${portal_url}/loginlockout_settings"
-    visible="True" i18n:attributes="title">
+    visible="False" i18n:attributes="title" remove="True">
   <permission>Manage portal</permission>
  </configlet>
 
