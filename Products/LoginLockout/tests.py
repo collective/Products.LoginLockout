@@ -9,8 +9,8 @@ from plone.app.testing import IntegrationTesting
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.testing import PloneWithPackageLayer
 from plone.testing import Layer, layered
-from plone.testing.z2 import Browser
-from plone.testing.z2 import ZSERVER_FIXTURE
+from plone.testing.zope import Browser
+from plone.testing.zope import ZSERVER_FIXTURE
 import Products.LoginLockout
 from Products.LoginLockout.interfaces import ILoginLockoutSettings
 
