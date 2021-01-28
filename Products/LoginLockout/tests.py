@@ -36,10 +36,20 @@ def setUp(doctest):
     layer = doctest.globs['layer']
     app = layer['app']
     portal = layer['portal']
-    anon_browser = Browser(app)
-    admin_browser = Browser(app)
-    admin_browser.addHeader('Authorization', 'Basic admin:secret')
-    admin_browser.open(portal.absolute_url())
+
+    def make_anon_browser(path=None):
+        b = Browser(app)
+        b.handleErrors = False
+        if path:
+            b.open(portal.absolute_url() + path)
+        return b
+
+    def make_admin_browser(path=None):
+        b = Browser(app)
+        b.addHeader('Authorization', 'Basic admin:secret')
+        if path:
+            b.open(portal.absolute_url() + path)
+        return b
 
     user_id = TEST_USER_NAME
     user_password = TEST_USER_PASSWORD
@@ -77,7 +87,6 @@ def setUp(doctest):
 #     #     from ZPublisher import HTTPResponse
 #     #     HTTPResponse.status_codes[key.lower()] = value
 #
-    anon_browser.handleErrors = False
     portal.error_log._ignored_exceptions = ('Unauthorized',)
 
     def raising(self, info):

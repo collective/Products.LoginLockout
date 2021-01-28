@@ -45,6 +45,7 @@ Plone registry (plone 5+) or via portal_properties if plone 4.
 
 Go to the Plone Control Panel -> LoginLockout Settings , there you can changes these defaults:
 
+    >>> admin_browser = make_admin_browser('/')
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
     >>> admin_browser.getLink('Settings').click()
@@ -66,12 +67,13 @@ Go to the Plone Control Panel -> LoginLockout Settings , there you can changes t
 
 Let's ensure that the settings actually change
 
-    >>> admin_browser.getControl(name='form.widgets.fake_client_ip:list').value = ['1']
-    >>> settings = get_loginlockout_settings()
-    >>> settings.fake_client_ip
+    >>> admin_browser.getControl('Fake Client IP').selected = True
+    >>> get_loginlockout_settings().fake_client_ip
     False
-    >>> admin_browser.getControl(name='form.buttons.save').click()
-    >>> settings.fake_client_ip
+    >>> admin_browser.getControl('Save').click()
+    >>> 'Changes saved.' in admin_browser.contents
+    True
+    >>> get_loginlockout_settings().fake_client_ip
     True
 
 
@@ -175,7 +177,7 @@ First login as manager::
 
 Now we'll open up a new browser and attempt to login::
 
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
@@ -190,7 +192,7 @@ Now we'll open up a new browser and attempt to login::
 
 Let's try again with another password::
 
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = 'notpassword'
     >>> anon_browser.getControl('Log in').click()
@@ -204,8 +206,7 @@ this incorrect attempt  will show up in the log::
 
 We've installed a Control panel to monitor the login attempts
 
-    >>> admin_browser.getLink('Site Setup').click()
-    >>> admin_browser.getLink('LoginLockout').click()
+    >>> admin_browser = make_admin_browser('/loginlockout_settings')
     >>> print admin_browser.contents
     <BLANKLINE>
     ...<td>test-user</td>...
@@ -215,7 +216,7 @@ We've installed a Control panel to monitor the login attempts
 
 If we try twice more we will be locked out::
 
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = 'notpassword2'
     >>> anon_browser.getControl('Log in').click()
@@ -235,7 +236,7 @@ If we try twice more we will be locked out::
 
 Now even the correct password won't work::
 
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
@@ -246,8 +247,7 @@ Now even the correct password won't work::
 
 The administrator can reset this persons account::
 
-    >>> admin_browser.getLink('Site Setup').click()
-    >>> admin_browser.getLink('LoginLockout').click()
+    >>> admin_browser = make_admin_browser('/loginlockout_settings')
     >>> print admin_browser.contents
     <BLANKLINE>
     ...<td>test-user</td>...
@@ -260,7 +260,7 @@ The administrator can reset this persons account::
 
 and now they can log in again::
 
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
@@ -285,9 +285,8 @@ To enable this go into the ZMI and enter the ranges in the whitelist_ips propert
 If there are proxies infront of zope you will have to ensure they set the ```X-Forwarded-For``` header.
 Note only the first forwarded IP will be used.
 
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.addHeader('X-Forwarded-For', '10.1.1.1, 192.168.1.1')
-
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
@@ -296,11 +295,10 @@ Note only the first forwarded IP will be used.
     ...You are now logged in...
 
     >>> anon_browser.open(portal.absolute_url()+'/logout')
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
-
 
 If not from a valid IP then the login will fail
 
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
 
     >>> anon_browser.open(portal.absolute_url()+'/login_form')
@@ -311,11 +309,10 @@ If not from a valid IP then the login will fail
     ...
     Unauthorized: Unauthorized()
 
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
-
 
 Basic Auth will works with the right IP
 
+    >>> anon_browser = make_anon_browser()
     >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
     >>> anon_browser.addHeader('X-Forwarded-For', '10.1.1.1')
 
@@ -323,11 +320,11 @@ Basic Auth will works with the right IP
     >>> anon_browser.getLink('Log out')
     <Link text='Log out'...>
 
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
-
 
 and basic auth fails with the wrong IP
 
+    >>> anon_browser = make_anon_browser()
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
     >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
 
     >>> anon_browser.open(portal.absolute_url())
@@ -335,18 +332,16 @@ and basic auth fails with the wrong IP
     ...
     Unauthorized: Unauthorized()
 
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
-
 
 We can still use a root login at the root
 
+    >>> anon_browser = make_anon_browser()
     >>> anon_browser.addHeader('Authorization', 'Basic admin:secret')
     >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
 
-    >>> anon_browser.open(portal.absolute_url()+'/../manage_top_frame')
-    >>> 'Logged in as' in anon_browser.contents
-    True
+Manage would raise an Unauthorised Exception if the login failed
+    >>> anon_browser.open(portal.absolute_url()+'/../manage')
+
 
 but not in the plone site
 
@@ -354,9 +349,6 @@ but not in the plone site
     Traceback (most recent call last):
     ...
     Unauthorized: Unauthorized()
-
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
 
 
 You can also set IP ranges e.g.
@@ -366,9 +358,8 @@ You can also set IP ranges e.g.
     ... 2.2.0.0/16 # range 2
     ... """)
 
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
-
-    >>> anon_browser.open(portal.absolute_url()+'/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
@@ -377,7 +368,6 @@ You can also set IP ranges e.g.
     ...You are now logged in...
 
     >>> anon_browser.open(portal.absolute_url()+'/logout')
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
 You can also set a env variable LOGINLOCKOUT_IP_WHITELIST which is merged with the config.
 This allows those with filesystem access a way to get in if they have set their config wrong.
@@ -385,6 +375,7 @@ It also allows a set of IP ranges to be set for any site in a Plone multisite se
 as the site has loginlockout installed.
 
 
+    >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getLink('Log in')
     <Link text='Log in'...
 
@@ -397,15 +388,13 @@ as the site has loginlockout installed.
     >>> anon_browser.getLink('Log out')
     <Link text='Log out'...>
 
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
-
 
 Note that you still have to have the IP lockout config set otherwise logins are allowed from anywhere
 even with the env variable set
 
     >>> config_property( whitelist_ips = u"""
     ... """)
+    >>> anon_browser = make_anon_browser()
     >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
     >>> anon_browser.addHeader('X-Forwarded-For', '4.4.4.4')
 
@@ -414,14 +403,13 @@ even with the env variable set
     <Link text='Log out'...>
 
 
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
-    >>> _ = anon_browser.mech_browser.addheaders.pop() # remove auth header
     >>> del os.environ["LOGINLOCKOUT_IP_WHITELIST"]
 
 
 If you are unsure of what is being detected as your current Client IP you can see it in
 the control panel
 
+    >>> admin_browser = make_admin_browser('/')
     >>> admin_browser.addHeader('X-Forwarded-For', '10.1.1.1, 192.168.1.1')
 
     >>> admin_browser.getLink('Site Setup').click()
@@ -429,7 +417,6 @@ the control panel
     >>> print admin_browser.contents
     <BLANKLINE>
     ...Current detected Client IP: <span>10.1.1.1</span>...
-    >>> _ = admin_browser.mech_browser.addheaders.pop() # remove X-Forwarded-For header
 
 
 Login History
@@ -438,6 +425,7 @@ Login History
 It is also possible to view a history of successful logins for a particular user. Note this is the user id rather
 than user login and they can be different. User test_user_1_ had 4 successful logins.
 
+    >>> admin_browser = make_admin_browser('/loginlockout_settings')
     >>> admin_browser.getLink('Login history').click()
     >>> admin_browser.getControl('Username pattern').value = 'test_user_1_'
     >>> admin_browser.getControl('Search records').click()
