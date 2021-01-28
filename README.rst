@@ -55,13 +55,13 @@ Go to the Plone Control Panel -> LoginLockout Settings , there you can changes t
 - whitelist_ips: [] # any origin IP is allowed
 - Fake Client IP: false
 
-    >>> print admin_browser.getControl("Max Attempts").value
-    3
-    >>> print admin_browser.getControl("Reset Period (hours)").value
-    24.0
-    >>> print admin_browser.getControl('Lock logins to IP Ranges').value
-
-    >>> print admin_browser.getControl('Fake Client IP').selected
+    >>> admin_browser.getControl("Max Attempts").value
+    '3'
+    >>> admin_browser.getControl("Reset Period (hours)").value
+    '24.0'
+    >>> admin_browser.getControl('Lock logins to IP Ranges').value
+    ''
+    >>> admin_browser.getControl('Fake Client IP').selected
     False
 
 
@@ -196,7 +196,7 @@ Let's try again with another password::
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = 'notpassword'
     >>> anon_browser.getControl('Log in').click()
-    >>> print anon_browser.contents
+    >>> print(anon_browser.contents)
     <BLANKLINE>
     ...Login failed...
 
@@ -207,7 +207,7 @@ this incorrect attempt  will show up in the log::
 We've installed a Control panel to monitor the login attempts
 
     >>> admin_browser = make_admin_browser('/loginlockout_settings')
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...<td>test-user</td>...
     ...<td>1</td>...
@@ -228,7 +228,7 @@ If we try twice more we will be locked out::
     >>> 'Login failed' in  anon_browser.contents
     True
 
-#   >>> print anon_browser.contents
+#   >>> print(anon_browser.contents)
 #   <html>
     <BLANKLINE>
     ...This account has now been locked for security purposes...
@@ -248,13 +248,13 @@ Now even the correct password won't work::
 The administrator can reset this persons account::
 
     >>> admin_browser = make_admin_browser('/loginlockout_settings')
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...<td>test-user</td>...
     ...<td>3</td>...
     >>> admin_browser.getControl(name='reset_nonploneusers:list').value = ['test-user']
     >>> admin_browser.getControl('Reset selected accounts').click()
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...Accounts were reset for these login names: test-user...
 
@@ -264,7 +264,7 @@ and now they can log in again::
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> print anon_browser.contents
+    >>> print(anon_browser.contents)
     <BLANKLINE>
     ...You are now logged in...
 
@@ -290,7 +290,7 @@ Note only the first forwarded IP will be used.
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> print anon_browser.contents
+    >>> print(anon_browser.contents)
     <BLANKLINE>
     ...You are now logged in...
 
@@ -363,7 +363,7 @@ You can also set IP ranges e.g.
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    >>> print anon_browser.contents
+    >>> print(anon_browser.contents)
     <BLANKLINE>
     ...You are now logged in...
 
@@ -414,7 +414,7 @@ the control panel
 
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...Current detected Client IP: <span>10.1.1.1</span>...
 
@@ -429,7 +429,7 @@ than user login and they can be different. User test_user_1_ had 4 successful lo
     >>> admin_browser.getLink('Login history').click()
     >>> admin_browser.getControl('Username pattern').value = 'test_user_1_'
     >>> admin_browser.getControl('Search records').click()
-    >>> print admin_browser.contents
+    >>> print(admin_browser.contents)
     <BLANKLINE>
     ...
                         <td valign="top">test_user_1_</td>
