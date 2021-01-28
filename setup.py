@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.4.1.dev0'
+version = '0.5.dev0'
 
 
 def read(*rnames):
@@ -20,6 +20,7 @@ setup(
         "Development Status :: 4 - Beta",
         "Environment :: Plugins",
         "Environment :: Web Environment",
+        "Framework :: Plone :: 4.1",
         "Framework :: Plone :: 4.3",
         "Framework :: Plone :: 5.0",
         "Framework :: Plone :: 5.1",

@@ -20,7 +20,7 @@ Requires:
 
 - (optional) PlonePAS and its dependencies
 
-- (optional) Plone 4.3.x, 5.0.x or 5.1.x
+- (optional) Plone 4.1.x-5.2.x
 
 Features
 --------

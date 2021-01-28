@@ -1,9 +1,10 @@
 Changes
 =======
 
-0.4.1 (unreleased)
+0.5.0 (unreleased)
 ------------------
 
+- Make Python 3 and Plone 5.2 compatible [HybridAU]
 - Made changes so the basics works in plone 5 [djay]
 - Plone 5 now uses registry for config [djay]
 - Included the ability to restrict requests from certain IP networks. Config page shows current client IP [djay]
