@@ -28,6 +28,7 @@ from Products.PluggableAuthService.utils import classImplements
 from zExceptions import Unauthorized
 import logging
 import os
+import six
 
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
@@ -164,7 +165,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             return None
 
         IP = self.remote_ip()
-        if self.isIPLocked(login, unicode(IP)):
+        if self.isIPLocked(login, six.text_type(IP)):
             # TODO: should there be some notification login is blocked due to IP?
             log.info("Attempt denied due to IP: %s, %s ", login, IP)
             raise Unauthorized
@@ -332,7 +333,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         if not value:
             return []
         # remove comments
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             ranges = [x.split('#')[0].strip() for x in value.split('\n')]
         else:
             ranges = list(value)
@@ -362,11 +363,11 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             # Don't do the check if there is no whitelist set
             return False
 
-        client = ip_address(unicode(ip))
+        client = ip_address(six.text_type(ip))
         # TODO: could support rules that have different IP ranges for different groups
         for range in list(whitelist_ips) + ['127.0.0.1']:
             try:
-                if client in ip_network(unicode(range)):
+                if client in ip_network(six.text_type(range)):
                     return False
             except ValueError:
                 # we can get this if the range not in the right format.
