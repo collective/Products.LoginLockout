@@ -487,19 +487,11 @@ The the administrators can see the password was changed
     >>> print(admin_browser.contents)
     <...
     ...
-          <table class="listing">
-            <tr>
-              <th>Username</th>
-              <th>Last password change</th>
-            </tr>
             <tr class="even">
                 <td>test_user_1_</td>
                 <td>...</td>
             </tr>
-          </table>
     ...
-
-
 
 
 Implementation
