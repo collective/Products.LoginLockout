@@ -26,10 +26,25 @@
 
 <!-- TODO: only do for 5.1 or lower  -->
 <monkey:patch
-    description="Add new terabyte constant"
-    class="Products.PlonePAS.tools.membership.MembershipTool"
-    original="setPassword"
-    replacement=".patches.setPassword"
+    description="Ensure we emit Credentials updated event"
+    class="Products.PlonePAS.plugins.user.UserManager"
+    original="doChangeUser"
+    replacement=".patches.doChangeUser"
+    preserveOriginal="true"
+    />
+
+<monkey:patch
+    description="Fix bug in default handler of CredentualsChanged event"
+    class="Products.PluggableAuthService.events"
+    original="userCredentialsUpdatedHandler"
+    replacement=".patches.userCredentialsUpdatedHandler"
+    />
+
+<monkey:patch
+    description="Fix bug in default handler of CredentialsChanged event"
+    class="Products.PluggableAuthService.PluggableAuthService.PluggableAuthService"
+    original="updateCredentials"
+    replacement=".patches.updateCredentials"
     preserveOriginal="true"
     />
 
