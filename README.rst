@@ -459,10 +459,41 @@ than user login and they can be different. User test_user_1_ had 4 successful lo
 Password Reset History
 ----------------------
 
-    >>> # TODO tests go here
+When a user changes their password
 
+    >>> anon_browser = make_anon_browser('/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = user_password
+    >>> anon_browser.getControl('Log in').click()
 
+    >>> anon_browser.getLink("Preferences").click()
+    >>> anon_browser.getLink("Password").click()
+    >>> anon_browser.getControl('Current password').value = user_password
+    >>> anon_browser.getControl('New password').value = '12345'
+    >>> anon_browser.getControl('Confirm password').value = '12345'
+    >>> anon_browser.getControl('Change Password').click()
+    >>> 'Password changed' in anon_browser.contents
+    True
 
+This changed the password
+    >>> anon_browser = make_anon_browser('/login_form')
+    >>> anon_browser.getControl('Login Name').value = user_id
+    >>> anon_browser.getControl('Password').value = '12345'
+    >>> anon_browser.getControl('Log in').click()
+    >>> anon_browser.getLink("Preferences").click()
+
+The the administrators can see the password was changed
+
+    >>> admin_browser = make_admin_browser('/loginlockout_settings')
+    >>> admin_browser.getLink('History password changes').click()
+    >>> print(admin_browser.contents)
+    <...
+    ...
+            <tr class="even">
+                <td>test_user_1_</td>
+                <td>...</td>
+            </tr>
+    ...
 
 
 Implementation

@@ -1,6 +1,10 @@
+from Acquisition import aq_parent
+
+from Products.PluggableAuthService.interfaces.authservice import IBasicUser
+from Products.PluggableAuthService.interfaces.events import ICredentialsUpdatedEvent
 from ipaddress import ip_address, ip_network
 from plone.registry.interfaces import IRegistry
-from zope.component import getUtility, ComponentLookupError
+from zope.component import getUtility, ComponentLookupError, adapter
 from zope.component.hooks import getSite
 
 from Products.LoginLockout.interfaces import ILoginLockoutSettings
@@ -26,6 +30,7 @@ import logging
 import os
 import six
 
+
 __author__ = "Dylan Jay <software@pretaweb.com>"
 
 
@@ -50,6 +55,7 @@ __author__ = "Dylan Jay <software@pretaweb.com>"
 """
 
 ENV_WHITELIST = 'LOGINLOCKOUT_IP_WHITELIST'
+
 
 log = logging.getLogger('LoginLockout')
 
@@ -295,6 +301,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         default = getattr(self, '_' + setting)
 
+        # TODO: Need tu add an upgrade step for properties to registry
+
         try:
             registry = getUtility(IRegistry)
             settings = registry.forInterface(ILoginLockoutSettings, prefix="Products.LoginLockout")
@@ -515,3 +523,20 @@ def logged_in_handler(event):
     # TODO: don't hardcode name?
     if hasattr(portal.acl_users, 'login_lockout_plugin'):
         portal.acl_users.login_lockout_plugin.setSuccessfulAttempt(userid)
+
+
+@adapter(IBasicUser, ICredentialsUpdatedEvent)
+def credentials_updated_handler(principal, event):
+    # TODO: currently doesn;t work because plone doesn't generate this event.
+    #  https://github.com/plone/Products.PlonePAS/issues/33
+
+    pas = aq_parent(principal)
+
+    # portal = getSite()
+    # password = event.password
+
+    userid = principal.getId()
+
+    # TODO: don't hardcode name?
+    if hasattr(pas, 'login_lockout_plugin'):
+        pas.login_lockout_plugin.manage_credentialsUpdated(userid)
