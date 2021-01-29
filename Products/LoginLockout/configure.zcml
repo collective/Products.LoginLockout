@@ -4,6 +4,7 @@
     xmlns:cmf="http://namespaces.zope.org/cmf"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:monkey="http://namespaces.plone.org/monkey"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="LoginLockout">
 
   <include file="skins.zcml" />
@@ -27,25 +28,37 @@
 <!-- TODO: only do for 5.1 or lower  -->
 <monkey:patch
     description="Ensure we emit Credentials updated event"
+    zcml:condition="not-have plone-52"
     class="Products.PlonePAS.plugins.user.UserManager"
     original="doChangeUser"
     replacement=".patches.doChangeUser"
     preserveOriginal="true"
     />
-
+<!--
 <monkey:patch
     description="Fix bug in default handler of CredentualsChanged event"
     class="Products.PluggableAuthService.events"
     original="userCredentialsUpdatedHandler"
     replacement=".patches.userCredentialsUpdatedHandler"
-    />
+    /> -->
 
 <monkey:patch
     description="Fix bug in default handler of CredentialsChanged event"
+    zcml:condition="not-have plone-52"
     class="Products.PluggableAuthService.PluggableAuthService.PluggableAuthService"
     original="updateCredentials"
     replacement=".patches.updateCredentials"
     preserveOriginal="true"
     />
+
+<monkey:patch
+    description="Fix userid/loginname bug in 4.1"
+    zcml:condition="not-have plone-42"
+    class="Products.PlonePAS.tools.membership.MembershipTool"
+    original="testCurrentPassword"
+    replacement=".patches.testCurrentPassword"
+    preserveOriginal="true"
+    />
+
 
 </configure>

@@ -472,6 +472,8 @@ When a user changes their password
     >>> anon_browser.getControl('New password').value = '12345'
     >>> anon_browser.getControl('Confirm password').value = '12345'
     >>> anon_browser.getControl('Change Password').click()
+    >>> 'Password changed' in anon_browser.contents
+    True
 
 This changed the password
     >>> anon_browser = make_anon_browser('/login_form')
