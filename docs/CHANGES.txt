@@ -18,6 +18,8 @@ Changes
   [sgeulette]
 - Corrected uninstall profile
   [sgeulette]
+- Fixed change password history for versions 4.1-5.2
+  [djay]
 
 0.4.0 (2015-11-25)
 ------------------
