@@ -7,8 +7,6 @@ LoginLockout
 .. image:: https://coveralls.io/repos/collective/Products.LoginLockout/badge.svg?branch=master&service=github
   :target: https://coveralls.io/github/collective/Products.LoginLockout?branch=master
 
-.. image:: http://github-actions.40ants.com/collective/Products.LoginLockout/matrix.svg
-    :target: https://github.com/collective/Products.LoginLockout
 
 This Pluggable Authentication Service (PAS) plugin will lock a
 login after a predetermined number of incorrect attempts. Once
@@ -24,6 +22,10 @@ Requires:
 - (optional) PlonePAS and its dependencies
 
 - (optional) Plone 4.1.x-5.2.x
+
+.. image:: http://github-actions.40ants.com/collective/Products.LoginLockout/matrix.svg
+   :target: https://github.com/collective/Products.LoginLockout
+
 
 Features
 --------
