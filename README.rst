@@ -7,7 +7,7 @@ LoginLockout
 .. image:: https://coveralls.io/repos/collective/Products.LoginLockout/badge.svg?branch=master&service=github
   :target: https://coveralls.io/github/collective/Products.LoginLockout?branch=master
 
-.. image:: http://github-actions.40ants.com/collective/Products.LoginLockout/matrix.svg
+| .. image:: http://github-actions.40ants.com/collective/Products.LoginLockout/matrix.svg
     :target: https://github.com/collective/Products.LoginLockout
 
 This Pluggable Authentication Service (PAS) plugin will lock a
