@@ -7,6 +7,7 @@ from zope.component import getUtility, ComponentLookupError
 from plone.app.testing import FunctionalTesting, TEST_USER_NAME
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.app.testing import SITE_OWNER_NAME, SITE_OWNER_PASSWORD
 from plone.app.testing import PloneWithPackageLayer
 from plone.testing import Layer, layered
 try:
@@ -50,9 +51,12 @@ def setUp(doctest):
 
     def make_admin_browser(path=None):
         b = Browser(app)
-        b.addHeader('Authorization', 'Basic admin:secret')
+        b.addHeader('Authorization', 'Basic {}:{}'.format(SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
         if path:
             b.open(portal.absolute_url() + path)
+        else:
+            b.open(portal.absolute_url())
+        assert "personaltools-login" not in b.contents
         return b
 
     user_id = TEST_USER_NAME
