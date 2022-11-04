@@ -7,7 +7,7 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="LoginLockout">
 
-  <include file="skins.zcml" />
+  <!-- <include file="skins.zcml" /> -->
   <include file="controlpanel.zcml" />
   <include file="profiles.zcml" />
   <include file="upgrades.zcml" />
@@ -22,6 +22,9 @@
         Products.PluggableAuthService.interfaces.events.ICredentialsUpdatedEvent"
     handler=".plugin.credentials_updated_handler"
     />
+
+<include package=".browser" />
+
 
 <include package="collective.monkeypatcher" />
 

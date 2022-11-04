@@ -62,6 +62,9 @@ def setUp(doctest):
     user_id = TEST_USER_NAME
     user_password = TEST_USER_PASSWORD
 
+    base_id = SITE_OWNER_NAME
+    base_password = SITE_OWNER_PASSWORD
+
     def config_property(**kw):
         for key, value in kw.items():
             try:

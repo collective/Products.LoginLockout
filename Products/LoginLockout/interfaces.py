@@ -1,6 +1,7 @@
 from zope import schema
 from zope.i18nmessageid import MessageFactory
 from zope.interface import Interface
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 _ = MessageFactory('LoginLockout')
 
@@ -34,3 +35,7 @@ class ILoginLockoutSettings(Interface):
         default=False,
         required=False
     )
+
+
+class ILoginLockoutLayer(IDefaultBrowserLayer):
+    """Marker interface that defines a browser layer."""

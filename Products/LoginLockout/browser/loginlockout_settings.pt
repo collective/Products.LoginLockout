@@ -5,6 +5,20 @@
   <body>
     <span metal:fill-slot="prefs_configlet_main"
         tal:define="tool context/loginlockout_tool" >
+        <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link active"  tal:attributes="href string:${context/portal_url}/@@loginlockout_settings" i18n:translate="">Locked Users</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"  tal:attributes="href string:${context/portal_url}/@@loginlockout_history" i18n:translate="">Login history</a>
+              </li>
+              <li class="nav-item">
+                 <a class="nav-link"  tal:attributes="href string:${context/portal_url}/@@loginlockout_last_password_changes" i18n:translate="">History password changes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" tal:attributes="href string:${context/portal_url}/@@loginlockout-settings"  i18n:translate="">Settings</a>
+              </li>
+        </ul>
 
       <div metal:use-macro="here/global_statusmessage/macros/portal_message">
         Portal status message
@@ -26,7 +40,7 @@
       </p>
       <form method="post"
             tal:define="attempts tool/listGroupedAttempts"
-            tal:attributes="action request/URL">
+            action="@@loginlockout_settings">
         <fieldset>
           <legend i18n:translate="">
             View and reset unsuccesful attempts
@@ -129,14 +143,6 @@
           <p tal:condition='not: attempts' i18n:translate="">No accounts to reset</p>
 
         </fieldset>
-        <a href="loginlockout_history" i18n:translate="">Login history</a>
-        &bull;
-        <a href="loginlockout_last_password_changes" i18n:translate="">History password changes</a>
-        &bull;
-        <a
-          tal:attributes="href
-              string:${context/portal_url}/@@loginlockout-settings"
-          i18n:translate="">Settings</a>
       </form>
     </span>
   </body>
