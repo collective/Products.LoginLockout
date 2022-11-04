@@ -17,7 +17,7 @@
                  <a class="nav-link"  tal:attributes="href string:${context/portal_url}/@@loginlockout_last_password_changes" i18n:translate="">History password changes</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" tal:attributes="href string:${context/portal_url}/@@loginlockout-settings"  i18n:translate="">Settings</a>
+                <a class="nav-link" tal:attributes="href string:${context/portal_url}/@@loginlockout-settings"  i18n:translate="">Lockout Settings</a>
               </li>
         </ul>
 

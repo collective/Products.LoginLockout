@@ -51,7 +51,7 @@ Go to the Plone Control Panel -> LoginLockout Settings , there you can changes t
     >>> admin_browser = make_admin_browser('/')
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
-    >>> admin_browser.getLink('Settings', index=-1).click()
+    >>> admin_browser.getLink('Lockout Settings', index=-1).click()
 
 - allowed incorrect attempts: 3
 - reset period: 24 hours
