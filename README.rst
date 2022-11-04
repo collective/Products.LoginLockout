@@ -53,13 +53,13 @@ Go to the Plone Control Panel -> LoginLockout Settings , there you can changes t
     >>> admin_browser = make_admin_browser('/')
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
-    >>> admin_browser.getLink('Settings').click()
+    >>> admin_browser.getLink('Lockout Settings').click()
 
 - allowed incorrect attempts: 3
 - reset period: 24 hours
 - whitelist_ips: [] # any origin IP is allowed
 - Fake Client IP: false
-
+    
     >>> admin_browser.getControl("Max Attempts").value
     '3'
     >>> admin_browser.getControl("Reset Period (hours)").value
@@ -341,7 +341,7 @@ and basic auth fails with the wrong IP
 We can still use a root login at the root
 
     >>> anon_browser = make_anon_browser()
-    >>> anon_browser.addHeader('Authorization', 'Basic admin:secret')
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, base_password))
     >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
 
 Manage would raise an Unauthorised Exception if the login failed
@@ -474,16 +474,18 @@ When a user changes their password
     >>> anon_browser.getLink("Preferences").click()
     >>> anon_browser.getLink("Password").click()
     >>> anon_browser.getControl('Current password').value = user_password
-    >>> anon_browser.getControl('New password').value = '12345'
-    >>> anon_browser.getControl('Confirm password').value = '12345'
+    >>> anon_browser.getControl('New password').value = '12345678'
+    >>> anon_browser.getControl('Confirm password').value = '12345678'
     >>> anon_browser.getControl('Change Password').click()
-    >>> 'Password changed' in anon_browser.contents
-    True
+    >>> print(anon_browser.contents)
+    <...
+    ...Password changed... 
+    ...
 
 This changed the password
     >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
-    >>> anon_browser.getControl('Password').value = '12345'
+    >>> anon_browser.getControl('Password').value = '12345678'
     >>> anon_browser.getControl('Log in').click()
     >>> anon_browser.getLink("Preferences").click()
 

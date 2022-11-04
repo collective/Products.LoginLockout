@@ -1,0 +1,36 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:i18n="http://namespaces.zope.org/i18n"
+  i18n_domain="Products.LoginLockout"
+  >
+
+  <browser:page
+    name="loginlockout_settings"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class="Products.LoginLockout.browser.control.LockoutsView"
+    template="loginlockout_settings.pt"
+    permission="cmf.ManagePortal"
+    layer="Products.LoginLockout.interfaces.ILoginLockoutLayer"
+  />
+
+  <browser:page
+    name="loginlockout_history"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class="Products.LoginLockout.browser.control.HistoryView"
+    template="loginlockout_history.pt"
+    permission="cmf.ManagePortal"
+    layer="Products.LoginLockout.interfaces.ILoginLockoutLayer"
+  />
+
+  <browser:page
+    name="loginlockout_last_password_changes"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class="Products.LoginLockout.browser.control.HistoryView"
+    template="loginlockout_last_password_changes.pt"
+    permission="cmf.ManagePortal"
+    layer="Products.LoginLockout.interfaces.ILoginLockoutLayer"
+  />
+
+
+</configure>
