@@ -1,6 +1,5 @@
 from AccessControl.Permissions import add_user_folders
 from Products.CMFCore import utils
-from Products.CMFCore.DirectoryView import registerDirectory
 from Products.LoginLockout.loginlockout_tool import LoginLockoutTool
 from Products.LoginLockout.plugin import PROJECTNAME
 from Products.PluggableAuthService import registerMultiPlugin
@@ -31,10 +30,6 @@ def initialize(context):
                           icon='www/tool.gif',
                           visibility=None,
                           )
-
-    # register the custom skins directory
-    GLOBALS = globals()
-    registerDirectory('skins', GLOBALS)
 
     # register the tool
     tools = (LoginLockoutTool,)
