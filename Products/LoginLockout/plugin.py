@@ -1,5 +1,4 @@
 from Acquisition import aq_parent
-from Acquisition import aq_inner
 
 from Products.PluggableAuthService.interfaces.authservice import IBasicUser
 from Products.PluggableAuthService.interfaces.events import ICredentialsUpdatedEvent
@@ -423,9 +422,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         for resetter_id, resetter in cred_resetters:
             resetter.resetCredentials(request, response)
         # Could be authenticated at a top level so need to reset there too
-        parent = aq_parent(aq_parent(aq_inner(pas_instance)))
-        if parent is not None and parent != pas_instance:
-            self.resetAllCredentials(request, response, parent.acl_users)
+        # parent = aq_parent(aq_parent(aq_inner(pas_instance)))
+        # if parent is not None and parent != pas_instance:
+        #     self.resetAllCredentials(request, response, parent.acl_users)
 
     #
     #   ZMI
