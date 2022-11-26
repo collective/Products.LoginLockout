@@ -25,6 +25,10 @@ from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdateP
 from Products.PluggableAuthService.permissions import ManageUsers
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
+try:
+    from Products.statusmessages.interfaces import IStatusMessage
+except ImportError:
+    IStatusMessage = None
 from zExceptions import Unauthorized
 import logging
 import os
@@ -171,10 +175,15 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             raise Unauthorized
 
         if self.isLockedout(login):
-            request['portal_status_message'] = (
+            msg = (
                 "This account is locked."
                 "Please contact your administrator to unlock this account")
-            request['locked_login'] = login  # so challenge plugin can fire
+            if IStatusMessage is not None:
+                messages = IStatusMessage(request)
+                messages.add(msg)
+            else:
+                request['portal_status_message'] = msg
+            request['locked_login'] = (login, self)  # so challenge plugin can fire
             # HACK - need ot reset in current request not just reponse like
             # cookie auth does
             request.set('__ac', '')
@@ -184,7 +193,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             log.info("Attempt denied due to lockout: %s, %s ", login, IP)
             raise Unauthorized
 
-        request.set('attempted_logins', (login, password))
+        request.set('attempted_logins', (login, password, self))
 
         return None  # Note that we never return anything useful
 
@@ -192,9 +201,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
     def createAnonymousUser(self):
         """ if we got anon then attempt failed """
-        login, password = self.REQUEST.get('attempted_logins', ('', ''))
+        login, password, plugin = self.REQUEST.get('attempted_logins', ('', '', None))
         if login:
-            self.setAttempt(login, password)
+            self.setAttempt(login, password, plugin)
             log.info("Failed login attempt: %s ", login)
 
     security.declarePrivate('updateCredentials')
@@ -210,8 +219,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
     def challenge(self, request, response, **kw):
         """ Challenge the user for credentials. """
-        login = request.get('locked_login', None)
-        if login and self.isLockedout(login):
+        login, plugin = request.get('locked_login', (None, None))
+        if login and plugin.isLockedout(login):
             return self.unauthorized()
         return 0
 
@@ -226,6 +235,15 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         if url is not None:
             resp.redirect(url, lock=1)
             return 1
+        else:
+            msg = (
+                "This account is locked."
+                "Please contact your administrator to unlock this account")
+            if IStatusMessage is not None:
+                messages = IStatusMessage(req)
+                messages.add(msg)
+            else:
+                req['portal_status_message'] = msg
 
         # Could not challenge.
         return 0
@@ -241,23 +259,23 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         else:
             return None
 
-    security.declarePrivate('getRootPlugin')
+    # security.declarePrivate('getRootPlugin')
 
-    def getRootPlugin(self):
-        pas = self.getPhysicalRoot().acl_users
-        plugins = pas.objectValues([self.meta_type])
-        if plugins:
-            return plugins[0]
+    # def getRootPlugin(self):
+    #     pas = self.getPhysicalRoot().acl_users
+    #     plugins = pas.objectValues([self.meta_type])
+    #     if plugins:
+    #         return plugins[0]
 
     security.declarePrivate('setAttempt')
 
-    def setAttempt(self, login, password):
+    def setAttempt(self, login, password, plugin):
         "increment attempt count and record date stamp last attempt and IP"
 
         # TODO: why are the login attempts stored in the root? The usernames aren't unique in the root.
 
-        root = self.getRootPlugin()
-        count, last, IP, reference = root._login_attempts.get(
+        # root = self.getRootPlugin()
+        count, last, IP, reference = plugin._login_attempts.get(
             login, (0, None, '', None))
 
         if reference and AuthEncoding.pw_validate(reference, password):
@@ -272,26 +290,28 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         log.info("user '%s' attempt #%i %s last: %s", login, count, IP, last)
         last = DateTime()
         reference = AuthEncoding.pw_encrypt(password)
-        root._login_attempts[login] = (count, last, IP, reference)
+        plugin._login_attempts[login] = (count, last, IP, reference)
 
     security.declarePrivate('setSuccessfulAttempt')
 
     def setSuccessfulAttempt(self, login):
         "increment attempt count and record date stamp last attempt and IP"
-        root = self.getRootPlugin()
+        # root = self.getRootPlugin()
         last = DateTime()
-        if login not in root._successful_login_attempts:
-            root._successful_login_attempts[login] = list()
-        old = root._successful_login_attempts[login]
+        assert hasattr(self, "_successful_login_attempts")
+        if login not in self._successful_login_attempts:
+            self._successful_login_attempts[login] = list()
+        old = self._successful_login_attempts[login]
         old.append(dict(last=last, ip=self.remote_ip()))
-        root._successful_login_attempts[login] = old
+        self._successful_login_attempts[login] = old
 
     security.declarePrivate('getAttempts')
 
     def getAttempts(self, login):
         "return the count, last attempt datestamp and IP of last attempt"
-        root = self.getRootPlugin()
-        count, last, IP, pw_hash = root._login_attempts.get(
+        # root = self.getRootPlugin()
+        assert hasattr(self, "_login_attempts")
+        count, last, IP, pw_hash = self._login_attempts.get(
             login, (0, None, '', ''))
         if last and ((DateTime() - last) * 24) > self.getResetPeriod():
             count = 1
@@ -349,9 +369,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     security.declarePrivate('isLockedout')
 
     def isLockedout(self, login):
-        root = self.getRootPlugin()
-        count, last, IP = root.getAttempts(login)
-        return count >= root.getMaxAttempts()
+        # root = self.getRootPlugin()
+        count, last, IP = self.getAttempts(login)
+        return count >= self.getMaxAttempts()
 
     security.declarePrivate('isIPLocked')
 
@@ -380,13 +400,13 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
     def resetAttempts(self, login, password=None):
         """ reset to zero and update pw referece so same attempts pass """
-        root = self.getRootPlugin()
-        if root._login_attempts.get(login, None):
-            del root._login_attempts[login]
+        # root = self.getRootPlugin()
+        if self._login_attempts.get(login, None):
+            del self._login_attempts[login]
 
     security.declarePrivate('resetAllCredentials')
 
-    def resetAllCredentials(self, request, response):
+    def resetAllCredentials(self, request, response, pas_instance=None):
         """Call resetCredentials of all plugins.
 
         o This is not part of any contract.
@@ -395,11 +415,16 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         # pas_instance.resetCredentials() will not do anything because
         # the user is still anonymous.  (I think it should do
         # something nevertheless.)
-        pas_instance = self._getPAS()
+        if pas_instance is None:
+            pas_instance = self._getPAS()
         plugins = pas_instance._getOb('plugins')
         cred_resetters = plugins.listPlugins(ICredentialsResetPlugin)
         for resetter_id, resetter in cred_resetters:
             resetter.resetCredentials(request, response)
+        # Could be authenticated at a top level so need to reset there too
+        # parent = aq_parent(aq_parent(aq_inner(pas_instance)))
+        # if parent is not None and parent != pas_instance:
+        #     self.resetAllCredentials(request, response, parent.acl_users)
 
     #
     #   ZMI
@@ -460,8 +485,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         o Return one mapping per user, with the following keys
         """
-        root = self.getRootPlugin()
-        return [self.getAttemptInfo(x) for x in root._login_attempts.keys()]
+        # root = self.getRootPlugin()
+        return [self.getAttemptInfo(x) for x in self._login_attempts.keys()]
 
     security.declareProtected(ManageUsers, 'listSuccessfulAttempts')
 
@@ -471,8 +496,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         o Return one mapping per user, with the following keys
         """
-        root = self.getRootPlugin()
-        return root._successful_login_attempts
+        # root = self.getRootPlugin()
+        return self._successful_login_attempts
 
     security.declareProtected(ManageUsers, 'manage_credentialsUpdated')
 
