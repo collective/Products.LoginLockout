@@ -204,6 +204,9 @@ Let's try again with another password::
     >>> print(anon_browser.contents)
     <BLANKLINE>
     ...Login failed...
+    >>> print(anon_browser.contents)
+    <BLANKLINE>
+    ...You have 2 attempts left before this account is locked...
 
 
 this incorrect attempt  will show up in the log::
@@ -227,16 +230,20 @@ If we try twice more we will be locked out::
     >>> anon_browser.getControl('Log in').click()
     >>> 'Login failed' in  anon_browser.contents
     True
+    >>> print(anon_browser.contents)
+    <BLANKLINE>
+    ...You have 1 attempts left before this account is locked...
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = 'notpassword3'
     >>> anon_browser.getControl('Log in').click()
     >>> 'Login failed' in  anon_browser.contents
     True
+    >>> 'attempts left' not in anon_browser.contents
+    True
 
-    .. >>> print(anon_browser.contents)
-    .. <html>
-    .. <BLANKLINE>
-    .. ...This account has now been locked for security purposes...
+    >>> print(anon_browser.contents)
+    <...
+    ...This account has now been locked for security purposes...
 
 
 Now even the correct password won't work::

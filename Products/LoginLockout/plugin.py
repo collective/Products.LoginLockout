@@ -206,9 +206,20 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def createAnonymousUser(self):
         """ if we got anon then attempt failed """
         login, password, plugin = self.REQUEST.get('attempted_logins', ('', '', None))
-        if login:
-            self.setAttempt(login, password, plugin)
-            log.info("Failed login attempt: %s ", login)
+        if not login:
+            return
+        left = self.getMaxAttempts() - self.setAttempt(login, password, plugin)
+        log.info("Failed login attempt: %s ", login)
+        messages = IStatusMessage(self.REQUEST)
+        if left > 0:
+            msgid = _(
+                u"lockout_attempt_warning",
+                default=u"You have ${attempts_left} attempts left before this account is locked",
+                mapping={u"attempts_left": left}
+            )
+            messages.addStatusMessage(msgid, type="warning")
+        elif left == 0:
+            messages.addStatusMessage(self._lockoutMessage(login, plugin), type="error")
 
     security.declarePrivate('updateCredentials')
 
@@ -252,9 +263,10 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
     security.declarePrivate('_lockoutMessage')
 
-    def _lockoutMessage(self, login):
+    def _lockoutMessage(self, login, plugin=None):
+        plugin = self if plugin is None else plugin
 
-        count, last, IP, pw_hash = self._login_attempts.get(
+        count, last, IP, pw_hash = plugin._login_attempts.get(
             login, (0, None, '', ''))
 
         reset_period = int(math.ceil(self.getResetPeriod() - ((DateTime() - last) * 24)))
@@ -263,8 +275,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             default=u"This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours.",
             mapping={u"reset_period": reset_period}
         )
-        translated = self.translate(msgid)
-        return translated
+        # translated = self.translate(msgid)
+        return msgid
 
     security.declarePrivate('getLockoutURL')
 
@@ -298,7 +310,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         if reference and AuthEncoding.pw_validate(reference, password):
             # we don't count repeating same password in case its correct
-            return
+            return count
         if last and ((DateTime() - last) * 24) > self.getResetPeriod():
             # set count to 1 following login attempt after reset period
             count = 1
@@ -309,6 +321,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         last = DateTime()
         reference = AuthEncoding.pw_encrypt(password)
         plugin._login_attempts[login] = (count, last, IP, reference)
+        return count
 
     security.declarePrivate('setSuccessfulAttempt')
 
