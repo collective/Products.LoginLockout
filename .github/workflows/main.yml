@@ -38,7 +38,7 @@ jobs:
         run: |
           # sudo apt-get update
           # sudo apt-get install -y build-essentials
-          sudo apt-get install libxml2-dev libxslt-dev python-dev
+          sudo apt-get install libxml2-dev libxslt-dev python2-dev
           # sudo apt-get install py-pip  
           pip install \
             virtualenv wheel
