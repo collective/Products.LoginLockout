@@ -257,7 +257,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         count, last, IP, pw_hash = self._login_attempts.get(
             login, (0, None, '', ''))
 
-        reset_period = math.ceil(self.getResetPeriod() - ((DateTime() - last) * 24))
+        reset_period = int(math.ceil(self.getResetPeriod() - ((DateTime() - last) * 24)))
         msgid = _(
             u"description_login_locked",
             default=u"This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours.",
