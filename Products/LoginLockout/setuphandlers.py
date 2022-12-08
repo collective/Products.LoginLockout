@@ -36,12 +36,9 @@ def install(portal):
             activatePluginSelectedInterfaces(pas, PLUGIN_ID, out, interfaces)
 
     # define which interfaces need to be moved to top of plugin list
-    move_to_top_for = {
-        plone_pas: 'IChallengePlugin',
-        zope_pas: 'IAnonymousUserFactoryPlugin',
-    }
-    for (pas, interface) in move_to_top_for.items():
-        movePluginToTop(pas, PLUGIN_ID, interface, out)
+    movePluginToTop(plone_pas, PLUGIN_ID, 'IAuthenticationPlugin', out)
+    movePluginToTop(plone_pas, PLUGIN_ID, 'IChallengePlugin', out)
+    movePluginToTop(zope_pas, PLUGIN_ID, 'IAnonymousUserFactoryPlugin', out)
 
     # install configlet
 

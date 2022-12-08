@@ -1,3 +1,4 @@
+import math
 from Acquisition import aq_parent
 
 from Products.PluggableAuthService.interfaces.authservice import IBasicUser
@@ -33,6 +34,9 @@ from zExceptions import Unauthorized
 import logging
 import os
 import six
+from zope.i18nmessageid import MessageFactory
+
+_ = PloneMessageFactory = MessageFactory('LoginLockout')
 
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
@@ -89,7 +93,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     """PAS plugin that rejects logins after X attemps
     """
 
-    lockout_path = 'lockout'
+    lockout_path = ''
     meta_type = 'Login Lockout Plugin'
     cookie_name = '__noduplicate'
     security = ClassSecurityInfo()
@@ -175,14 +179,11 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             raise Unauthorized
 
         if self.isLockedout(login):
-            msg = (
-                "This account is locked."
-                "Please contact your administrator to unlock this account")
             if IStatusMessage is not None:
                 messages = IStatusMessage(request)
-                messages.add(msg)
+                messages.addStatusMessage(self._lockoutMessage(login), type="error")
             else:
-                request['portal_status_message'] = msg
+                request['portal_status_message'] = self._lockoutMessage(login)
             request['locked_login'] = (login, self)  # so challenge plugin can fire
             # HACK - need ot reset in current request not just reponse like
             # cookie auth does
@@ -191,7 +192,10 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             self.resetAllCredentials(request, response)
             count, last, IP = self.getAttempts(login)
             log.info("Attempt denied due to lockout: %s, %s ", login, IP)
-            raise Unauthorized
+            # Unauthorised results in a redirect to the login form which gets rid of our sstatus message
+            # raise Unauthorized
+            # TODO: ensure resetting credentuals locks the user out in all cases?
+            credentials.clear()
 
         request.set('attempted_logins', (login, password, self))
 
@@ -220,33 +224,47 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def challenge(self, request, response, **kw):
         """ Challenge the user for credentials. """
         login, plugin = request.get('locked_login', (None, None))
-        if login and plugin.isLockedout(login):
-            return self.unauthorized()
+        # if login and plugin.isLockedout(login):
+        #     return self.unauthorized()
         return 0
 
-    security.declarePrivate('unauthorized')
+    # security.declarePrivate('unauthorized')
 
-    def unauthorized(self):
-        req = self.REQUEST
-        resp = req['RESPONSE']
+    # def unauthorized(self):
+    #     req = self.REQUEST
+    #     resp = req['RESPONSE']
 
-        # Redirect if desired.
-        url = self.getLockoutURL()
-        if url is not None:
-            resp.redirect(url, lock=1)
-            return 1
-        else:
-            msg = (
-                "This account is locked."
-                "Please contact your administrator to unlock this account")
-            if IStatusMessage is not None:
-                messages = IStatusMessage(req)
-                messages.add(msg)
-            else:
-                req['portal_status_message'] = msg
+    #     # Redirect if desired.
+    #     url = self.getLockoutURL()
+    #     if url is not None:
+    #         resp.redirect(url, lock=1)
+    #         return 1
+    #     else:
+    #         if IStatusMessage is not None:
+    #             messages = IStatusMessage(req)
+    #             messages.addStatusMessage(self._lockoutMessage(login), type="warning")
+    #         else:
+    #             req['portal_status_message'] = msg
+    #         return 1
 
-        # Could not challenge.
-        return 0
+    #     # Could not challenge.
+    #     return 0
+
+    security.declarePrivate('_lockoutMessage')
+
+    def _lockoutMessage(self, login):
+
+        count, last, IP, pw_hash = self._login_attempts.get(
+            login, (0, None, '', ''))
+
+        reset_period = math.ceil(self.getResetPeriod() - ((DateTime() - last) * 24))
+        msgid = _(
+            u"description_login_locked",
+            default=u"This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours.",
+            mapping={u"reset_period": reset_period}
+        )
+        translated = self.translate(msgid)
+        return translated
 
     security.declarePrivate('getLockoutURL')
 

@@ -233,10 +233,10 @@ If we try twice more we will be locked out::
     >>> 'Login failed' in  anon_browser.contents
     True
 
-#   >>> print(anon_browser.contents)
-#   <html>
-    <BLANKLINE>
-    ...This account has now been locked for security purposes...
+    .. >>> print(anon_browser.contents)
+    .. <html>
+    .. <BLANKLINE>
+    .. ...This account has now been locked for security purposes...
 
 
 Now even the correct password won't work::
@@ -245,9 +245,20 @@ Now even the correct password won't work::
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    Traceback (most recent call last):
+
+    Not logged in
+    >>> print(anon_browser.contents)
+    <...
+    ...This account has now been locked for security purposes. You will not be able to log in for 24 hours...
     ...
-    Unauthorized: Unauthorized()
+
+    >>> "now logged in" not in anon_browser.contents
+    True
+
+    >>> anon_browser.getLink("Home").click()
+    >>> anon_browser.getLink('Log in')
+    <Link...>
+
 
 
 The administrator can reset this persons account::
@@ -256,7 +267,7 @@ The administrator can reset this persons account::
     >>> print(admin_browser.contents)
     <BLANKLINE>
     ...<td>test-user</td>...
-    ...<td>3</td>...
+    ...<td>4</td>...
     >>> admin_browser.getControl(name='reset_nonploneusers:list').value = ['test-user']
     >>> admin_browser.getControl('Reset selected accounts').click()
     >>> print(admin_browser.contents)
