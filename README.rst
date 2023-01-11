@@ -110,21 +110,18 @@ occur and the root acl_users.
  2. In your instance PAS 'acl_users', select 'LoginLockout' from the add
  list.  Give it an id and title, and push the add button.
 
- 3. Enable the 'Authentication', 'Challenge' and the 'Update Credentials'
+ 3. Enable the 'Authentication', and the 'Update Credentials'
  plugin interfaces in the after-add screen.
 
- 4. Rearrange the order of your 'Challenge plugins' so that the
- 'LoginLockout' plugin is at the top.
 
- 5. Repeat the above for your root PAS but as a plugin to
+ 4. Repeat the above for your root PAS but as a plugin to
 
     -  Anonymoususerfactory
 
-    -  Challenge
 
-   and ensure LoginLockout is the first Anonymoususerfactory and Challenge plugin
+   and ensure LoginLockout is the first Anonymoususerfactory plugin
 
-Steps 2 through 5 below will be done for you by the Plone installer.
+Steps 2 through 4 below will be done for you by the Plone installer.
 
 That's it! Test it out.
 
@@ -132,21 +129,15 @@ That's it! Test it out.
 Plone LoginLockout PAS Plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-It's very important the plugin is the *first* Challange plugin in the activated plugins list.
-This ensures we redirect a person attempting to make a login into a locked account to a special page.
+It's very important the plugin is the *first* Authentication plugin in the activated plugins list.
+This ensures we prevent a person attempting to make a login into a locked account and display a status message.
+This also collects the username and login and will prevent a login should it be locked.
 
    >>> plone_pas = portal.acl_users.plugins
-   >>> IChallengePlugin = plone_pas._getInterfaceFromName('IChallengePlugin')
-   >>> plone_pas.listPlugins(IChallengePlugin)
+   >>> IAuthenticationPlugin = plone_pas._getInterfaceFromName('IAuthenticationPlugin')
+   >>> plone_pas.listPlugins(IAuthenticationPlugin)
    [('login_lockout_plugin', <LoginLockout at /plone/acl_users/login_lockout_plugin>)...]
 
-
-In addition it is installed as a IAuthenticationPlugin. This both collects the username and login and
-will prevent a login should it be locked.
-
-   >>> IAuthenticationPlugin = plone_pas._getInterfaceFromName('IAuthenticationPlugin')
-   >>> 'login_lockout_plugin' in [p[0] for p in plone_pas.listPlugins(IAuthenticationPlugin)]
-   True
 
 and a ICredentialsUpdatePlugin. This records when a login was successful to reset attempt data.
 
@@ -169,10 +160,6 @@ This ensures it collects data on unsuccessful attempted logins.
    >>> root_pas.listPlugins(IAnonymousUserFactoryPlugin)
    [('login_lockout_plugin', <LoginLockout at /acl_users/login_lockout_plugin>)]
 
-It is also installed as a IChallengePlugin.
-
-   >>> 'login_lockout_plugin' in [p[0] for p in root_pas.listPlugins(IChallengePlugin)]
-   True
 
 
 Lockout on incorrect password attempts
@@ -274,7 +261,7 @@ The administrator can reset this persons account::
     >>> print(admin_browser.contents)
     <BLANKLINE>
     ...<td>test-user</td>...
-    ...<td>4</td>...
+    ...<td>3</td>...
     >>> admin_browser.getControl(name='reset_nonploneusers:list').value = ['test-user']
     >>> admin_browser.getControl('Reset selected accounts').click()
     >>> print(admin_browser.contents)
@@ -290,6 +277,9 @@ and now they can log in again::
     >>> print(anon_browser.contents)
     <BLANKLINE>
     ...You are now logged in...
+
+
+
 
 IP Lockdown
 -----------
@@ -328,9 +318,11 @@ If not from a valid IP then the login will fail
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = user_password
     >>> anon_browser.getControl('Log in').click()
-    Traceback (most recent call last):
-    ...
-    Unauthorized: Unauthorized()
+    >>> print(anon_browser.contents)
+    <BLANKLINE>
+    ...Login currently unavailable...
+    >>> anon_browser.getLink('Log in')
+    <Link text='Log in'...>
 
 
 Basic Auth will works with the right IP
@@ -351,9 +343,11 @@ and basic auth fails with the wrong IP
     >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
 
     >>> anon_browser.open(portal.absolute_url())
-    Traceback (most recent call last):
-    ...
-    Unauthorized: Unauthorized()
+    >>> print(anon_browser.contents)
+    <BLANKLINE>
+    ...Login currently unavailable...
+    >>> anon_browser.getLink('Log in')
+    <Link text='Log in'...>
 
 
 We can still use a root login at the root
@@ -362,16 +356,18 @@ We can still use a root login at the root
     >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, base_password))
     >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
 
-Manage would raise an Unauthorised Exception if the login failed
-    >>> anon_browser.open(portal.absolute_url()+'/../manage')
+    >>> anon_browser.open(portal.absolute_url()+'/../manage_main')
+    >>> print(anon_browser.contents)
+    <BLANKLINE>
+    ...admin...
+    ...Logout...
 
+But we can't get into the plone site with a root id any more
 
-but not in the plone site
-
-    >>> anon_browser.open(portal.absolute_url())
+    >>> anon_browser.open(portal.absolute_url()+'/manage_main')
     Traceback (most recent call last):
     ...
-    Unauthorized: Unauthorized()
+    zExceptions.unauthorized.Unauthorized...
 
 
 You can also set IP ranges e.g.
@@ -519,6 +515,30 @@ The the administrators can see the password was changed
                 <td>...</td>
             </tr>
     ...
+
+Other support
+--------------
+
+Root users can also be locked out and with basic authentication too
+
+    >>> anon_browser = make_anon_browser()
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, "attempt1"))
+    >>> anon_browser.open(portal.absolute_url())
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, "attempt2"))
+    >>> anon_browser.open(portal.absolute_url())
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, "attempt3"))
+    >>> anon_browser.open(portal.absolute_url())
+    >>> print(anon_browser.contents)
+    <...
+    ...This account has now been locked for security purposes. You will not be able to log in for 24 hours...
+    ...
+    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, base_password))
+    >>> anon_browser.open(portal.absolute_url())
+    >>> print(anon_browser.contents)
+    <...
+    ...This account has now been locked for security purposes. You will not be able to log in for 24 hours...
+    ...
+
 
 
 Implementation

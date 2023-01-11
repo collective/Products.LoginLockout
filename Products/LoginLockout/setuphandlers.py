@@ -24,9 +24,9 @@ def install(portal):
 
     # define the interfaces which need to be activated for either PAS
     interfaces_for_paservices = {
-        plone_pas: ['IAuthenticationPlugin', 'IChallengePlugin',
+        plone_pas: ['IAuthenticationPlugin',
                     'ICredentialsUpdatePlugin'],
-        zope_pas: ['IChallengePlugin', 'IAnonymousUserFactoryPlugin'],
+        zope_pas: ['IAuthenticationPlugin', 'IAnonymousUserFactoryPlugin'],
     }
     for (pas, interfaces) in interfaces_for_paservices.items():
         existing = pas.objectIds()
@@ -37,8 +37,8 @@ def install(portal):
 
     # define which interfaces need to be moved to top of plugin list
     movePluginToTop(plone_pas, PLUGIN_ID, 'IAuthenticationPlugin', out)
-    movePluginToTop(plone_pas, PLUGIN_ID, 'IChallengePlugin', out)
     movePluginToTop(zope_pas, PLUGIN_ID, 'IAnonymousUserFactoryPlugin', out)
+    movePluginToTop(zope_pas, PLUGIN_ID, 'IAuthenticationPlugin', out)
 
     # install configlet
 
