@@ -359,15 +359,14 @@ We can still use a root login at the root
     >>> anon_browser.open(portal.absolute_url()+'/../manage_main')
     >>> print(anon_browser.contents)
     <BLANKLINE>
-    ...admin...
-    ...Logout...
+    ...manage_workspace...
 
 But we can't get into the plone site with a root id any more
 
     >>> anon_browser.open(portal.absolute_url()+'/manage_main')
     Traceback (most recent call last):
     ...
-    zExceptions.unauthorized.Unauthorized...
+    Unauthorized: You are not authorized to access this resource.
 
 
 You can also set IP ranges e.g.
