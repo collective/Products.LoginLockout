@@ -3,7 +3,10 @@
 from Products.Five import BrowserView
 from Products.CMFPlone import PloneMessageFactory as _
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
+try:
+    from plone.base.utils import safe_text
+except ImportError:
+    from Products.CMFPlone.utils import safe_unicode as safe_text
 from Products.statusmessages.interfaces import IStatusMessage
 
 
@@ -33,7 +36,7 @@ class LockoutsView(BrowserView):
 
             # give an informative message
             messages = IStatusMessage(self.request)
-            messages.add(_("Accounts were reset for these login names: %s" % safe_unicode(','.join(user_ids))), type=u"info")
+            messages.add(_("Accounts were reset for these login names: %s" % safe_text(','.join(user_ids))), type=u"info")
         return self.index()
 
 

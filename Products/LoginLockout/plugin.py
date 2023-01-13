@@ -1,3 +1,4 @@
+import math
 from Acquisition import aq_parent
 
 from Products.PluggableAuthService.interfaces.authservice import IBasicUser
@@ -6,9 +7,11 @@ from ipaddress import ip_address, ip_network
 from plone.registry.interfaces import IRegistry
 from zope.component import getUtility, ComponentLookupError, adapter
 from zope.component.hooks import getSite
-
 from Products.LoginLockout.interfaces import ILoginLockoutSettings
-from AccessControl import AuthEncoding
+try:
+    from AuthEncoding import AuthEncoding
+except ImportError:
+    from AccessControl import AuthEncoding
 from AccessControl import ClassSecurityInfo
 from AccessControl.class_init import InitializeClass
 from BTrees.OOBTree import OOBTree
@@ -19,20 +22,18 @@ from Products.CMFCore.utils import getToolByName
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAnonymousUserFactoryPlugin  # NOQA
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # NOQA
-from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
 from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin  # NOQA
 from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdatePlugin  # NOQA
 from Products.PluggableAuthService.permissions import ManageUsers
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
-try:
-    from Products.statusmessages.interfaces import IStatusMessage
-except ImportError:
-    IStatusMessage = None
-from zExceptions import Unauthorized
+from Products.statusmessages.interfaces import IStatusMessage
 import logging
 import os
 import six
+from zope.i18nmessageid import MessageFactory
+
+_ = PloneMessageFactory = MessageFactory('LoginLockout')
 
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
@@ -48,14 +49,23 @@ __author__ = "Dylan Jay <software@pretaweb.com>"
    A UpdateCredentials plugin resets that count as this indicates a successful
    login.
 
-   If the count reaches the max then AuthenticateUser Plugin throws a
-   Unauthorised exception.
+   If the count reaches the max then AuthenticateUser Plugin will blank out
+   the credentials.
+   *Important* This relies on the credentials being changed as a side effect.
+   Future implementations of PAS might not allow this.
+   This prevents login and a status message is shown.
 
-   The challenge machinery is inacted and a Challenge plugin recognises the
-   user is locked out and redirects them to a page informing them they are
-   locked out and to contact the admin
+   Note: Unfortunately Plone decides to also show a message that the login was incorrect
+   which might be confusing
 
-   The admin can view and reset attempts via the ZMI at any time
+
+   A previous version of the plugin used another method.
+   AuthenticationPlugin would throw an unauthorised exception resulting in a challenge plugin
+   which would then redirect to another page. Our plugin had to be the first challenge plugin for
+   this to work.
+
+   The admin can view and reset attempts via the ZMI at any time. Password resets also reset the
+   attempts.
 """
 
 ENV_WHITELIST = 'LOGINLOCKOUT_IP_WHITELIST'
@@ -89,7 +99,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     """PAS plugin that rejects logins after X attemps
     """
 
-    lockout_path = 'lockout'
+    lockout_path = ''
     meta_type = 'Login Lockout Plugin'
     cookie_name = '__noduplicate'
     security = ClassSecurityInfo()
@@ -154,6 +164,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         """See IAuthenticationPlugin.
 
         This plugin will actually never authenticate.
+        It does clear credentials if the user is locked out
+        so relies on side-effect.
 
         o We expect the credentials to be those returned by
           ILoginPasswordExtractionPlugin.
@@ -167,33 +179,36 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         if None in (login, password, pas_instance):
             return None
+        oldlogin, oldpw, top_plugin = request.get('attempted_logins', (None, None, self))
+        if top_plugin != self:
+            # We are a lower plugin. We need to check against top plugin lockouts
+            return top_plugin.authenticateCredentials(credentials)
 
+        messages = IStatusMessage(request)
         IP = self.remote_ip()
-        if self.isIPLocked(login, six.text_type(IP)):
-            # TODO: should there be some notification login is blocked due to IP?
+        if not self._isConfiguredCorrectly():
+            messages.addStatusMessage(_("LoginLockout incorrectly configured"), type="error")
+            return None
+        elif self.isIPLocked(login, six.text_type(IP)):
             log.info("Attempt denied due to IP: %s, %s ", login, IP)
-            raise Unauthorized
-
-        if self.isLockedout(login):
-            msg = (
-                "This account is locked."
-                "Please contact your administrator to unlock this account")
-            if IStatusMessage is not None:
-                messages = IStatusMessage(request)
-                messages.add(msg)
-            else:
-                request['portal_status_message'] = msg
+            messages.addStatusMessage(_("Login currently unavailable"), type="error")  # TODO Is this a good idea?
+            credentials.clear()
+        elif self.isLockedout(login):
+            messages.addStatusMessage(self._lockoutMessage(login), type="error")
             request['locked_login'] = (login, self)  # so challenge plugin can fire
-            # HACK - need ot reset in current request not just reponse like
+            # HACK - need ot reset in current request not just response like
             # cookie auth does
             request.set('__ac', '')
             # must reset so we don't lockout of the login page
             self.resetAllCredentials(request, response)
             count, last, IP = self.getAttempts(login)
             log.info("Attempt denied due to lockout: %s, %s ", login, IP)
-            raise Unauthorized
+            # TODO: ensure resetting credentials locks the user out in all cases?
+            credentials.clear()
 
-        request.set('attempted_logins', (login, password, self))
+        # Used when creating anon user to setAttempt and display warning
+        if not request.get('attempted_logins'):
+            request.set('attempted_logins', (login, password, self))
 
         return None  # Note that we never return anything useful
 
@@ -202,9 +217,21 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     def createAnonymousUser(self):
         """ if we got anon then attempt failed """
         login, password, plugin = self.REQUEST.get('attempted_logins', ('', '', None))
-        if login:
-            self.setAttempt(login, password, plugin)
-            log.info("Failed login attempt: %s ", login)
+        if not login:
+            return
+
+        left = self.getMaxAttempts() - self.setAttempt(login, password, plugin)
+        log.info("Failed login attempt: %s ", login)
+        messages = IStatusMessage(self.REQUEST)
+        if left > 0:
+            msgid = _(
+                u"lockout_attempt_warning",
+                default=u"You have ${attempts_left} attempts left before this account is locked",
+                mapping={u"attempts_left": left}
+            )
+            messages.addStatusMessage(msgid, type="warning")
+        elif left == 0:
+            messages.addStatusMessage(self._lockoutMessage(login, plugin), type="error")
 
     security.declarePrivate('updateCredentials')
 
@@ -215,82 +242,52 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         self.resetAttempts(login, new_password)
         log.info("Successful login: %s ", login)
 
-    security.declarePrivate('challenge')
+    security.declarePrivate('_lockoutMessage')
 
-    def challenge(self, request, response, **kw):
-        """ Challenge the user for credentials. """
-        login, plugin = request.get('locked_login', (None, None))
-        if login and plugin.isLockedout(login):
-            return self.unauthorized()
-        return 0
+    def _lockoutMessage(self, login, plugin=None):
+        plugin = self if plugin is None else plugin
 
-    security.declarePrivate('unauthorized')
+        count, last, IP, pw_hash = plugin._login_attempts.get(
+            login, (0, None, '', ''))
 
-    def unauthorized(self):
-        req = self.REQUEST
-        resp = req['RESPONSE']
+        reset_period = int(math.ceil(self.getResetPeriod() - ((DateTime() - last) * 24)))
+        msgid = _(
+            u"description_login_locked",
+            default=u"This account has now been locked for security purposes. Try again after ${reset_period} hours or reset your password below",
+            mapping={u"reset_period": reset_period}
+        )
+        # translated = self.translate(msgid)
+        return msgid
 
-        # Redirect if desired.
-        url = self.getLockoutURL()
-        if url is not None:
-            resp.redirect(url, lock=1)
-            return 1
-        else:
-            msg = (
-                "This account is locked."
-                "Please contact your administrator to unlock this account")
-            if IStatusMessage is not None:
-                messages = IStatusMessage(req)
-                messages.add(msg)
-            else:
-                req['portal_status_message'] = msg
-
-        # Could not challenge.
-        return 0
-
-    security.declarePrivate('getLockoutURL')
-
-    def getLockoutURL(self):
-        """ Where to send people for logging in """
-        if self.lockout_path.startswith('/'):
-            return self.lockout_path
-        elif self.lockout_path != '':
-            return '%s/%s' % (self.absolute_url(), self.lockout_path)
-        else:
-            return None
-
-    # security.declarePrivate('getRootPlugin')
-
-    # def getRootPlugin(self):
-    #     pas = self.getPhysicalRoot().acl_users
-    #     plugins = pas.objectValues([self.meta_type])
-    #     if plugins:
-    #         return plugins[0]
+    def _isConfiguredCorrectly(self):
+        plugins = self.aq_parent.plugins.listPlugins(IAuthenticationPlugin)
+        return self == plugins[0][1]
 
     security.declarePrivate('setAttempt')
 
     def setAttempt(self, login, password, plugin):
         "increment attempt count and record date stamp last attempt and IP"
 
-        # TODO: why are the login attempts stored in the root? The usernames aren't unique in the root.
-
-        # root = self.getRootPlugin()
         count, last, IP, reference = plugin._login_attempts.get(
             login, (0, None, '', None))
 
+        IP = self.remote_ip()
         if reference and AuthEncoding.pw_validate(reference, password):
             # we don't count repeating same password in case its correct
-            return
+            return count
         if last and ((DateTime() - last) * 24) > self.getResetPeriod():
             # set count to 1 following login attempt after reset period
             count = 1
+        elif count >= self.getMaxAttempts() or self.isIPLocked(login, IP):
+            # Don't keep recording after its already locked
+            return count
         else:
             count += 1
-        IP = self.remote_ip()
         log.info("user '%s' attempt #%i %s last: %s", login, count, IP, last)
         last = DateTime()
         reference = AuthEncoding.pw_encrypt(password)
         plugin._login_attempts[login] = (count, last, IP, reference)
+        return count
 
     security.declarePrivate('setSuccessfulAttempt')
 
@@ -321,10 +318,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         default = getattr(self, '_' + setting)
 
-        # TODO: Need tu add an upgrade step for properties to registry
-
         try:
-            registry = getUtility(IRegistry)
+            # Ensure we get locally from the plone site and not some other plone site
+            registry = getUtility(IRegistry, context=aq_parent(aq_parent(self)))
             settings = registry.forInterface(ILoginLockoutSettings, prefix="Products.LoginLockout")
             return getattr(settings, setting)
         except ComponentLookupError:
@@ -399,7 +395,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
     security.declarePrivate('resetAttempts')
 
     def resetAttempts(self, login, password=None):
-        """ reset to zero and update pw referece so same attempts pass """
+        """ reset to zero and update pw reference so same attempts pass """
         # root = self.getRootPlugin()
         if self._login_attempts.get(login, None):
             del self._login_attempts[login]
@@ -523,7 +519,6 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 classImplements(LoginLockout,
                 ICredentialsUpdatePlugin,
                 IAuthenticationPlugin,
-                IChallengePlugin,
                 IAnonymousUserFactoryPlugin)
 
 InitializeClass(LoginLockout)

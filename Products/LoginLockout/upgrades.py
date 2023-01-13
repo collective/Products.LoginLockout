@@ -3,6 +3,7 @@ from Acquisition import aq_parent
 from Products.CMFCore.utils import getToolByName
 from plone.registry.interfaces import IRegistry
 from Products.LoginLockout.interfaces import ILoginLockoutSettings
+from Products.LoginLockout.setuphandlers import install
 from zope.component import getUtility
 
 import logging
@@ -40,5 +41,17 @@ def run_upgrade_2009031001_to_2018021801(context):
     log.info('values to be migrated `fake_client_ip, reset_period, reset_period`')
 
     migrate_portal_properties(plone_root)
+
+    log.info('Upgrade has been done successfully')
+
+
+def run_upgrade_2018021801_to_2023011301(context):
+    """ """
+    plone_root = aq_parent(aq_parent(context))
+    log.info('Upgrade steps from version 20180218-01 to 20230113-01 is starting')
+
+    log.info('reinstall to ensure plugins are the right order')
+
+    install(plone_root)
 
     log.info('Upgrade has been done successfully')

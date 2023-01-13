@@ -11,4 +11,15 @@
         description="Migration from portal properties to portal registry"
         />
   </genericsetup:upgradeSteps>
+
+  <genericsetup:upgradeSteps
+     profile="Products.LoginLockout:default"
+     source="20180218-01"
+     destination="20230113-01">
+      <genericsetup:upgradeStep
+        handler=".upgrades.run_upgrade_2018021801_to_2023011301"
+        title="Run Products.LoginLockout: 20180218-01 to 2023011301"
+        description="Ensure plugins are in the right order"
+        />
+  </genericsetup:upgradeSteps>
 </configure>

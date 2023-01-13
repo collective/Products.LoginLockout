@@ -6,15 +6,11 @@ from Products.PluggableAuthService import registerMultiPlugin
 from Products.LoginLockout.plugin import LoginLockout
 from Products.LoginLockout.plugin import manage_addLoginLockout
 from Products.LoginLockout.plugin import manage_addLoginLockoutForm
-from zope.i18nmessageid import MessageFactory
 
 """LoginLockout
 """
 
 __author__ = "Dylan Jay <software@pretaweb.com>"
-
-
-PloneMessageFactory = MessageFactory('plone')
 
 
 def initialize(context):
