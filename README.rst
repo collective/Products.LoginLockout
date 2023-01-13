@@ -520,20 +520,23 @@ Other support
 
 Root users can also be locked out and with basic authentication too
 
-    >>> anon_browser = make_anon_browser()
-    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, "attempt1"))
-    >>> anon_browser.open(portal.absolute_url())
-    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, "attempt2"))
-    >>> anon_browser.open(portal.absolute_url())
-    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, "attempt3"))
-    >>> anon_browser.open(portal.absolute_url())
-    >>> print(anon_browser.contents)
+    >>> def try_base_login(pw):
+    ...    anon_browser = make_anon_browser()  # Can't redefine header in older testbrowser
+    ...    anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, pw))
+    ...    anon_browser.open(portal.absolute_url())
+    ...    print(anon_browser.contents)
+    >>> try_base_login("attempt1")
+    <...
+    ...You have 2 attempts left before this account is locked...
+
+    >>> try_base_login("attempt2")
+    <...
+    ...You have 1 attempts left before this account is locked...
+    >>> try_base_login("attempt3")
     <...
     ...This account has now been locked for security purposes. You will not be able to log in for 24 hours...
     ...
-    >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, base_password))
-    >>> anon_browser.open(portal.absolute_url())
-    >>> print(anon_browser.contents)
+    >>> try_base_login(base_password)
     <...
     ...This account has now been locked for security purposes. You will not be able to log in for 24 hours...
     ...

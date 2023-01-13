@@ -207,7 +207,8 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             credentials.clear()
 
         # Used when creating anon user to setAttempt and display warning
-        request.set('attempted_logins', (login, password, self))
+        if not request.get('attempted_logins'):
+            request.set('attempted_logins', (login, password, self))
 
         return None  # Note that we never return anything useful
 
@@ -218,6 +219,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         login, password, plugin = self.REQUEST.get('attempted_logins', ('', '', None))
         if not login:
             return
+
         left = self.getMaxAttempts() - self.setAttempt(login, password, plugin)
         log.info("Failed login attempt: %s ", login)
         messages = IStatusMessage(self.REQUEST)
