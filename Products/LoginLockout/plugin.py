@@ -253,7 +253,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         reset_period = int(math.ceil(self.getResetPeriod() - ((DateTime() - last) * 24)))
         msgid = _(
             u"description_login_locked",
-            default=u"This account has now been locked for security purposes. You will not be able to log in for ${reset_period} hours.",
+            default=u"This account has now been locked for security purposes. Try again after ${reset_period} hours or reset your password below",
             mapping={u"reset_period": reset_period}
         )
         # translated = self.translate(msgid)
