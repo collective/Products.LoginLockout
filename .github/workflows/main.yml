@@ -37,7 +37,7 @@ jobs:
       - name: Apt update
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: libxml2-dev libxslt-dev python2-dev
+          packages: libxml2-dev libxslt1-dev python2-dev
           version: 1.0
       - name: Install dependencies
         run: |
