@@ -83,8 +83,8 @@ jobs:
         run: echo "${{ matrix.plone }}" | grep 5.1 || bin/code-analysis  
       - name: createcoverage
         run: |
-            bin/createcoverage
-            bin/coverage json -i
+            # bin/createcoverage
+            # bin/coverage json -i
       - name: Coveralls
         uses: AndreMiras/coveralls-python-action@develop
         with:
