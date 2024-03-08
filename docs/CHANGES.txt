@@ -6,8 +6,15 @@ Changes
 
 - Make Python 3 and Plone 5.2 compatible [HybridAU]
 - Made changes so the basics works in 5.2 and 6.0 (classic) [djay]
-- Plone 5 now uses registry for config [djay]
+- Changed plugin operation to reset credentials instead of raise UnAuthorised so status messages work and switched to using status messages. 
+  This does require a different order of PAS Plugins.
+  [djay]
+- Added warnings of attempts left
+  [djay]
 - Included the ability to restrict requests from certain IP networks. Config page shows current client IP [djay]
+- Moved attempts storage to Plone site so no data leakage between sites
+  [djay]
+- Plone 5+ now uses registry for config [djay]
 - Remove 'select all' buttons.
   [ivanteoh]
 - Corrected private method bug.
@@ -21,14 +28,6 @@ Changes
 - Fixed change password history for versions 4.1-6.0
   [djay]
 - Removed testing for 4.1
-  [djay]
-- Moved attempts storage to Plone site so no data leakage between sites
-  [djay]
-- Switched errors and warnings to use a status message so works via AJAX
-  [djay]
-- Added warnings of attempts left
-  [djay]
-- Changed plugin operation to reset credentials instead of raise UnAuthorised so status messages work.
   [djay]
 
 0.4.0 (2015-11-25)
