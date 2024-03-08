@@ -18,6 +18,7 @@ jobs:
         include:
           - python: '3.8'
             plone: '5.2'
+            coverage: true
           - python: '2.7'
             plone: '5.1'
           - python: '2.7'
@@ -82,9 +83,10 @@ jobs:
       - name: code-analysis
         run: echo "${{ matrix.plone }}" | grep 5.1 || bin/code-analysis  
       - name: createcoverage
+        if: ${{ (matrix.coverage) }}
         run: |
-            # bin/createcoverage
-            # bin/coverage json -i
+            bin/createcoverage
+            bin/coverage json -i
       - name: Coveralls
         uses: AndreMiras/coveralls-python-action@develop
         with:
