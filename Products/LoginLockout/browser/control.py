@@ -23,7 +23,7 @@ class LockoutsView(BrowserView):
         # Get a values from the form, convert to list if it's just one
         user_ids = self.request.form.get('reset_ploneusers', [])
         user_ids += self.request.form.get('reset_nonploneusers', [])
-        if type(user_ids) != list:
+        if type(user_ids) is not list:
             user_ids = [user_ids, ]
 
         if user_ids:

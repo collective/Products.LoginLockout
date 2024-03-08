@@ -21,7 +21,7 @@ Requires:
 
 - (optional) PlonePAS and its dependencies
 
-- (optional) Plone 4.1.x-5.2.x
+- (optional) Plone 4.1.x-6.0.x
 
 .. image:: http://github-actions.40ants.com/collective/Products.LoginLockout/matrix.svg
    :target: https://github.com/collective/Products.LoginLockout
@@ -44,6 +44,8 @@ Features
 
 Configuration
 -------------
+
+**NOTE** *If upgrading from 0.4.0 you will need run the upgrade or manually reset the PAS plugin order as below as this has changed.*
 
 You can use this plugin with Zope without Plone, or with Plone. When using it with Plone you will configure it via the
 Plone registry (plone 5+) or via portal_properties if plone 4.
