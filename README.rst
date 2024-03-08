@@ -52,6 +52,7 @@ Plone registry (plone 5+) or via portal_properties if plone 4.
 
 Go to the Plone Control Panel -> LoginLockout Settings , there you can changes these defaults:
 
+::
     >>> admin_browser = make_admin_browser('/')
     >>> admin_browser.getLink('Site Setup').click()
     >>> admin_browser.getLink('LoginLockout').click()
@@ -62,6 +63,7 @@ Go to the Plone Control Panel -> LoginLockout Settings , there you can changes t
 - whitelist_ips: [] # any origin IP is allowed
 - Fake Client IP: false
     
+::    
     >>> admin_browser.getControl("Max Attempts").value
     '3'
     >>> admin_browser.getControl("Reset Period (hours)").value
@@ -72,7 +74,7 @@ Go to the Plone Control Panel -> LoginLockout Settings , there you can changes t
     False
 
 
-Let's ensure that the settings actually change
+Let's ensure that the settings actually change::
 
     >>> admin_browser.getControl('Fake Client IP').selected = True
     >>> get_loginlockout_settings().fake_client_ip
@@ -106,21 +108,17 @@ Manual Installation
 This plugin needs to be installed in two places, the instance PAS where logins
 occur and the root acl_users.
 
- 1. Place the Product directory 'LoginLockout' in your 'Products/'
- directory. Restart Zope.
+1. Place the Product directory 'LoginLockout' in your 'Products/'
+directory. Restart Zope.
 
- 2. In your instance PAS 'acl_users', select 'LoginLockout' from the add
- list.  Give it an id and title, and push the add button.
+2. In your instance PAS 'acl_users', select 'LoginLockout' from the add
+list.  Give it an id and title, and push the add button.
 
- 3. Enable the 'Authentication', and the 'Update Credentials'
- plugin interfaces in the after-add screen.
-
-
- 4. Repeat the above for your root PAS but as a plugin to
-
-    -  Anonymoususerfactory
+3. Enable the 'Authentication', and the 'Update Credentials'
+plugin interfaces in the after-add screen.
 
 
+4. Repeat the above for your root PAS but as a plugin to ```Anonymoususerfactory```
    and ensure LoginLockout is the first Anonymoususerfactory plugin
 
 Steps 2 through 4 below will be done for you by the Plone installer.
@@ -133,7 +131,7 @@ Plone LoginLockout PAS Plugin
 
 It's very important the plugin is the *first* Authentication plugin in the activated plugins list.
 This ensures we prevent a person attempting to make a login into a locked account and display a status message.
-This also collects the username and login and will prevent a login should it be locked.
+This also collects the username and login and will prevent a login should it be locked.::
 
    >>> plone_pas = portal.acl_users.plugins
    >>> IAuthenticationPlugin = plone_pas._getInterfaceFromName('IAuthenticationPlugin')
@@ -141,8 +139,7 @@ This also collects the username and login and will prevent a login should it be 
    [('login_lockout_plugin', <LoginLockout at /plone/acl_users/login_lockout_plugin>)...]
 
 
-and a ICredentialsUpdatePlugin. This records when a login was successful to reset attempt data.
-
+and a ICredentialsUpdatePlugin. This records when a login was successful to reset attempt data.::
 
    >>> ICredentialsUpdatePlugin = plone_pas._getInterfaceFromName('ICredentialsUpdatePlugin')
    >>> 'login_lockout_plugin' in [p[0] for p in plone_pas.listPlugins(ICredentialsUpdatePlugin)]
@@ -155,7 +152,7 @@ Root Zope LoginLockout PAS Plugin
 It will also install a plugin at the root of the zope instance.
 
 It's important this is also the *first* IAnonymousUserFactoryPlugin. On a normal Zope instance it will be the only one.
-This ensures it collects data on unsuccessful attempted logins.
+This ensures it collects data on unsuccessful attempted logins.::
 
    >>> root_pas = portal.getPhysicalRoot().acl_users.plugins
    >>> IAnonymousUserFactoryPlugin = plone_pas._getInterfaceFromName('IAnonymousUserFactoryPlugin')
@@ -167,7 +164,7 @@ This ensures it collects data on unsuccessful attempted logins.
 Lockout on incorrect password attempts
 --------------------------------------
 
-First login as manager::
+First login as manager
 
 Now we'll open up a new browser and attempt to login::
 
@@ -198,10 +195,10 @@ Let's try again with another password::
     ...You have 2 attempts left before this account is locked...
 
 
-this incorrect attempt  will show up in the log::
+this incorrect attempt  will show up in the log
 
 
-We've installed a Control panel to monitor the login attempts
+We've installed a Control panel to monitor the login attempts::
 
     >>> admin_browser = make_admin_browser('/loginlockout_settings')
     >>> print(admin_browser.contents)
@@ -293,12 +290,12 @@ By default IP Locking is disabled.
 NOTE: If you are using Zope behind a proxy then you must enable X-Forward-For headers on
 each proxy otherwise this plugin will incorrectly use REMOTE_ADDR which will be a local IP.
 
-To enable this go into the ZMI and enter the ranges in the whitelist_ips property
+To enable this go into the ZMI and enter the ranges in the whitelist_ips property::
 
     >>> config_property( whitelist_ips = u'10.1.1.1' )
 
 If there are proxies infront of zope you will have to ensure they set the ```X-Forwarded-For``` header.
-Note only the first forwarded IP will be used.
+Note only the first forwarded IP will be used.::
 
     >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.addHeader('X-Forwarded-For', '10.1.1.1, 192.168.1.1')
@@ -311,7 +308,7 @@ Note only the first forwarded IP will be used.
 
     >>> anon_browser.open(portal.absolute_url()+'/logout')
 
-If not from a valid IP then the login will fail
+If not from a valid IP then the login will fail::
 
     >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.addHeader('X-Forwarded-For', '2.2.2.2')
@@ -327,7 +324,7 @@ If not from a valid IP then the login will fail
     <Link text='Log in'...>
 
 
-Basic Auth will works with the right IP
+Basic Auth will works with the right IP::
 
     >>> anon_browser = make_anon_browser()
     >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
@@ -338,7 +335,7 @@ Basic Auth will works with the right IP
     <Link text='Log out'...>
 
 
-and basic auth fails with the wrong IP
+and basic auth fails with the wrong IP::
 
     >>> anon_browser = make_anon_browser()
     >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
@@ -352,7 +349,7 @@ and basic auth fails with the wrong IP
     <Link text='Log in'...>
 
 
-We can still use a root login at the root
+We can still use a root login at the root::
 
     >>> anon_browser = make_anon_browser()
     >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (base_id, base_password))
@@ -363,7 +360,7 @@ We can still use a root login at the root
     <BLANKLINE>
     ...manage_workspace...
 
-But we can't get into the plone site with a root id any more
+But we can't get into the plone site with a root id any more::
 
     >>> anon_browser.open(portal.absolute_url()+'/manage_main')
     Traceback (most recent call last):
@@ -371,7 +368,7 @@ But we can't get into the plone site with a root id any more
     Unauthorized: You are not authorized to access this resource.
 
 
-You can also set IP ranges e.g.
+You can also set IP ranges e.g.::
 
     >>> config_property( whitelist_ips = u"""10.1.1.1
     ... 10.1.0.0/16 # range 1
@@ -392,8 +389,7 @@ You can also set IP ranges e.g.
 You can also set a env variable LOGINLOCKOUT_IP_WHITELIST which is merged with the config.
 This allows those with filesystem access a way to get in if they have set their config wrong.
 It also allows a set of IP ranges to be set for any site in a Plone multisite setup as long
-as the site has loginlockout installed.
-
+as the site has loginlockout installed.::
 
     >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getLink('Log in')
@@ -410,7 +406,7 @@ as the site has loginlockout installed.
 
 
 Note that you still have to have the IP lockout config set otherwise logins are allowed from anywhere
-even with the env variable set
+even with the env variable set::
 
     >>> config_property( whitelist_ips = u"""
     ... """)
@@ -427,7 +423,7 @@ even with the env variable set
 
 
 If you are unsure of what is being detected as your current Client IP you can see it in
-the control panel
+the control panel::
 
     >>> admin_browser = make_admin_browser('/')
     >>> admin_browser.addHeader('X-Forwarded-For', '10.1.1.1, 192.168.1.1')
@@ -443,7 +439,7 @@ Login History
 -------------
 
 It is also possible to view a history of successful logins for a particular user. Note this is the user id rather
-than user login and they can be different. User test_user_1_ had 4 successful logins.
+than user login and they can be different. User ``test_user_1_`` had 4 successful logins.::
 
     >>> admin_browser = make_admin_browser('/loginlockout_settings')
     >>> admin_browser.getLink('Login history').click()
@@ -479,7 +475,7 @@ than user login and they can be different. User test_user_1_ had 4 successful lo
 Password Reset History
 ----------------------
 
-When a user changes their password
+When a user changes their password::
 
     >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
@@ -497,14 +493,15 @@ When a user changes their password
     ...Password changed... 
     ...
 
-This changed the password
+This changed the password::
+
     >>> anon_browser = make_anon_browser('/login_form')
     >>> anon_browser.getControl('Login Name').value = user_id
     >>> anon_browser.getControl('Password').value = '12345678'
     >>> anon_browser.getControl('Log in').click()
     >>> anon_browser.getLink("Preferences").click()
 
-The the administrators can see the password was changed
+The the administrators can see the password was changed::
 
     >>> admin_browser = make_admin_browser('/loginlockout_settings')
     >>> admin_browser.getLink('History password changes').click()
@@ -520,7 +517,7 @@ The the administrators can see the password was changed
 Other support
 --------------
 
-Root users can also be locked out and with basic authentication too
+Root users can also be locked out and with basic authentication too::
 
     >>> def try_base_login(pw):
     ...    anon_browser = make_anon_browser()  # Can't redefine header in older testbrowser
