@@ -10,8 +10,7 @@ from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.testing import SITE_OWNER_NAME, SITE_OWNER_PASSWORD
 from plone.app.testing import PloneWithPackageLayer
 from plone.testing import Layer, layered
-from plone.testing.zserver import ZSERVER_FIXTURE
-from plone.testing.zope import Browser
+from plone.testing.zope import Browser, WSGI_SERVER_FIXTURE
 import Products.LoginLockout
 from Products.LoginLockout.interfaces import ILoginLockoutSettings
 
@@ -27,7 +26,7 @@ INTEGRATION_TESTING = IntegrationTesting(
     name="Products.LoginLockout:Integration",
 )
 FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(FIXTURE, ZSERVER_FIXTURE),
+    bases=(FIXTURE, WSGI_SERVER_FIXTURE),
     name="Products.LoginLockout:Functional",
 )
 ROBOT_TESTING = Layer(name="Products.LoginLockout:Robot")
