@@ -30,7 +30,6 @@ from Products.PluggableAuthService.utils import classImplements
 from Products.statusmessages.interfaces import IStatusMessage
 import logging
 import os
-import six
 from zope.i18nmessageid import MessageFactory
 
 _ = PloneMessageFactory = MessageFactory('LoginLockout')
@@ -189,7 +188,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         if not self._isConfiguredCorrectly():
             messages.addStatusMessage(_("LoginLockout incorrectly configured"), type="error")
             return None
-        elif self.isIPLocked(login, six.text_type(IP)):
+        elif self.isIPLocked(login, str(IP)):
             log.info("Attempt denied due to IP: %s, %s ", login, IP)
             messages.addStatusMessage(_("Login currently unavailable"), type="error")  # TODO Is this a good idea?
             credentials.clear()
@@ -225,9 +224,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         messages = IStatusMessage(self.REQUEST)
         if left > 0:
             msgid = _(
-                u"lockout_attempt_warning",
-                default=u"You have ${attempts_left} attempts left before this account is locked",
-                mapping={u"attempts_left": left}
+                "lockout_attempt_warning",
+                default="You have ${attempts_left} attempts left before this account is locked",
+                mapping={"attempts_left": left}
             )
             messages.addStatusMessage(msgid, type="warning")
         elif left == 0:
@@ -252,9 +251,9 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
 
         reset_period = int(math.ceil(self.getResetPeriod() - ((DateTime() - last) * 24)))
         msgid = _(
-            u"description_login_locked",
-            default=u"This account has now been locked for security purposes. Try again after ${reset_period} hours or reset your password below",
-            mapping={u"reset_period": reset_period}
+            "description_login_locked",
+            default="This account has now been locked for security purposes. Try again after ${reset_period} hours or reset your password below",
+            mapping={"reset_period": reset_period}
         )
         # translated = self.translate(msgid)
         return msgid
@@ -349,7 +348,7 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
         if not value:
             return []
         # remove comments
-        if isinstance(value, six.string_types):
+        if isinstance(value, str):
             ranges = [x.split('#')[0].strip() for x in value.split('\n')]
         else:
             ranges = list(value)
@@ -379,11 +378,11 @@ class LoginLockout(Folder, BasePlugin, Cacheable):
             # Don't do the check if there is no whitelist set
             return False
 
-        client = ip_address(six.text_type(ip))
+        client = ip_address(str(ip))
         # TODO: could support rules that have different IP ranges for different groups
         for range in list(whitelist_ips) + ['127.0.0.1']:
             try:
-                if client in ip_network(six.text_type(range)):
+                if client in ip_network(str(range)):
                     return False
             except ValueError:
                 # we can get this if the range not in the right format.

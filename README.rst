@@ -292,7 +292,7 @@ each proxy otherwise this plugin will incorrectly use REMOTE_ADDR which will be 
 
 To enable this go into the ZMI and enter the ranges in the whitelist_ips property::
 
-    >>> config_property( whitelist_ips = u'10.1.1.1' )
+    >>> config_property( whitelist_ips = '10.1.1.1' )
 
 If there are proxies infront of zope you will have to ensure they set the ```X-Forwarded-For``` header.
 Note only the first forwarded IP will be used.::
@@ -370,7 +370,7 @@ But we can't get into the plone site with a root id any more::
 
 You can also set IP ranges e.g.::
 
-    >>> config_property( whitelist_ips = u"""10.1.1.1
+    >>> config_property( whitelist_ips = """10.1.1.1
     ... 10.1.0.0/16 # range 1
     ... 2.2.0.0/16 # range 2
     ... """)
@@ -408,7 +408,7 @@ as the site has loginlockout installed.::
 Note that you still have to have the IP lockout config set otherwise logins are allowed from anywhere
 even with the env variable set::
 
-    >>> config_property( whitelist_ips = u"""
+    >>> config_property( whitelist_ips = """
     ... """)
     >>> anon_browser = make_anon_browser()
     >>> anon_browser.addHeader('Authorization', 'Basic %s:%s' % (user_id,user_password))
