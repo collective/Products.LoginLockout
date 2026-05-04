@@ -121,9 +121,9 @@ def test_suite():
                     "../../README.rst",
                     setUp=setUp,
                     optionflags=doctest.REPORT_ONLY_FIRST_FAILURE
-                    | doctest.NORMALIZE_WHITESPACE
-                    | doctest.ELLIPSIS
-                    | doctest.IGNORE_EXCEPTION_DETAIL,
+                    | doctest.NORMALIZE_WHITESPACE  # noqa: W503
+                    | doctest.ELLIPSIS  # noqa: W503
+                    | doctest.IGNORE_EXCEPTION_DETAIL,  # noqa: W503
                 ),
                 layer=FUNCTIONAL_TESTING,
             ),
