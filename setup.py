@@ -50,7 +50,6 @@ setup(
     zip_safe=False,
     install_requires=[
         "setuptools",
-        "collective.monkeypatcher",
         # -*- Extra requirements: -*-
         # Products.PluggableAuthService is a dep, but can't be explicit in Plone 3.
     ],
