@@ -118,7 +118,7 @@ def test_suite():
         [
             layered(
                 doctest.DocFileSuite(
-                    "../../README.rst",
+                    "../../../README.rst",
                     setUp=setUp,
                     optionflags=doctest.REPORT_ONLY_FIRST_FAILURE
                     | doctest.NORMALIZE_WHITESPACE  # noqa: W503
